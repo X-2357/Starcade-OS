@@ -1,0 +1,161 @@
+#pragma once
+
+#include "RE/N/NiSmartPointer.h"
+
+namespace RE
+{
+	class Actor;
+	class HandleManager;
+	class Projectile;
+	class TESObjectREFR;
+
+	template <std::uint32_t = 21, std::uint32_t = 5>
+	class BSUntypedPointerHandle;
+
+	template <class, class = BSUntypedPointerHandle<>>
+	class BSPointerHandle;
+
+	template <class, class = HandleManager>
+	class BSPointerHandleManagerInterface;
+
+	template <std::uint32_t FREE_LIST_BITS, std::uint32_t AGE_SHIFT>
+	class BSUntypedPointerHandle
+	{
+	public:
+		using HandleType = std::uint32_t;
+
+		enum : std::uint32_t
+		{
+			kFreeListBits = FREE_LIST_BITS,
+			kAgeShift = AGE_SHIFT,
+		};
+
+		BSUntypedPointerHandle() noexcept = default;
+		BSUntypedPointerHandle(const BSUntypedPointerHandle&) noexcept = default;
+
+		explicit BSUntypedPointerHandle(HandleType a_handle) noexcept :
+			_handle(a_handle)
+		{}
+
+		~BSUntypedPointerHandle() noexcept { reset(); }
+
+		BSUntypedPointerHandle& operator=(const BSUntypedPointerHandle&) noexcept = default;
+
+		BSUntypedPointerHandle& operator=(HandleType a_rhs) noexcept
+		{
+			_handle = a_rhs;
+			return *this;
+		}
+
+		[[nodiscard]] explicit operator bool() const noexcept { return has_value(); }
+		[[nodiscard]] bool     has_value() const noexcept { return _handle != 0; }
+
+		[[nodiscard]] HandleType value() const noexcept { return _handle; }
+
+		void reset() noexcept { _handle = 0; }
+
+		[[nodiscard]] friend bool operator==(const BSUntypedPointerHandle& a_lhs, const BSUntypedPointerHandle& a_rhs) noexcept
+		{
+			return a_lhs.value() == a_rhs.value();
+		}
+
+	private:
+		HandleType _handle{ 0 };  // 00
+	};
+
+	extern template class BSUntypedPointerHandle<>;
+
+	template <class T, class Handle>
+	class BSPointerHandle
+	{
+	public:
+		BSPointerHandle() noexcept = default;
+
+		template <class Y>
+		BSPointerHandle(BSPointerHandle<Y, Handle> a_rhs) noexcept
+			requires(std::convertible_to<Y*, T*>)
+			:
+			_handle(a_rhs._handle)
+		{}
+
+		~BSPointerHandle() noexcept = default;
+
+		template <class Y>
+		BSPointerHandle& operator=(BSPointerHandle<Y, Handle> a_rhs) noexcept
+			requires(std::convertible_to<Y*, T*>)
+		{
+			_handle = a_rhs._handle;
+			return *this;
+		}
+
+		void reset() noexcept { _handle.reset(); }
+
+		[[nodiscard]] NiPointer<T> get() const
+		{
+			return BSPointerHandleManagerInterface<T>::GetSmartPointer(*this);
+		}
+
+		[[nodiscard]] Handle::HandleType get_handle() noexcept
+		{
+			return _handle.value();
+		}
+
+		[[nodiscard]] explicit operator bool() const noexcept { return _handle.has_value(); }
+
+		[[nodiscard]] friend bool operator==(const BSPointerHandle& a_lhs, const BSPointerHandle& a_rhs) noexcept
+		{
+			return a_lhs._handle == a_rhs._handle;
+		}
+
+		[[nodiscard]] NiPointer<T> operator*() const noexcept
+		{
+			assert(static_cast<bool>(*this));
+			return get();
+		}
+
+		[[nodiscard]] NiPointer<T> operator->() const noexcept
+		{
+			assert(static_cast<bool>(*this));
+			return get();
+		}
+
+	private:
+		template <class, class>
+		friend class BSPointerHandle;
+
+		Handle _handle;  // 00
+	};
+
+	extern template class BSPointerHandle<Actor>;
+	extern template class BSPointerHandle<Projectile>;
+	extern template class BSPointerHandle<TESObjectREFR>;
+
+	template <class T, class Manager>
+	class BSPointerHandleManagerInterface
+	{
+	public:
+		static bool GetSmartPointer(const BSPointerHandle<T>& a_in, NiPointer<T>& a_out)
+		{
+			// Starfield's resolver is the by-value form NiPointer<T> GetSmartPointer(const handle&):
+			// rcx = &a_out (return/out slot), rdx = &a_in (handle value) -> the engine reads the u32
+			// at [rdx] and writes the resolved owning NiPointer to [rcx]. The arg order is therefore
+			// (out, in), the reverse of the historical Skyrim bool(in, out) primitive, so we call it
+			// func(a_out, a_in). See RE/IDs.h (.244 ID 35638) and osf-re gameplay.defeat_damage_hook.
+			using func_t = NiPointer<T>& (*)(NiPointer<T>& a_out, const BSPointerHandle<T>& a_in);
+			static REL::Relocation<func_t> func{ ID::BSPointerHandleManagerInterface::GetSmartPointer };
+			func(a_out, a_in);
+			return static_cast<bool>(a_out);
+		}
+
+		static NiPointer<T> GetSmartPointer(const BSPointerHandle<T>& a_in)
+		{
+			NiPointer<T> out;
+			GetSmartPointer(a_in, out);
+			return out;
+		}
+	};
+
+	extern template class BSPointerHandleManagerInterface<Actor>;
+	extern template class BSPointerHandleManagerInterface<Projectile>;
+	extern template class BSPointerHandleManagerInterface<TESObjectREFR>;
+}

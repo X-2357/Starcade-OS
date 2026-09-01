@@ -1,0 +1,53 @@
+QUADRILACTIC FOR STARCADE OS - SOURCE AND LICENSING
+
+Quadrilactic is a small single-developer HTML5 Canvas game about bouncing a
+character through space, written in TypeScript and built with a Grunt/webpack
+pipeline. No proprietary assets are included.
+
+ENGINE AND CONTENT
+  bencoveney/quadrilactic: https://github.com/bencoveney/quadrilactic
+  License: Apache License 2.0 (see LICENSE in this folder, copied verbatim
+  from the upstream repository). Note: the upstream package.json's own
+  "license" field says "ISC", which does not match the actual LICENSE file
+  in the repository root - the committed LICENSE file (Apache 2.0) is the
+  authoritative one and is what Starcade relies on and ships here.
+  Background music, menu/UI sounds, and sound effects are credited by the
+  upstream project itself in its own index.html (OpenGameArt.org contributors
+  and the BFXR tool); no separate per-asset README exists upstream.
+  Starcade changes:
+    1. Added the shared Starcade host/input bridge (host.js,
+       starcade-bridge.js) via two <script> tags before </body>.
+    2. Removed two upstream <link> tags in index.html that loaded Roboto and
+       Oswald from fonts.googleapis.com at page load. Starcade's manifest
+       declares network:false, so no game may make an outbound network
+       request; the page now simply falls back to the CSS's own generic
+       sans-serif in the font stack. No gameplay, simulation, or rendering
+       code was changed.
+  No other network calls (fetch/XMLHttpRequest/ajax/WebSocket/analytics)
+  were found anywhere in the source or the built bundle.
+
+BUILD
+  Upstream's package.json defines no npm "build" script (it uses a Grunt
+  task, "grunt release", driving a very old Grunt/webpack 1.x/tsd toolchain
+  that predates modern Node and was not run here). The repository's own
+  dist/bundle.js and dist/style.css were already checked into upstream git
+  as prebuilt output, so those files are vendored directly rather than
+  rebuilt. Because no working modern build step exists to run, there is no
+  separate Quadrilactic-Engine/ source folder at the Complete Source archive
+  root - the full unmodified upstream source (including src/*.ts) is public
+  at the URL above under the same Apache 2.0 license.
+
+SCORING AND SAVES
+  Quadrilactic is not yet wired into Starcade's arcade leaderboard/XP
+  system - StarcadeHost.finish() is never called. Its score is rendered
+  internally by a bundled TypeScript Scoreboard class straight onto the
+  shared canvas; there is no plain DOM element exposing a live score to
+  poll, so a real hook was not guessed at.
+
+COMPLETE CORRESPONDING SOURCE
+  The unmodified upstream project is public at the URL above (Apache 2.0
+  license). Starcade's own two changes (the added script tags and the
+  removed font <link> tags) are both plainly visible in this folder's
+  index.html; no minified engine change was made.
+
+This community project is not affiliated with or endorsed by Ben Coveney.

@@ -1,0 +1,36 @@
+BILLIARDS FOR STARCADE OS - SOURCE AND LICENSING
+
+No proprietary assets are included.
+
+ENGINE AND CONTENT
+  tailuge/billiards: https://github.com/tailuge/billiards
+  License: GNU General Public License version 3 - see LICENSE in this folder.
+  A mature, actively maintained 3D pool/billiards/snooker physics simulator
+  (TypeScript/Three.js/WebGL) with multiple rule variants and single-player
+  practice/bot modes.
+
+  Starcade changes: the upstream project has real online features (a
+  multiplayer lobby, an online score-submission API, a URL-shortening
+  service, and an automatic usage-tracking ping on every load) that violate
+  Starcade's offline, no-network-access design. All four network call sites
+  were disabled at the source level before building:
+    - src/utils/usage.ts: logusage() made an unconditional no-op (previously
+      fired an automatic PUT request on every load except from localhost).
+    - src/network/client/scorereporter.ts: ScoreReporter.submitMatchResult()
+      made an unconditional no-op (previously POSTed match results to a
+      remote scoreboard API).
+    - src/utils/shorten.ts: shorten() now always returns the original,
+      unshortened URL instead of calling a remote URL-shortening API.
+  The in-app "Multiplayer Lobby" link still exists in the UI, since it only
+  ever calls the same now-neutralized networking code - it does not perform
+  any independent network access. Added the shared Starcade host/input
+  bridge (host.js, starcade-bridge.js). No physics, rendering, or gameplay
+  code was changed.
+
+COMPLETE CORRESPONDING SOURCE
+  The complete buildable TypeScript source, including the four changes
+  above, is included in this archive at Billiards-Engine/ (Complete Source
+  archive root).
+
+This community project is not affiliated with or endorsed by tailuge or the
+billiards project's other contributors.

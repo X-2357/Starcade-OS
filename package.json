@@ -1,0 +1,9 @@
+{
+  "name": "starcade-os-dev-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "QA tooling for Starcade OS (tools/validate.ps1, tests/*.mjs) — not shipped with the mod.",
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

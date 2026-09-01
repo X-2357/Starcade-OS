@@ -1,0 +1,172 @@
+import { TestBed } from '@angular/core/testing';
+import { BrowserModule } from '@angular/platform-browser';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { AppComponent } from './app.component';
+import { AppService } from './service/app.service';
+import { LayoutService } from './service/layout.service';
+import { SvgdefService } from './service/svgdef.service';
+import type { Layout, LoadLayout } from './model/types';
+import { log } from './model/log';
+
+import { b64, makeBoard, makeMah } from './model/import.spec-helpers';
+import { type Mock, describe, beforeEach, it, expect, vi } from 'vitest';
+
+const MOCK_LAYOUT: Layout = {
+	id: 'test-id',
+	name: 'Test Board',
+	category: 'Classic',
+	mapping: [],
+	custom: true
+};
+
+describe('AppComponent', () => {
+	beforeEach(async () => TestBed.configureTestingModule({
+		imports: [AppComponent, BrowserModule],
+		providers: [provideTranslateService(), provideHttpClient(), AppService, SvgdefService, LayoutService]
+	}).compileComponents());
+
+	it('should create the app', async () => {
+		const fixture = TestBed.createComponent(AppComponent);
+		const app = fixture.debugElement.componentInstance;
+		expect(app).toBeTruthy();
+	});
+
+	describe('handleEditorKeyDown', () => {
+		let app: AppComponent;
+		let dialogVisible: boolean;
+
+		const pressE = (): boolean => app.handleEditorKeyDown(new KeyboardEvent('keydown', { key: 'e' }));
+
+		beforeEach(() => {
+			const fixture = TestBed.createComponent(AppComponent);
+			app = fixture.componentInstance;
+			dialogVisible = false;
+			// the view is not rendered here, so stand in for the game component the key handler asks
+			Object.defineProperty(app, 'gameComponent', { value: () => ({ isDialogVisible: () => dialogVisible }) });
+			vi.spyOn(app, 'toggleEditor').mockImplementation(() => undefined);
+		});
+
+		it('toggles the editor', () => {
+			expect(pressE()).toBe(true);
+			expect(app.toggleEditor).toHaveBeenCalled();
+		});
+
+		it('does not open the editor on top of a game dialog', () => {
+			dialogVisible = true;
+			expect(pressE()).toBe(false);
+			expect(app.toggleEditor).not.toHaveBeenCalled();
+		});
+
+		it('leaves the key to the editor once it is open', () => {
+			app.editorVisible.set(true);
+			expect(pressE()).toBe(false);
+			expect(app.toggleEditor).not.toHaveBeenCalled();
+		});
+
+		it('forwards no game shortcut while the editor is open', () => {
+			const gameHandler = vi.fn();
+			Object.defineProperty(app, 'gameComponent', { value: () => ({ isDialogVisible: () => false, handleKeyDownEvent: gameHandler }) });
+			app.editorVisible.set(true);
+			for (const key of ['t', 'm', 'u', 'n', 'p', ' ', 'h', 'i', 's', 'd']) {
+				app.handleKeyDownEvent(new KeyboardEvent('keydown', { key }));
+			}
+			expect(gameHandler).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('loadEditor', () => {
+		let app: AppComponent;
+
+		beforeEach(() => {
+			const fixture = TestBed.createComponent(AppComponent);
+			app = fixture.componentInstance;
+			vi.spyOn(log, 'error').mockImplementation(() => undefined);
+		});
+
+		it('reverts editorVisible and editorLoading when the editor chunk fails to load', async () => {
+			vi.spyOn(app as unknown as { importEditorModule(): Promise<unknown> }, 'importEditorModule')
+				.mockRejectedValue(new Error('mock editor chunk load failure'));
+
+			app.toggleEditor();
+			expect(app.editorVisible()).toBe(true);
+
+			await new Promise(resolve => setTimeout(resolve, 0));
+
+			expect(app.editorVisible()).toBe(false);
+			expect(app.editorLoading).toBe(false);
+			expect(log.error).toHaveBeenCalled();
+		});
+	});
+
+	describe('checkImport', () => {
+		let app: AppComponent;
+		let layoutService: LayoutService;
+
+		beforeEach(() => {
+			const fixture = TestBed.createComponent(AppComponent);
+			app = fixture.componentInstance;
+			layoutService = app.layoutService;
+			layoutService.layouts.items = [];
+			vi.spyOn(layoutService, 'expandLayout').mockReturnValue(MOCK_LAYOUT);
+			vi.spyOn(layoutService, 'storeCustomBoards').mockImplementation(() => 1);
+		});
+
+		const checkImport = async (app: AppComponent, input: string | null): Promise<Array<string>> =>
+			(app as unknown as Record<string, (s: string | null) => Promise<Array<string>>>).checkImport(input);
+
+		it('returns [] for null input', async () => {
+			expect(await checkImport(app, null)).toEqual([]);
+			expect(layoutService.storeCustomBoards).not.toHaveBeenCalled();
+		});
+
+		it('imports a valid board and returns its id', async () => {
+			const result = await checkImport(app, b64(makeMah()));
+			expect(result).toEqual(['test-id']);
+			expect(layoutService.storeCustomBoards).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not re-import a board already in layouts', async () => {
+			layoutService.layouts.items = [MOCK_LAYOUT];
+			const result = await checkImport(app, b64(makeMah()));
+			expect(result).toEqual(['test-id']);
+			expect(layoutService.storeCustomBoards).not.toHaveBeenCalled();
+		});
+
+		it('imports multiple valid boards', async () => {
+			const board2 = makeBoard({ id: 'id-2', name: 'Board 2' });
+			const layout2: Layout = { ...MOCK_LAYOUT, id: 'id-2', name: 'Board 2' };
+			(layoutService.expandLayout as Mock)
+				.mockReturnValueOnce(MOCK_LAYOUT)
+				.mockReturnValueOnce(layout2);
+			const result = await checkImport(app, b64(makeMah([makeBoard(), board2])));
+			expect(result).toEqual(['test-id', 'id-2']);
+			expect(layoutService.storeCustomBoards).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not store duplicate board ids within the same import', async () => {
+			const result = await checkImport(app, b64(makeMah([makeBoard(), makeBoard()])));
+			expect(result).toEqual(['test-id', 'test-id']);
+			const storedBoards: Array<LoadLayout> = (layoutService.storeCustomBoards as Mock).mock.calls[0][0];
+			expect(storedBoards).toHaveLength(1);
+		});
+
+		it('skips a board when expandLayout throws', async () => {
+			vi.spyOn(log, 'warn').mockImplementation(() => undefined);
+			(layoutService.expandLayout as Mock).mockImplementationOnce(() => {
+				throw new Error('expand error');
+			});
+			expect(await checkImport(app, b64(makeMah()))).toEqual([]);
+			expect(layoutService.storeCustomBoards).not.toHaveBeenCalled();
+		});
+
+		it('logs a warning when boards were parsed but none could be expanded', async () => {
+			(layoutService.expandLayout as Mock).mockImplementation(() => {
+				throw new Error('expand error');
+			});
+			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+			await checkImport(app, b64(makeMah()));
+			expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('no valid boards'));
+		});
+	});
+});

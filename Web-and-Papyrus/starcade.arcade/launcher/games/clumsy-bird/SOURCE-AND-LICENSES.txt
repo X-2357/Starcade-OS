@@ -1,0 +1,42 @@
+CLUMSY BIRD FOR STARCADE OS - SOURCE AND LICENSING
+
+No proprietary assets are included. Clumsy Bird is an independent Flappy
+Bird-style clone built on the melonJS engine - all art, audio, and code are
+the upstream project's own original work, not Flappy Bird's assets.
+
+ENGINE AND CONTENT
+  ellisonleao/clumsy-bird: https://github.com/ellisonleao/clumsy-bird
+  License: GNU GPL v3.0 - see LICENSE.md in this folder (the actual license
+  file committed upstream; note the project's own package.json "licenses"
+  field incorrectly claims MIT - the LICENSE.md file, which is the real
+  GPLv3 text, is authoritative and is what this integration honors).
+  Starcade changes: added the shared Starcade host/input bridge (host.js,
+  starcade-bridge.js) via two <script> tags before </body> in index.html.
+  No gameplay, physics, art, or audio was changed. No network calls were
+  found or stripped - the game is fully offline already; the only
+  externally-pointing references in the source are inert <meta property="og:*">
+  tags in index.html's <head> (social-preview metadata that browsers do not
+  fetch) and a couple of unused "share"/"tweet" image resources in js/game.js
+  that are loaded but never wired to any click handler or outbound URL.
+
+SCORING AND SAVES
+  starcade-bridge.js polls two plain globals the game itself exposes:
+  game.data.steps (the run's score, incremented per pipe cleared) and
+  me.state.isCurrent(me.state.GAME_OVER) (melonJS's own state-machine check
+  for the death/game-over screen). On the transition into GAME_OVER it calls
+  StarcadeHost.finish(score) once per run; StarcadeHost.score(value) is also
+  reported every frame while playing. This is read-only polling of the
+  game's own public globals - no internal engine code was patched.
+
+COMPLETE CORRESPONDING SOURCE
+  The unmodified upstream project is public at the URL above under GPLv3.
+  This folder vendors the complete upstream source as committed (index.html,
+  index.css, js/, data/, build/, Gruntfile.js, package.json, etc.) plus the
+  two added script tags and the two new Starcade files (starcade-bridge.js,
+  this file) - there is no separate build step and nothing was compiled or
+  minified by Starcade, so this folder IS the full corresponding source. The
+  committed js/melonJS-min.js and build/clumsy-min.js are upstream's own
+  pre-built files, shipped as-is from the original repository.
+
+This community project is not affiliated with or endorsed by Ellison Leao
+or the clumsy-bird project's other contributors.

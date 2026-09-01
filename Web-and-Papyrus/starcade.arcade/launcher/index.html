@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Starcade OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="shell" class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">NOVA GALACTIC PERSONAL ENTERTAINMENT &middot; CREATED BY X-2357</p>
+        <h1>STARCADE <span>OS</span></h1>
+      </div>
+      <div class="status">
+        <span class="pulse"></span><span id="statusText">LOCAL LIBRARY ONLINE</span>
+        <span class="music-controls" role="group" aria-label="Background music">
+          <button id="musicPrev" class="music-btn" title="Previous track" aria-label="Previous track">&#9664;&#9664;</button>
+          <button id="musicToggle" class="music-btn" title="Toggle music" aria-label="Toggle music">&#9834; MUSIC</button>
+          <button id="musicNext" class="music-btn" title="Next track" aria-label="Next track">&#9654;&#9654;</button>
+        </span>
+      </div>
+    </header>
+    <div class="world-live">WORLD SIMULATION ACTIVE &middot; PLAY IN A SAFE LOCATION</div>
+    <div id="xpToast" class="xp-toast" role="status" aria-live="polite"></div>
+    <audio id="musicPlayer" preload="none"></audio>
+
+    <section id="library" class="library" aria-label="Game library">
+      <aside class="rail">
+        <button class="filter active" data-filter="all">ALL GAMES</button>
+        <button class="filter" data-filter="arcade">ARCADE</button>
+        <button class="filter" data-filter="puzzle">PUZZLE</button>
+        <button class="filter" data-filter="strategy">STRATEGY</button>
+        <button class="filter" data-filter="casino">CASINO</button>
+        <div class="rail-spacer"></div>
+        <button id="leaderboardButton" class="filter">LEADERBOARD</button>
+        <button id="licensesButton" class="filter">LICENSES</button>
+        <button id="exitButton" class="filter danger">POWER OFF</button>
+      </aside>
+
+      <div class="content">
+        <div class="section-title">
+          <div><p>INSTALLED SOFTWARE</p><h2 id="categoryTitle">All Games</h2></div>
+          <p id="gameCount" class="count"></p>
+        </div>
+        <div id="gameGrid" class="game-grid"></div>
+        <section id="details" class="details" aria-live="polite"></section>
+      </div>
+    </section>
+
+    <section id="player" class="player hidden" aria-label="Active game">
+      <header class="playerbar">
+        <button id="backButton">&larr; LIBRARY</button>
+        <strong id="playerTitle">GAME</strong>
+        <div><span class="creator-tag">CREATED BY X-2357</span><span id="scoreLabel">SCORE 000000</span><button id="fullscreenButton">FIT DISPLAY</button></div>
+      </header>
+      <iframe id="gameFrame" title="Starcade game" tabindex="0" sandbox="allow-scripts allow-same-origin"></iframe>
+    </section>
+
+    <section id="licenses" class="modal hidden">
+      <div class="modal-card">
+        <button id="closeLicenses" class="modal-close">&times;</button>
+        <p class="eyebrow">SOFTWARE ATTRIBUTIONS &middot; CREATED BY X-2357</p>
+        <h2>Licenses</h2>
+        <p class="license-summary"><strong>STARCADE SOURCE AND LICENSE NOTICE</strong><br>The original Starcade minigames were independently written for Starcade OS by X-2357 and are released under the included MIT License. Freedoom: Phase 1 is the documented exception: it combines a GPL-2.0 DoomGeneric-derived asm.js engine with BSD-3-Clause Freedoom game data. No proprietary Doom WAD, commercial source code, or commercial Doom assets are included. Each entry below identifies its code origin, license, and corresponding source location.</p>
+        <div id="licenseList"></div>
+      </div>
+    </section>
+    <section id="leaderboard" class="modal hidden">
+      <div class="modal-card leaderboard-card">
+        <button id="closeLeaderboard" class="modal-close">&times;</button>
+        <p class="eyebrow">LOCAL STARCADE NETWORK &middot; CREATED BY X-2357</p>
+        <h2 id="leaderboardTitle">Leaderboard</h2>
+        <div class="leaderboard-nav"><button id="previousLeaderboard">&larr; PREVIOUS GAME</button><button id="nextLeaderboard">NEXT GAME &rarr;</button></div>
+        <div id="leaderboardTop"></div>
+        <h3>YOUR 10 MOST RECENT COMPLETED RUNS</h3>
+        <div id="leaderboardRecent"></div>
+      </div>
+    </section>
+
+    <footer><span>ARROWS / D-PAD TO NAVIGATE &middot; ENTER / A TO SELECT &middot; ESC / B TO RETURN</span><span>CREATED BY X-2357 &middot; VERSION 1.7.3</span></footer>
+  </main>
+  <script src="../../shared/osfui.js"></script>
+  <script src="games/catalog.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

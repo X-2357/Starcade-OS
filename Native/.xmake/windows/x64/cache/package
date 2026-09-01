@@ -1,0 +1,40 @@
+{
+    spdlog = {
+        defines = {
+            "SPDLOG_COMPILED_LIB",
+            "SPDLOG_USE_STD_FORMAT",
+            "SPDLOG_WCHAR_TO_UTF8_SUPPORT"
+        },
+        installdir = [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374]],
+        __requirestr = "spdlog v1.16.0",
+        __enabled = true,
+        linkdirs = [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\lib]],
+        __requireconfs = {
+            configs = {
+                header_only = false,
+                wchar = true,
+                std_format = true
+            }
+        },
+        static = true,
+        libfiles = [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\lib\spdlog.lib]],
+        version = "v1.16.0",
+        envs = {
+            PATH = {
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\n\ninja\v1.13.2\388143d312d14320a9c5240d43405107\bin]],
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\c\cmake\4.3.4\0f8cea59944043e09419f613dd6acd4d\bin]]
+            }
+        },
+        sysincludedirs = [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\include]],
+        links = "spdlog",
+        license = "MIT"
+    },
+    nlohmann_json = {
+        sysincludedirs = [[C:\Users\MwMak\AppData\Local\.xmake\packages\n\nlohmann_json\v3.12.0\ab8414047c424750bdc9d7a0ff7afdde\include]],
+        installdir = [[C:\Users\MwMak\AppData\Local\.xmake\packages\n\nlohmann_json\v3.12.0\ab8414047c424750bdc9d7a0ff7afdde]],
+        __requirestr = "nlohmann_json",
+        __enabled = true,
+        version = "v3.12.0",
+        license = "MIT"
+    }
+}

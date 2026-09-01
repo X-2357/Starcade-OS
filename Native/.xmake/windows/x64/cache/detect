@@ -1,0 +1,169 @@
+{
+    find_program_msvc_arch_x64_plat_windows_checktoolsh = {
+        ["link.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\link.exe]]
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolmrc = {
+        ["rc.exe"] = [[C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\rc.exe]]
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolcxx = {
+        ["cl.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe]]
+    },
+    find_package_windows_x64_fetch_package_xmake = {
+        ["xmake::nlohmann_json_ab8414047c424750bdc9d7a0ff7afdde_release_v3.12.0_external"] = {
+            version = "v3.12.0",
+            license = "MIT",
+            sysincludedirs = {
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\n\nlohmann_json\v3.12.0\ab8414047c424750bdc9d7a0ff7afdde\include]]
+            }
+        },
+        ["xmake::spdlog_1053dccb2da94316b3bef3cb1db15374_release_v1.16.0_external"] = {
+            links = {
+                "spdlog"
+            },
+            version = "v1.16.0",
+            static = true,
+            libfiles = {
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\lib\spdlog.lib]]
+            },
+            defines = {
+                "SPDLOG_COMPILED_LIB",
+                "SPDLOG_USE_STD_FORMAT",
+                "SPDLOG_WCHAR_TO_UTF8_SUPPORT"
+            },
+            linkdirs = {
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\lib]]
+            },
+            license = "MIT",
+            sysincludedirs = {
+                [[C:\Users\MwMak\AppData\Local\.xmake\packages\s\spdlog\v1.16.0\1053dccb2da94316b3bef3cb1db15374\include]]
+            }
+        }
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolcc = {
+        ["cl.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe]]
+    },
+    ["core.tools.rc.has_flags"] = {
+        ["c:\\program files (x86)\\windows kits\\10\\bin\\10.0.26100.0\\x64\\rc.exe_"] = {
+            ["-n"] = true,
+            ["-nologo"] = true,
+            ["-l"] = true,
+            ["-x"] = true,
+            ["-u"] = true,
+            ["-gn"] = true,
+            ["-g"] = true,
+            ["-d"] = true,
+            ["-c"] = true,
+            ["-ln"] = true,
+            ["-fm"] = true,
+            ["-8"] = true,
+            ["-g1"] = true,
+            ["-w"] = true,
+            ["-y"] = true,
+            ["-q"] = true,
+            ["-v"] = true,
+            ["-sl"] = true,
+            ["-r"] = true,
+            ["-fo"] = true,
+            ["-i"] = true,
+            ["-g2"] = true
+        }
+    },
+    find_programver = {
+        ["C:\\Program Files\\dotnet\\dotnet.exe"] = "8.0.424"
+    },
+    find_program_fetch_package_system = {
+        ninja = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja]],
+        cmake = [[C:\Program Files\CMake\bin\cmake]]
+    },
+    find_program = {
+        zig = false,
+        ["cl.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe]],
+        ["C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\rc.exe"] = [[c:\program files (x86)\windows kits\10\bin\10.0.26100.0\x64\rc.exe]],
+        ["C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe"] = [[c:\program files (x86)\microsoft visual studio\18\buildtools\vc\tools\msvc\14.51.36231\bin\hostx64\x64\cl.exe]],
+        nim = false,
+        gzip = false,
+        ["7z"] = [[C:\Program Files\xmake\winenv\bin\7z]],
+        git = [[C:\Program Files\Git\cmd\git.exe]],
+        dotnet = [[C:\Program Files\dotnet\dotnet.exe]]
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolld = {
+        ["link.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\link.exe]]
+    },
+    find_program_fetch_package_xmake = {
+        ninja = false,
+        cmake = false
+    },
+    ["detect.sdks.find_dotnet"] = {
+        dotnet = {
+            sdkdir = [[C:\Program Files\dotnet\sdk\8.0.424]],
+            sdks = {
+                {
+                    directory = [[C:\Program Files\dotnet\sdk\8.0.424]],
+                    version = "8.0.424"
+                }
+            },
+            sdkver = "8.0.424",
+            runtimes = {
+                {
+                    name = "Microsoft.AspNetCore.App",
+                    version = "8.0.30"
+                },
+                {
+                    name = "Microsoft.NETCore.App",
+                    version = "8.0.21"
+                },
+                {
+                    name = "Microsoft.NETCore.App",
+                    version = "8.0.30"
+                },
+                {
+                    name = "Microsoft.NETCore.App",
+                    version = "9.0.19"
+                },
+                {
+                    name = "Microsoft.WindowsDesktop.App",
+                    version = "8.0.30"
+                },
+                {
+                    name = "Microsoft.WindowsDesktop.App",
+                    version = "9.0.19"
+                }
+            },
+            version = "8.0.424",
+            bindir = [[C:\Program Files\dotnet]]
+        }
+    },
+    ["lib.detect.has_flags"] = {
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_cl_sourceDependencies"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/EHsc"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_cl_external_includedir"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23preview"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23"] = false,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/fp:except-"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/diagnostics:caret"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-FS -Fd"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/cgthreads8"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/Zc:preprocessor"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/we4715"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/fp:contract"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/permissive-"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/Zc:enumTypes"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx__-nologo_-O2"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/external:W0"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/wd4324"] = true,
+        ["windows_x64_c:\\program files (x86)\\windows kits\\10\\bin\\10.0.26100.0\\x64\\rc.exe__mrc_mrcflags__-nologo"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-DNDEBUG"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/wd4200"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/Zc:templateScope"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/bigobj"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/wd4201"] = true,
+        ["windows_x64_c:\\program files (x86)\\microsoft visual studio\\18\\buildtools\\vc\\tools\\msvc\\14.51.36231\\bin\\hostx64\\x64\\cl.exe__cxx_cxxflags_-nologo_/guard:cf-"] = true
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolar = {
+        ["link.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\link.exe]]
+    },
+    find_programver_fetch_package_system = {
+        ["C:\\Program Files\\CMake\\bin\\cmake"] = "4.4.3",
+        ["C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja"] = "1.13.2"
+    }
+}

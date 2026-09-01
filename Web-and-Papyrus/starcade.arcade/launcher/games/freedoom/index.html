@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Freedoom: Phase 1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div><span class="eyebrow">STARCADE OS / COMBAT SIMULATION</span><h1>FREEDOOM: PHASE 1</h1></div>
+      <div id="status">LOADING ENGINE...</div>
+    </header>
+    <section class="display">
+      <canvas id="screen" width="640" height="400" aria-label="Freedoom game display"></canvas>
+      <div id="error" hidden></div>
+    </section>
+    <footer>
+      <span>ARROWS MOVE/TURN - CTRL FIRE - E USE - SHIFT RUN - ENTER MENU</span>
+      <span>HOLD ESC / B 1.2 SEC TO LIBRARY</span>
+    </footer>
+  </main>
+  <script>
+    window.onerror = function (message, source, line, column, error) {
+      var status = document.getElementById("status");
+      var target = document.getElementById("error");
+      if (status) status.textContent = "ENGINE ERROR";
+      if (target) {
+        target.hidden = false;
+        target.textContent = "Freedoom: Phase 1 startup failed.\n\n" + String(message) +
+          "\nLine " + String(line || "?") + ":" + String(column || "?") +
+          (error && error.stack ? "\n\n" + String(error.stack) : "");
+      }
+      return false;
+    };
+  </script>
+  <script src="voidfall-asm.js?v=1506"></script>
+</body>
+</html>

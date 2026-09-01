@@ -1,0 +1,30 @@
+FREEDOOM: PHASE 1 FOR STARCADE OS - SOURCE AND LICENSING
+
+No original commercial Doom WAD, music, graphics, maps, or other proprietary
+game data is included.
+
+ENGINE
+  DoomGeneric: https://github.com/ozkl/doomgeneric
+  Non-WebAssembly asm.js port basis: https://github.com/ading2210/doompdf
+  Doom source lineage: https://github.com/id-Software/DOOM
+  License: GNU General Public License version 2.
+  Starcade changes: replaced DoomPDF's PDF text-field framebuffer and input
+  system with a full-color HTML Canvas 2D framebuffer and Starcade keyboard
+  bridge; compiled with Emscripten fastcomp 1.39.20 and WASM=0; disabled music
+  and sound for OSF UI compatibility; embedded Freedoom Phase 1.
+
+GAME DATA
+  Freedoom Phase 1 version 0.13.0.
+  Project: https://freedoom.github.io/
+  Source: https://github.com/freedoom/freedoom/releases/tag/v0.13.0
+  License: BSD 3-Clause. See FREEDOOM-LICENSE.txt and included credit files.
+  Upstream archive SHA-256:
+  3f9b264f3e3ce503b4fb7f6bdcb1f419d93c7b546f4df3e874dd878db9688f59
+
+COMPLETE CORRESPONDING SOURCE
+  Distributed separately with Starcade OS 1.5.0. It includes DoomGeneric/DoomPDF
+  source, Starcade modifications, build inputs, scripts, and license notices.
+
+Doom is a trademark of ZeniMax Media Inc. This community project is not
+affiliated with or endorsed by ZeniMax Media Inc., Bethesda Softworks, id
+Software, ading2210, ozkl, or the Freedoom project.

@@ -1,0 +1,68 @@
+STARCADE BACKGROUND MUSIC - SOURCE AND LICENSE NOTICE
+
+WHAT THIS IS
+  28 royalty-free 8-bit/chiptune-style tracks, supplied directly by X-2357
+  (Michael) from his own downloaded collection, played as looping background
+  music across the Starcade library screen. Starcade plays them in a
+  per-session shuffled order via a plain HTML5 <audio> element in the
+  launcher shell (main.js) - no third-party player library or network
+  fetch is involved; every file is bundled locally under this folder.
+
+LICENSE STATUS - PLEASE CONFIRM
+  Every filename in this folder follows the exact "<creator>-<title>-<id>.mp3"
+  naming convention Pixabay's own download system uses (e.g.
+  "arpmedia-retro-arcade-game-music-577821.mp3"), which strongly suggests
+  these came from pixabay.com/music under the Pixabay Content License
+  (free for commercial and non-commercial use, no attribution legally
+  required, redistribution of the audio file itself as a standalone
+  product is the only real restriction). THIS IS AN INFERENCE FROM THE
+  FILENAME PATTERN, NOT A VERIFIED FACT - Michael downloaded these
+  himself and should confirm the actual source before any public release,
+  the same way every other component in this project has its origin
+  independently verified rather than assumed. If any track did not
+  actually come from Pixabay under that license, it needs to be replaced
+  or re-attributed before shipping.
+
+ATTRIBUTION (creator name parsed from each filename's prefix)
+  arpmedia - Retro Arcade Game Music
+  ArthurHale - 8-Bit Video Game Music
+  Boons Freak - Future 8-Bit
+  BrutalDesign - Pixel Art
+  DjArtMusic - 8-Bit Console From My Childhood
+  DjArtMusic - Best Game Console
+  DjArtMusic - Fun With My 8-Bit Game
+  DjArtMusic - My 8-Bit Hero
+  DjArtMusic - Return To The 8-Bit Past
+  DjArtMusic - So Happy With My 8-Bit Game
+  DjArtMusic - The Return Of The 8-Bit Era
+  DjArtMusic - The World Of 8-Bit Games
+  DjLofi - Pixel Dreams
+  Kaden Cook - 8-Bit Dungeon
+  LofiEwme - Pixel Fantasia
+  Monume - Retro Arcade Game Music
+  MoodMode - A Video Game
+  MoodMode - Level III
+  Niknet Art - Retro 8-Bit Happy Adventure (four variations)
+  Niknet Art - Retro 8-Bit Happy Video Game (three variations)
+  NoCopyrightSounds633 - Pixel Party
+  NoCopyrightSounds633 - Arcade Beat
+  ThatLofiShow - Pixelated Dreams
+
+  A duplicate download of "djartmusic-return-to-the-8-bit-past-301282.mp3"
+  (Windows-suffixed "(1)") was dropped as an exact duplicate; only one copy
+  ships.
+
+STARCADE-SIDE INTEGRATION
+  Added by Claude (Sonnet 5) at Michael's request, 2026-08-30. Music plays
+  only in the library/menu screen, in a shuffled order, and auto-advances
+  when a track ends. It pauses automatically when an embedded game opens
+  (so it never plays under a game's own audio) and resumes when returning
+  to the library. Off by default; the on/off state persists locally
+  (localStorage) across sessions, matching how Starcade already persists
+  high scores and saves. External launches (OpenMW) do not pause it, since
+  those open in a separate OS window with no audio conflict.
+
+CORRESPONDING SOURCE
+  This is original Starcade launcher-shell code (main.js/index.html/
+  style.css), released under the same MIT license as the rest of the
+  original Starcade codebase. No third-party player code is used.

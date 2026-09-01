@@ -1,0 +1,31 @@
+MAH JONG FOR STARCADE OS - SOURCE AND LICENSING
+
+No proprietary assets are included. The upstream project's own README states
+it plainly: "Completely free. No ads. No tracking. No cloud."
+
+ENGINE AND CONTENT
+  ffalt/mah ("Mah Jong"): https://github.com/ffalt/mah
+  License: MIT (Copyright (c) 2016 ffalt) - see LICENSE in this folder.
+  Art, background, sound, icon, and font credits are itemized by the upstream
+  project itself in its own per-asset README files; see
+  Mah-Engine/src/assets/svg/README.md, src/assets/img/README.md,
+  src/assets/sounds/README.md, src/app/components/icons/README.md, and
+  src/fonts/README.md for the complete provenance.
+  Starcade changes: added the shared Starcade host/input bridge (host.js,
+  starcade-bridge.js). No gameplay, simulation, or rendering code was changed.
+
+SCORING AND SAVES
+  Mah Jong is not yet wired into Starcade's arcade leaderboard/XP system -
+  StarcadeHost.finish() is never called. It manages its own save/progress
+  state entirely internally via this page's own browser storage, independent
+  of Starcade's own per-game save slot, the same way Micropolis does.
+
+COMPLETE CORRESPONDING SOURCE
+  The unmodified upstream project is public at the URL above (MIT license,
+  no corresponding-source obligation applies). Starcade's own build of the
+  full buildable TypeScript/Angular source, including the two added script
+  tags, is included in this archive at Mah-Engine/ (Complete Source archive
+  root) - not required reading to play, only to rebuild or audit the change.
+
+This community project is not affiliated with or endorsed by ffalt or the
+mah project's other contributors.

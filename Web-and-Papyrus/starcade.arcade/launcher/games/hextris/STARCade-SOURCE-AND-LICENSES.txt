@@ -1,0 +1,16 @@
+Hextris Starcade package
+
+Upstream: https://github.com/Hextris/hextris
+Upstream game copyright (C) Hextris contributors, including Logan Engstrom,
+Garrett Finucane, Noah Moroze, and Michael Yang.
+Upstream program license: GNU GPL version 3 or later; see LICENSE.md.
+
+Starcade changes remove advertising, analytics, score beacons, remote scripts,
+remote fonts, store links, and social sharing. starcade-bridge.js connects local
+score, finish, and input behavior to Starcade. These changes are distributed
+under GNU GPL version 3 or later.
+
+Bundled third-party JavaScript and fonts retain their own notices and licenses.
+Their embedded headers/license metadata must be preserved. Complete editable
+corresponding source is this directory and is also retained in the Starcade
+Complete Source archive.

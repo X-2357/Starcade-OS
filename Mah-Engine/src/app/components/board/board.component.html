@@ -1,0 +1,489 @@
+<svg
+	#boardSVG
+	xmlns="http://www.w3.org/2000/svg" class="board-svg" preserveAspectRatio="xMidYMid meet"
+	[class.rotate]="rotate()"
+	[attr.viewBox]="viewport()"
+>
+	<defs>
+		<svg id="front" width="300" height="400" viewBox="0 0 300 400">
+			<path
+				transform="translate(28,-614)"
+				style="fill:#ffffff;fill-opacity:0.3;fill-rule:evenodd;stroke:none;filter: blur(10px);"
+				d="M -4.7687833,775.07096 C -9.6501835,741.99485 -16.84552,674.23676 -1.2788716,652.0641 18.998297,625.94378 233.50094,631.63117 263.31435,653.90999 276.21398,662.64856 70.349579,663.12124 47.099353,691.74479 24.390958,719.11242 0.65060847,818.18718 -4.7687833,775.07096 Z"
+			/>
+		</svg>
+		<!-- one back for light and one for dark, never one per tile set: a set-specific back would leak which set is in play -->
+		<svg id="mah-tile-back" width="75" height="100" viewBox="0 0 75 100">
+			<rect x="4" y="4" width="67" height="92" rx="8" ry="8" fill="#2f7d5f"/>
+			<rect x="9.5" y="9.5" width="56" height="81" rx="5" ry="5" fill="none" stroke="#bfe8d5" stroke-width="1.6" stroke-opacity="0.7"/>
+			<path d="M 37.5,29 55,50 37.5,71 20,50 Z" fill="none" stroke="#d8f2e5" stroke-width="2" stroke-opacity="0.75"/>
+			<circle cx="37.5" cy="50" r="6" fill="#d8f2e5" fill-opacity="0.55"/>
+		</svg>
+		<svg id="mah-tile-back-dark" width="75" height="100" viewBox="0 0 75 100">
+			<rect x="4" y="4" width="67" height="92" rx="8" ry="8" fill="#16362c"/>
+			<rect x="9.5" y="9.5" width="56" height="81" rx="5" ry="5" fill="none" stroke="#4f8f76" stroke-width="1.6" stroke-opacity="0.8"/>
+			<path d="M 37.5,29 55,50 37.5,71 20,50 Z" fill="none" stroke="#74b394" stroke-width="2" stroke-opacity="0.85"/>
+			<circle cx="37.5" cy="50" r="6" fill="#74b394" fill-opacity="0.5"/>
+		</svg>
+		<clipPath id="mah-image-clip">
+			<rect
+				[attr.x]="imageCut[0]"
+				[attr.y]="imageCut[1]"
+				[attr.width]="imageCut[2]"
+				[attr.height]="imageCut[3]"
+				rx="10" ry="10" fill="#fff"
+			/>
+		</clipPath>
+		<clipPath id="mah-tile-clip">
+			<rect x="0" y="0" width="75" height="100" rx="10" ry="10" fill="#fff"/>
+		</clipPath>
+		<!-- the colour sits at the edges, so a target still reads where a neighbouring tile covers its corner -->
+		<radialGradient id="mah-target-glow" cx="50%" cy="50%" r="62%">
+			<stop offset="55%" stop-color="#2e7d32" stop-opacity="0"/>
+			<stop offset="100%" stop-color="#2e7d32" stop-opacity="0.75"/>
+		</radialGradient>
+		<radialGradient id="mah-target-glow-dark" cx="50%" cy="50%" r="62%">
+			<stop offset="55%" stop-color="#56c05e" stop-opacity="0"/>
+			<stop offset="100%" stop-color="#56c05e" stop-opacity="0.72"/>
+		</radialGradient>
+		<radialGradient id="mah-spark-aura" cx="50%" cy="50%" r="50%">
+			<stop offset="55%" stop-color="#2f9fdc" stop-opacity="0.75"/>
+			<stop offset="100%" stop-color="#2f9fdc" stop-opacity="0"/>
+		</radialGradient>
+		<radialGradient id="mah-spark-aura-dark" cx="50%" cy="50%" r="50%">
+			<stop offset="55%" stop-color="#57bcff" stop-opacity="0.8"/>
+			<stop offset="100%" stop-color="#57bcff" stop-opacity="0"/>
+		</radialGradient>
+	</defs>
+	<style>
+		g.tile {
+			transform-origin: 50px 32.5px;
+			opacity: 1;
+			transition: transform 120ms ease-in-out;
+		}
+
+		g.draw:focus {
+			outline: none;
+		}
+
+		g.draw:focus-visible rect.stone {
+			stroke: #04c;
+			stroke-width: 5px;
+		}
+
+		g.stage.dark g.draw:focus-visible rect.stone {
+			stroke: #42a5f5;
+			stroke-width: 5px;
+		}
+
+		@keyframes mah-wiggle {
+			0% {
+				transform: rotate(0deg);
+			}
+			20% {
+				transform: rotate(-3deg);
+			}
+			40% {
+				transform: rotate(3deg);
+			}
+			60% {
+				transform: rotate(-1deg);
+			}
+			80% {
+				transform: rotate(1deg);
+			}
+			100% {
+				transform: rotate(0deg);
+			}
+		}
+
+		g.wiggle g.tile {
+			animation: mah-wiggle 250ms ease-in-out;
+		}
+
+		g.hinted g.tile {
+			animation: mah-match-flash 3000ms ease-out infinite;
+		}
+
+		g.hinted g.tile > rect {
+			stroke: #ff5900;
+			stroke-width: 3px;
+		}
+
+		@keyframes mah-match-flash {
+			0% { transform: scale(1); }
+			40% { transform: scale(1.14); }
+			100% { transform: scale(1); }
+		}
+
+		g.matched g.tile {
+			animation: mah-match-flash 600ms ease-out;
+		}
+
+		g.matched g.tile > rect {
+			stroke: #0066cc;
+			stroke-width: 2px;
+		}
+
+		@keyframes mah-select-pop {
+			0% {
+				transform: scale(1);
+			}
+			60% {
+				transform: scale(1.08);
+			}
+			100% {
+				transform: scale(1.04);
+			}
+		}
+
+		g.selected g.tile {
+			transform: scale(1.04);
+			animation: mah-select-pop 140ms ease-out;
+		}
+
+		g.selected g.tile rect.stone {
+			stroke: black;
+			fill: #F8EABB;
+		}
+
+		g.selected.hinted g.tile {
+			animation: mah-match-flash 2000ms ease-out infinite;
+		}
+
+		g.selected.hinted g.tile rect.stone {
+			stroke: #ff5900;
+			stroke-width: 3px;
+		}
+
+		g.stage .shadow-layer {
+			pointer-events: none;
+		}
+
+		g.stage rect.shadow {
+			fill: #05120c;
+			opacity: 0.38;
+			stroke-width: 0;
+			stroke: none;
+			filter: blur(4px);
+		}
+
+		g.draw rect.stone {
+			fill: #FFF9E5;
+			stroke-width: 1;
+			stroke: black;
+		}
+
+		g.stage.tile3d g.draw rect.side {
+			fill: #a89488;
+			opacity: 1;
+			stroke-width: 0;
+			stroke: none;
+		}
+
+		g.stage.tile3d g.draw rect.stone {
+			stroke: #a09085;
+		}
+
+		g.stage.tile3d g.draw rect.bevel {
+			fill: none;
+			stroke-width: 1.5;
+			stroke: rgba(255, 255, 255, 0.85);
+		}
+
+		g.stage.tile3d g.hinted g.tile rect.stone {
+			stroke: #ff5900;
+			stroke-width: 3px;
+		}
+
+		g.stage.tile3d g.selected.hinted g.tile rect.stone {
+			stroke: #ff5900;
+			stroke-width: 3px;
+		}
+
+		g.stage.tile3d g.matched g.tile rect.stone {
+			stroke: #0066cc;
+			stroke-width: 2px;
+		}
+
+		g.hidden {
+			opacity: 0;
+		}
+
+		/* the Midas tile always starts buried, so the border is the only part of the mark on show */
+		@keyframes mah-mark-breathe-edge {
+			0%, 100% { stroke: #b8860b; }
+			50% { stroke: #ffd766; }
+		}
+
+		g[data-mark="midas"] g.tile rect.stone {
+			stroke: #b8860b;
+			stroke-width: 3px;
+		}
+
+		g.stage.animations g[data-mark="midas"] g.tile rect.stone {
+			animation: mah-mark-breathe-edge 2600ms ease-in-out infinite;
+		}
+
+		g[data-mark="spark"] g.tile rect.stone {
+			stroke: #1d6fa5;
+			stroke-width: 3px;
+		}
+
+		g[data-mark="target"] g.tile rect.stone {
+			stroke: #2e7d32;
+			stroke-width: 2px;
+		}
+
+		g[data-mark="target"] .mark-tint-fill {
+			fill: url("#mah-target-glow");
+			opacity: 0.9;
+		}
+
+		g[data-mark="spark"] .mark-tint-fill {
+			fill: #4aa8e0;
+			opacity: 0.3;
+		}
+
+		/* the tint alone breathes - the Midas tile is the goal, so nothing should slide across its face */
+		@keyframes mah-mark-breathe {
+			0%, 100% { opacity: 0.2; }
+			50% { opacity: 0.42; }
+		}
+
+		g[data-mark="midas"] .mark-tint-fill {
+			fill: #e8b400;
+			opacity: 0.32;
+		}
+
+		g.stage.animations g[data-mark="midas"] .mark-tint-fill {
+			animation: mah-mark-breathe 2600ms ease-in-out infinite;
+		}
+
+		@keyframes mah-mark-aura {
+			0%, 100% { opacity: 0.35; }
+			50% { opacity: 0.8; }
+		}
+
+		g[data-mark="spark"] .mark-aura {
+			fill: url("#mah-spark-aura");
+			opacity: 0.65;
+		}
+
+		g.stage.animations g[data-mark="spark"] .mark-aura {
+			animation: mah-mark-aura 3000ms ease-in-out infinite;
+		}
+
+		g.stage.contrast g[data-mark="midas"] g.tile rect.stone,
+		g.stage.contrast g[data-mark="spark"] g.tile rect.stone,
+		g.stage.contrast g[data-mark="target"] g.tile rect.stone {
+			stroke-width: 4px;
+		}
+
+		g.stage.contrast g[data-mark="spark"] .mark-tint-fill {
+			opacity: 0.42;
+		}
+
+		/* an animated opacity cannot be raised by a plain override, so contrast mode needs its own curve */
+		@keyframes mah-mark-breathe-strong {
+			0%, 100% { opacity: 0.3; }
+			50% { opacity: 0.55; }
+		}
+
+		g.stage.animations.contrast g[data-mark="midas"] .mark-tint-fill {
+			animation-name: mah-mark-breathe-strong;
+		}
+
+		g.stage.contrast g[data-mark="target"] .mark-tint-fill {
+			opacity: 1;
+		}
+
+		@keyframes mah-mark-breathe-edge-dark {
+			0%, 100% { stroke: #ffc93c; }
+			50% { stroke: #fff0b8; }
+		}
+
+		g.stage.dark g[data-mark="midas"] g.tile rect.stone {
+			stroke: #ffc93c;
+		}
+
+		g.stage.dark.animations g[data-mark="midas"] g.tile rect.stone {
+			animation-name: mah-mark-breathe-edge-dark;
+		}
+
+		g.stage.dark g[data-mark="spark"] g.tile rect.stone {
+			stroke: #6fc3ff;
+		}
+
+		/* the near-black face swallows the tint, so it needs more of it than a light tile */
+		g.stage.dark g[data-mark="spark"] .mark-tint-fill {
+			opacity: 0.38;
+		}
+
+		g.stage.dark g[data-mark="midas"] .mark-tint-fill {
+			fill: #f0be1e;
+		}
+
+		g.stage.dark g[data-mark="spark"] .mark-aura {
+			fill: url("#mah-spark-aura-dark");
+		}
+
+		g.stage.dark g[data-mark="target"] g.tile rect.stone {
+			stroke: #7cd67f;
+		}
+
+		g.stage.dark g[data-mark="target"] .mark-tint-fill {
+			fill: url("#mah-target-glow-dark");
+		}
+
+		g.stage.contrast g.draw rect.stone {
+			stroke-width: 2;
+		}
+
+		g.stage.contrast rect.shadow {
+			opacity: 0.5;
+		}
+
+		g.stage.tile3d.contrast g.draw rect.side {
+			fill: #7a6c63;
+		}
+
+		g.stage.dark rect.shadow {
+			opacity: 0.6;
+			fill: #000;
+		}
+
+		g.stage.dark g.draw rect.stone {
+			fill: #000;
+			stroke-width: 1;
+			stroke: #9d948c;
+		}
+
+		g.stage.dark.tile3d g.draw rect.side {
+			opacity: 1;
+			stroke-width: 0;
+			fill: #5a524e;
+			stroke: none;
+		}
+
+		g.stage.dark.tile3d g.draw rect.stone {
+			fill: #1a1512;
+			stroke: #6a5e58;
+		}
+
+		g.stage.dark.tile3d g.draw rect.bevel {
+			fill: none;
+			stroke-width: 1.5;
+			stroke: rgba(255, 255, 255, 0.12);
+		}
+
+		g.stage.dark.tile3d g.hinted g.tile rect.stone {
+			stroke: #ef0202;
+			stroke-width: 3px;
+		}
+
+		g.stage.dark.tile3d g.selected.hinted g.tile rect.stone {
+			stroke: #ef0202;
+			stroke-width: 3px;
+		}
+
+		g.stage.dark.tile3d g.matched g.tile rect.stone {
+			stroke: #4499ff;
+			stroke-width: 2px;
+		}
+
+		g.stage.dark g.selected g.tile rect.stone {
+			stroke: #F8EABB;
+			fill: black;
+		}
+
+		g.stage.dark g.hinted g.tile rect.stone {
+			stroke: #ef0202;
+		}
+
+		g.stage.dark g.selected.hinted g.tile rect.stone {
+			stroke: #ef0202;
+		}
+
+		g.stage.dark g.matched g.tile rect.stone {
+			stroke: #4499ff;
+		}
+
+		g.stage.dark.contrast g.draw rect.stone {
+			stroke-width: 2;
+		}
+
+		g.stage.dark.contrast rect.shadow {
+			opacity: 0.75;
+		}
+
+		g.stage.dark.tile3d.contrast g.draw rect.side {
+			fill: #3e3834;
+			opacity: 1;
+		}
+
+		g.stage.dark .front {
+			display: unset;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			g.tile {
+				transition: none;
+			}
+
+			g.wiggle g.tile {
+				animation: none;
+			}
+
+			g.selected g.tile {
+				animation: none;
+			}
+
+			g.matched g.tile {
+				animation: none;
+			}
+
+			g.hinted g.tile,
+			g.selected.hinted g.tile {
+				animation: none;
+				transform: scale(1.12);
+			}
+
+			g[data-mark="midas"] g.tile rect.stone,
+			g[data-mark="midas"] .mark-tint-fill,
+			g[data-mark="spark"] .mark-aura {
+				animation: none !important;
+			}
+		}
+	</style>
+	<defs app-image-set-loader [imageSet]="imageSet()" [kyodaiUrl]="kyodaiUrl()" [dark]="app.settings.dark()" [prefix]="prefix"></defs>
+	<g #stage class="stage" [class.dark]="app.settings.dark()" [class.contrast]="app.settings.contrast()" [class.tile3d]="app.settings.tile3d()" [class.animations]="app.settings.animations()">
+		@for (level of drawLevels; track level.z) {
+			@if (app.settings.shadows()) {
+				<g class="shadow-layer">
+					@for (draw of level.items; track draw.key) {
+						@if (app.settings.tile3d()) {
+							<rect class="shadow" [attr.transform]="draw.pos.translate" [style.opacity]="draw.source.picked() ? 0 : null" x="-3" y="-2" width="87" height="115" rx="13" ry="13"></rect>
+						} @else {
+							<rect class="shadow" [attr.transform]="draw.pos.translate" [style.opacity]="draw.source.picked() ? 0 : null" x="-1" y="1" width="80" height="104" rx="12" ry="12"></rect>
+						}
+					}
+				</g>
+			}
+			<g class="body-layer">
+				@for (draw of level.items; track draw.key) {
+					<g
+						app-board-tile
+						class="draw"
+						[draw]="draw"
+						[imagePos]="imagePos"
+						[urlPrefix]="urlPrefix"
+						[blackout]="blackout()"
+						[concealed]="concealed()"
+					></g>
+				}
+			</g>
+		}
+	</g>
+</svg>
+<app-gesture-indicators [indicators]="indicators"/>

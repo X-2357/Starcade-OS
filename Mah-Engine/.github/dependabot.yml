@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 5
+    groups:
+      angular:
+        patterns:
+          - "@angular*"
+      vitest:
+        patterns:
+          - "vitest*"
+          - "@vitest*"
+          - "@analogjs/vite*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@eslint*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    cooldown:
+      default-days: 7
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"

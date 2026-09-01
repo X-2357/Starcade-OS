@@ -1,0 +1,12 @@
+{
+    recheck = false,
+    mtimes = {
+        ["..\\osf-ui\\lib\\commonlibsf\\xmake.lua"] = 1787965112,
+        ["xmake.lua"] = 1787978176,
+        ["..\\osf-ui\\lib\\commonlibsf\\lib\\commonlib-shared\\xmake.lua"] = 1787965114
+    },
+    options = {
+        arch = "x64",
+        plat = "windows"
+    }
+}

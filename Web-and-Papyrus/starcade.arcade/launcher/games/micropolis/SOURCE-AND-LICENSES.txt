@@ -1,0 +1,55 @@
+MICROPOLIS FOR STARCADE OS - SOURCE AND LICENSING
+
+No proprietary SimCity or Micropolis assets beyond what Electronic Arts already
+released under GPL-3 are included.
+
+ENGINE AND CONTENT
+  micropolisJS: https://github.com/graememcc/micropolisJS
+  Underlying engine/data lineage: Micropolis (Electronic Arts' January 2008
+  GPL-3 release of the original 1989 SimCity engine and data, donated for the
+  One Laptop Per Child project).
+  License: GNU General Public License version 3, with additional terms - see
+  COPYING and LICENSE in this folder. The name "Micropolis" is used under the
+  separate Micropolis Public Name License (Micropolis GmbH) - see
+  MicropolisPublicNameLicense.md and name_license.html in this folder.
+  Starcade changes: removed the upstream page's Twitter share widget (an
+  automatic network call to platform.twitter.com) and its 30-minute donation
+  "nag" popup timer, both out of place inside a bundled, offline Starfield mod.
+  Added the shared Starcade host/input bridge (host.js, starcade-bridge.js).
+  Fixed src/tileSet.js to slice the tile sprite sheet by drawing each tile
+  directly onto its own small canvas instead of the original approach (paint
+  onto a shared canvas, then read it back via toDataURL() to build an Image) -
+  the original approach threw a SecurityError on every load under file://,
+  since toDataURL()/getImageData() refuse to read a canvas that's had a
+  same-origin-restricted image drawn onto it, which a sibling image loaded
+  over file:// unconditionally is in Chromium. No other gameplay, simulation,
+  or rendering code was changed.
+
+SCORING AND SAVES
+  Micropolis is an open-ended sandbox with no defined win/lose state or run
+  boundary, unlike every other Starcade game. It never calls
+  StarcadeHost.finish() and does not participate in Starcade's arcade
+  leaderboard or XP system. Population is reported to the player HUD purely as
+  a live readout via StarcadeHost.score(). Saving/loading a city uses
+  Micropolis's own built-in Save/Load feature (backed by this page's own
+  browser storage), independent of Starcade's own per-game save slot.
+
+KNOWN LIMITATION
+  Placing zones, roads, and other tools on the map is mouse-driven in upstream
+  micropolisJS - there is no D-pad/keyboard cursor for tile placement. Camera
+  panning (arrow keys/D-pad, built into micropolisJS) and all toolbar/menu/
+  dialog navigation (real focusable buttons, handled by Starcade's existing
+  generic controller-to-focus bridge in host.js) work without a mouse; actually
+  building does not yet.
+
+COMPLETE CORRESPONDING SOURCE
+  The unmodified upstream project is public at the URL above. Starcade's own
+  two changes plus the full buildable TypeScript/JavaScript source and webpack
+  build configuration are included in this archive at Micropolis-Engine/
+  (Complete Source archive root) - not required reading to play, only to
+  rebuild or audit the two changes.
+
+Micropolis is a registered trademark of Micropolis GmbH (Micropolis
+Corporation), licensed here as a courtesy of the owner. This community project
+is not affiliated with or endorsed by Micropolis GmbH, Electronic Arts, Maxis,
+Will Wright, or Graeme McCutcheon.
