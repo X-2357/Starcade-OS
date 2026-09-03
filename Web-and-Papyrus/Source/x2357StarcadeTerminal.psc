@@ -13,7 +13,7 @@ EndEvent
 
 Event OnActivate(ObjectReference akActionRef)
     If akActionRef == Game.GetPlayer()
-        OSFUI.OpenMenu("starcade.arcade/launcher")
+        OSFUI_View.Open("starcade.arcade/launcher")
     EndIf
 EndEvent
 
