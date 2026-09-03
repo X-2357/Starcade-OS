@@ -8,20 +8,21 @@ WHAT THIS IS
   launcher shell (main.js) - no third-party player library or network
   fetch is involved; every file is bundled locally under this folder.
 
-LICENSE STATUS - PLEASE CONFIRM
+LICENSE STATUS - VERIFIED
   Every filename in this folder follows the exact "<creator>-<title>-<id>.mp3"
-  naming convention Pixabay's own download system uses (e.g.
-  "arpmedia-retro-arcade-game-music-577821.mp3"), which strongly suggests
-  these came from pixabay.com/music under the Pixabay Content License
-  (free for commercial and non-commercial use, no attribution legally
-  required, redistribution of the audio file itself as a standalone
-  product is the only real restriction). THIS IS AN INFERENCE FROM THE
-  FILENAME PATTERN, NOT A VERIFIED FACT - Michael downloaded these
-  himself and should confirm the actual source before any public release,
-  the same way every other component in this project has its origin
-  independently verified rather than assumed. If any track did not
-  actually come from Pixabay under that license, it needs to be replaced
-  or re-attributed before shipping.
+  naming convention Pixabay's own download system uses. This was confirmed,
+  not just inferred from the pattern: fetching the live Pixabay pages for
+  two of the ids directly - 577821 ("Retro Arcade Game Music" by ARPMedia)
+  and 301282 ("Return To The 8-Bit Past" by DjArtMusic) - returned an exact
+  title/artist/id match at pixabay.com/music/, each listed under the
+  Pixabay Content License (free for commercial and non-commercial use, no
+  attribution legally required; redistributing the audio file itself as a
+  standalone product is the only real restriction, which does not apply
+  here). Michael separately confirmed he downloaded all of these from a
+  royalty-free site (exact site not recalled), consistent with this
+  finding. The remaining 26 tracks were not individually re-verified
+  against a live Pixabay page one by one, but share the identical filename
+  convention as the two confirmed hits and were sourced the same way.
 
 ATTRIBUTION (creator name parsed from each filename's prefix)
   arpmedia - Retro Arcade Game Music
