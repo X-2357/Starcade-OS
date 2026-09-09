@@ -714,12 +714,41 @@ namespace Starcade
         }
     }
 
+    // The launcher's own web root, i.e. where index.html/main.js/audio/ actually
+    // live once deployed - a sibling of Starcade.dll under OSFUI's own views tree,
+    // not PluginDirectory() itself (that's just SFSE/Plugins/).
+    std::filesystem::path LauncherWebRoot()
+    {
+        const auto pluginDir = PluginDirectory();
+        if (pluginDir.empty()) return {};
+        return pluginDir / "OSFUI" / "views" / "starcade.arcade" / "launcher";
+    }
+
+    json ListMusicFiles()
+    {
+        json files = json::array();
+        const auto dir = LauncherWebRoot() / "audio" / "music";
+        std::error_code ec;
+        if (!std::filesystem::is_directory(dir, ec)) return files;
+        for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+            if (ec || !entry.is_regular_file()) continue;
+            auto ext = entry.path().extension().string();
+            std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+            if (ext == ".mp3") files.push_back(Utf8(entry.path().filename()));
+        }
+        return files;
+    }
+
     void OnCommand(const char* command, const char* payload, const char* source, void*) noexcept
     {
         try {
             const json p = json::parse(payload ? payload : "{}");
             if (std::string_view(command) == "starcade.arcade.state.get") {
                 SendState(source);
+                return;
+            }
+            if (std::string_view(command) == "starcade.arcade.music.list") {
+                g_ui.SendToWeb(source ? source : kView, "starcade.music.list", ListMusicFiles().dump().c_str());
                 return;
             }
             if (std::string_view(command) == "starcade.arcade.credits.transaction") {
@@ -820,6 +849,7 @@ namespace Starcade
         g_ui.RegisterView(kView);
         g_ui.RegisterSettingsSchema(kSettings);
         g_ui.RegisterCommand("starcade.arcade.state.get", OnCommand, nullptr);
+        g_ui.RegisterCommand("starcade.arcade.music.list", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.score.submit", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.run.finish", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.save.set", OnCommand, nullptr);

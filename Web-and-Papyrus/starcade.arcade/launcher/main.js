@@ -21,56 +21,88 @@
   let xpToastTimer = 0;
   let lastXPToast = { amount:0, time:0 };
 
-  const MUSIC_TRACKS = [
-    { file:"arpmedia-retro-arcade-game-music-577821.mp3", title:"Retro Arcade Game Music", artist:"arpmedia" },
-    { file:"arthurhale-8bit-video-game-music-289970.mp3", title:"8-Bit Video Game Music", artist:"ArthurHale" },
-    { file:"boons_freak-future-8bit-174447.mp3", title:"Future 8-Bit", artist:"Boons Freak" },
-    { file:"brutaldesign-pixel-art-481480.mp3", title:"Pixel Art", artist:"BrutalDesign" },
-    { file:"djartmusic-8-bit-console-from-my-childhood-301286.mp3", title:"8-Bit Console From My Childhood", artist:"DjArtMusic" },
-    { file:"djartmusic-best-game-console-301284.mp3", title:"Best Game Console", artist:"DjArtMusic" },
-    { file:"djartmusic-fun-with-my-8-bit-game-301278.mp3", title:"Fun With My 8-Bit Game", artist:"DjArtMusic" },
-    { file:"djartmusic-my-8-bit-hero-301280.mp3", title:"My 8-Bit Hero", artist:"DjArtMusic" },
-    { file:"djartmusic-return-to-the-8-bit-past-301282.mp3", title:"Return To The 8-Bit Past", artist:"DjArtMusic" },
-    { file:"djartmusic-so-happy-with-my-8-bit-game-301275.mp3", title:"So Happy With My 8-Bit Game", artist:"DjArtMusic" },
-    { file:"djartmusic-the-return-of-the-8-bit-era-301292.mp3", title:"The Return Of The 8-Bit Era", artist:"DjArtMusic" },
-    { file:"djartmusic-the-world-of-8-bit-games-301273.mp3", title:"The World Of 8-Bit Games", artist:"DjArtMusic" },
-    { file:"djlofi-pixel-dreams-259187.mp3", title:"Pixel Dreams", artist:"DjLofi" },
-    { file:"kaden_cook-8-bit-dungeon-251388.mp3", title:"8-Bit Dungeon", artist:"Kaden Cook" },
-    { file:"lofiewme-pixel-fantasia-355123.mp3", title:"Pixel Fantasia", artist:"LofiEwme" },
-    { file:"monume-retro-arcade-game-music-577980.mp3", title:"Retro Arcade Game Music", artist:"Monume" },
-    { file:"moodmode-a-video-game-248444.mp3", title:"A Video Game", artist:"MoodMode" },
-    { file:"moodmode-level-iii-294428.mp3", title:"Level III", artist:"MoodMode" },
-    { file:"niknet_art-retro-8bit-happy-adventure-videogame-music-246635.mp3", title:"Retro 8-Bit Happy Adventure I", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-adventure-videogame-music-246636.mp3", title:"Retro 8-Bit Happy Adventure II", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-adventure-videogame-music-246638.mp3", title:"Retro 8-Bit Happy Adventure III", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-adventure-videogame-music-246639.mp3", title:"Retro 8-Bit Happy Adventure IV", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-videogame-music-243997.mp3", title:"Retro 8-Bit Happy Video Game I", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-videogame-music-246631.mp3", title:"Retro 8-Bit Happy Video Game II", artist:"Niknet Art" },
-    { file:"niknet_art-retro-8bit-happy-videogame-music-418482.mp3", title:"Retro 8-Bit Happy Video Game III", artist:"Niknet Art" },
-    { file:"nocopyrightsound633-8-bit-music-no-copyright-background-instrumental-pixel-party-322342.mp3", title:"Pixel Party", artist:"NoCopyrightSounds633" },
-    { file:"nocopyrightsound633-arcade-beat-323176.mp3", title:"Arcade Beat", artist:"NoCopyrightSounds633" },
-    { file:"thatlofishow-pixelate-pixelated-dreams-313358.mp3", title:"Pixelated Dreams", artist:"ThatLofiShow" }
-  ];
+  // Curated attribution for the bundled tracks (see audio/music/SOURCE-AND-LICENSES.txt).
+  // Any .mp3 dropped into audio/music/ that isn't listed here still plays fine - its
+  // title is just derived from the filename instead of a curated one.
+  const KNOWN_TRACK_INFO = {
+    "arpmedia-retro-arcade-game-music-577821.mp3": { title:"Retro Arcade Game Music", artist:"arpmedia" },
+    "arthurhale-8bit-video-game-music-289970.mp3": { title:"8-Bit Video Game Music", artist:"ArthurHale" },
+    "boons_freak-future-8bit-174447.mp3": { title:"Future 8-Bit", artist:"Boons Freak" },
+    "brutaldesign-pixel-art-481480.mp3": { title:"Pixel Art", artist:"BrutalDesign" },
+    "djartmusic-8-bit-console-from-my-childhood-301286.mp3": { title:"8-Bit Console From My Childhood", artist:"DjArtMusic" },
+    "djartmusic-best-game-console-301284.mp3": { title:"Best Game Console", artist:"DjArtMusic" },
+    "djartmusic-fun-with-my-8-bit-game-301278.mp3": { title:"Fun With My 8-Bit Game", artist:"DjArtMusic" },
+    "djartmusic-my-8-bit-hero-301280.mp3": { title:"My 8-Bit Hero", artist:"DjArtMusic" },
+    "djartmusic-return-to-the-8-bit-past-301282.mp3": { title:"Return To The 8-Bit Past", artist:"DjArtMusic" },
+    "djartmusic-so-happy-with-my-8-bit-game-301275.mp3": { title:"So Happy With My 8-Bit Game", artist:"DjArtMusic" },
+    "djartmusic-the-return-of-the-8-bit-era-301292.mp3": { title:"The Return Of The 8-Bit Era", artist:"DjArtMusic" },
+    "djartmusic-the-world-of-8-bit-games-301273.mp3": { title:"The World Of 8-Bit Games", artist:"DjArtMusic" },
+    "djlofi-pixel-dreams-259187.mp3": { title:"Pixel Dreams", artist:"DjLofi" },
+    "kaden_cook-8-bit-dungeon-251388.mp3": { title:"8-Bit Dungeon", artist:"Kaden Cook" },
+    "lofiewme-pixel-fantasia-355123.mp3": { title:"Pixel Fantasia", artist:"LofiEwme" },
+    "monume-retro-arcade-game-music-577980.mp3": { title:"Retro Arcade Game Music", artist:"Monume" },
+    "moodmode-a-video-game-248444.mp3": { title:"A Video Game", artist:"MoodMode" },
+    "moodmode-level-iii-294428.mp3": { title:"Level III", artist:"MoodMode" },
+    "niknet_art-retro-8bit-happy-adventure-videogame-music-246635.mp3": { title:"Retro 8-Bit Happy Adventure I", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-adventure-videogame-music-246636.mp3": { title:"Retro 8-Bit Happy Adventure II", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-adventure-videogame-music-246638.mp3": { title:"Retro 8-Bit Happy Adventure III", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-adventure-videogame-music-246639.mp3": { title:"Retro 8-Bit Happy Adventure IV", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-videogame-music-243997.mp3": { title:"Retro 8-Bit Happy Video Game I", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-videogame-music-246631.mp3": { title:"Retro 8-Bit Happy Video Game II", artist:"Niknet Art" },
+    "niknet_art-retro-8bit-happy-videogame-music-418482.mp3": { title:"Retro 8-Bit Happy Video Game III", artist:"Niknet Art" },
+    "nocopyrightsound633-8-bit-music-no-copyright-background-instrumental-pixel-party-322342.mp3": { title:"Pixel Party", artist:"NoCopyrightSounds633" },
+    "nocopyrightsound633-arcade-beat-323176.mp3": { title:"Arcade Beat", artist:"NoCopyrightSounds633" },
+    "thatlofishow-pixelate-pixelated-dreams-313358.mp3": { title:"Pixelated Dreams", artist:"ThatLofiShow" }
+  };
+  function titleFromFilename(file) {
+    let name = file.replace(/\.mp3$/i, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+    name = name.replace(/\s+\d{5,}$/, "");
+    return name.replace(/\b\w/g, (c) => c.toUpperCase()) || file;
+  }
+  function trackInfo(file) {
+    return KNOWN_TRACK_INFO[file] || { title: titleFromFilename(file), artist: "" };
+  }
+
   const musicPlayer = $("musicPlayer");
   const musicToggleButton = $("musicToggle");
-  let musicOrder = MUSIC_TRACKS.map((_, i) => i);
-  for (let i = musicOrder.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [musicOrder[i], musicOrder[j]] = [musicOrder[j], musicOrder[i]];
-  }
+  const musicVolumeSlider = $("musicVolume");
+  let musicTracks = [];
+  let musicOrder = [];
   let musicPos = 0;
   let musicEnabled = localStorage.getItem("starcade.music.enabled") === "true";
-  musicPlayer.volume = 0.45;
+  const savedVolume = parseFloat(localStorage.getItem("starcade.music.volume"));
+  musicPlayer.volume = Number.isFinite(savedVolume) ? Math.min(1, Math.max(0, savedVolume)) : 0.45;
+  if (musicVolumeSlider) musicVolumeSlider.value = String(Math.round(musicPlayer.volume * 100));
+
+  function buildMusicTracks(files) {
+    musicTracks = (files || []).map((file) => ({ file, ...trackInfo(file) }));
+    musicOrder = musicTracks.map((_, i) => i);
+    for (let i = musicOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [musicOrder[i], musicOrder[j]] = [musicOrder[j], musicOrder[i]];
+    }
+    musicPos = 0;
+    musicPlayer.removeAttribute("src");
+    if (musicEnabled && musicTracks.length) armAutoplayOnFirstGesture();
+  }
+  // Fallback when the native file-listing bridge isn't available (e.g. standalone
+  // browser testing outside the real OSF UI host) - use the known bundled files.
+  function useFallbackTrackList() {
+    if (musicTracks.length) return;
+    buildMusicTracks(Object.keys(KNOWN_TRACK_INFO));
+  }
 
   function updateMusicButton() {
     musicToggleButton.classList.toggle("on", musicEnabled);
     musicToggleButton.innerHTML = musicEnabled ? "&#9834; MUSIC ON" : "&#9834; MUSIC OFF";
   }
   function loadCurrentTrack() {
-    const track = MUSIC_TRACKS[musicOrder[musicPos]];
+    if (!musicTracks.length) return;
+    const track = musicTracks[musicOrder[musicPos]];
     musicPlayer.src = `audio/music/${track.file}`;
   }
   function playMusicNow() {
+    if (!musicTracks.length) return;
     if (!musicPlayer.src) loadCurrentTrack();
     musicPlayer.play().catch(() => {});
   }
@@ -86,13 +118,18 @@
     if (musicEnabled) playMusicNow(); else musicPlayer.pause();
   }
   function stepTrack(delta) {
+    if (!musicOrder.length) return;
     musicPos = (musicPos + delta + musicOrder.length) % musicOrder.length;
     loadCurrentTrack();
     if (musicEnabled) playMusicNow();
   }
+  function setMusicVolume(next) {
+    const volume = Math.min(1, Math.max(0, next));
+    musicPlayer.volume = volume;
+    localStorage.setItem("starcade.music.volume", String(volume));
+  }
   musicPlayer.addEventListener("ended", () => stepTrack(1));
   updateMusicButton();
-  if (musicEnabled) armAutoplayOnFirstGesture();
 
   function showXP(result) {
     const amount = Math.max(0, Math.floor(Number(result?.amount) || 0));
@@ -346,6 +383,7 @@
   $("musicToggle").onclick = () => setMusicEnabled(!musicEnabled);
   $("musicPrev").onclick = () => stepTrack(-1);
   $("musicNext").onclick = () => stepTrack(1);
+  if (musicVolumeSlider) musicVolumeSlider.oninput = () => setMusicVolume(Number(musicVolumeSlider.value) / 100);
   $("backButton").onclick = closeGame;
   $("exitButton").onclick = () => osfui.available() ? osfui.send("close") : window.close();
   $("licensesButton").onclick = () => $("licenses").classList.remove("hidden");
@@ -368,12 +406,19 @@
       $("statusText").textContent = result.message || (result.installed ? `${result.id.toUpperCase()} READY` : `${result.id.toUpperCase()} NOT READY`);
       updateDetails();
     });
+    osfui.on("starcade.music.list", (files) => {
+      buildMusicTracks(Array.isArray(files) ? files : []);
+      if (!musicTracks.length) useFallbackTrackList();
+    });
     osfui.ready.then(() => {
       osfui.send("osfui.handleBack", { handle:true });
       setRawGamepad(false);
       osfui.send("starcade.arcade.state.get");
+      osfui.send("starcade.arcade.music.list");
       games.filter((g) => g.external).forEach((g) => osfui.send("starcade.arcade.external.status", { id:g.external }));
     });
+  } else {
+    useFallbackTrackList();
   }
   render();
 })();

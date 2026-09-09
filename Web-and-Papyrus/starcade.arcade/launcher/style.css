@@ -16,6 +16,7 @@ h1,h2,p { margin-top:0; } h1 { margin:0; font-size:38px; letter-spacing:4px; } h
 .music-btn { border:1px solid var(--line); background:#0c1714; color:var(--muted); padding:6px 10px; letter-spacing:1.5px; font-size:11px; cursor:pointer; }
 .music-btn:hover,.music-btn:focus { outline:none; border-color:#45665e; color:var(--accent); background:#14231f; }
 .music-btn.on { color:var(--accent); border-color:#45665e; }
+.music-volume { width:70px; margin-left:6px; accent-color:var(--accent); cursor:pointer; }
 .library { min-height:0; display:grid; grid-template-columns:210px 1fr; }
 .rail { display:flex; flex-direction:column; gap:8px; padding:25px 18px; border-right:1px solid var(--line); background:rgba(9,16,15,.78); }
 .filter,.playerbar button { border:1px solid transparent; background:transparent; text-align:left; padding:13px 15px; letter-spacing:1.6px; cursor:pointer; }
