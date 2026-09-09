@@ -13,9 +13,12 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <cstdlib>
+#include <ctime>
 #include <mutex>
 #include <regex>
 #include <string>
@@ -402,6 +405,74 @@ namespace Starcade
         if (!g_state.contains("achievements") || !g_state["achievements"].is_array()) g_state["achievements"] = json::array();
     }
 
+    // Publishes Starcade's own play state into AISS's shared, one-way file
+    // bridge (Data/SFSE/AISS/state/starcade.ini), per AISS's documented
+    // integration contract. Harmless no-op if AISS isn't installed - nothing
+    // reads this file in that case. Titles are derived from the catalog id
+    // (hyphens -> spaces, title-cased) rather than duplicating catalog.js's
+    // display names in native code.
+    std::string TitleFromGameId(const std::string& a_id)
+    {
+        std::string title = a_id;
+        std::replace(title.begin(), title.end(), '-', ' ');
+        bool capitalizeNext = true;
+        for (auto& ch : title) {
+            if (capitalizeNext && std::isalpha(static_cast<unsigned char>(ch))) {
+                ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+                capitalizeNext = false;
+            } else if (ch == ' ') capitalizeNext = true;
+        }
+        return title;
+    }
+
+    std::string IniSingleLine(std::string a_text)
+    {
+        std::replace(a_text.begin(), a_text.end(), '\n', ' ');
+        std::replace(a_text.begin(), a_text.end(), '\r', ' ');
+        return a_text;
+    }
+
+    std::filesystem::path AISSStatePath()
+    {
+        const auto pluginDir = PluginDirectory();
+        if (pluginDir.empty()) return {};
+        return pluginDir.parent_path() / "AISS" / "state" / "starcade.ini";
+    }
+
+    void WriteAISSStarcadeState()
+    {
+        const auto path = AISSStatePath();
+        if (path.empty()) return;
+        std::error_code ec;
+        std::filesystem::create_directories(path.parent_path(), ec);
+
+        std::string highScores;
+        for (const auto& [id, entry] : g_state["games"].items()) {
+            if (!entry.is_object()) continue;
+            const auto best = entry.value("highScore", 0LL);
+            if (best <= 0) continue;
+            if (!highScores.empty()) highScores += ",";
+            highScores += IniSingleLine(TitleFromGameId(id)) + ":" + std::to_string(best);
+        }
+        const auto lastPlayed = g_state.value("lastPlayedGame", std::string{});
+
+        std::ostringstream out;
+        out << "[starcade]\n";
+        out << "ready=1\n";
+        out << "schema_version=1\n";
+        out << "last_played_game=" << (lastPlayed.empty() ? "" : IniSingleLine(TitleFromGameId(lastPlayed))) << "\n";
+        out << "last_played_time_unix=" << g_state.value("lastPlayedTime", 0LL) << "\n";
+        out << "high_scores=" << highScores << "\n";
+
+        const auto temp = path.string() + ".tmp";
+        { std::ofstream f(temp, std::ios::trunc); f << out.str(); }
+        std::filesystem::rename(temp, path, ec);
+        if (ec) {
+            std::filesystem::copy_file(temp, path, std::filesystem::copy_options::overwrite_existing, ec);
+            std::filesystem::remove(temp, ec);
+        }
+    }
+
     void SaveState()
     {
         std::scoped_lock lock(g_lock);
@@ -414,6 +485,7 @@ namespace Starcade
             std::filesystem::copy_file(temp, g_statePath, std::filesystem::copy_options::overwrite_existing, ec);
             std::filesystem::remove(temp, ec);
         }
+        WriteAISSStarcadeState();
     }
 
     void SendState(const char* view)
@@ -663,7 +735,11 @@ namespace Starcade
                 if (!entry.contains("xpRewardedScore")) entry["xpRewardedScore"] = entry.value("highScore", 0LL);
                 entry["highScore"] = (std::max)(entry.value("highScore", 0LL), score);
                 entry["lastScore"] = score;
-                entry["plays"] = entry.value("plays", 0LL) + (p.value("newRun", false) ? 1 : 0);
+                if (p.value("newRun", false)) {
+                    entry["plays"] = entry.value("plays", 0LL) + 1;
+                    g_state["lastPlayedGame"] = game;
+                    g_state["lastPlayedTime"] = static_cast<std::int64_t>(std::time(nullptr));
+                }
                 SaveState();
             } else if (std::string_view(command) == "starcade.arcade.run.finish") {
                 const auto score = std::clamp<std::int64_t>(p.value("score", 0LL), 0LL, 999999999LL);
