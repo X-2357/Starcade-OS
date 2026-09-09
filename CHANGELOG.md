@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.2 - 2026-09-09
+
+- Music player now auto-discovers any `.mp3` dropped into `audio/music/` at runtime instead of only playing a fixed bundled list - replace or add tracks without editing anything. Bundled tracks keep their curated title/artist credit; new files get a readable title guessed from the filename. Added a volume slider next to the existing on/off and next/previous controls.
+- Added an optional, one-way integration with AISS (AI Settled Systems), for anyone who has both mods installed: Starcade publishes the most recently played game and every game's high score to AISS's shared bridge folder, so an AISS companion can bring up what you've been playing. Off by default in the sense that it does nothing unless AISS is installed and adds AISS-side support for it; harmless no-op otherwise.
+
 ## 1.9.1 - 2026-08-30
 
 - Added 28 royalty-free 8-bit/chiptune background music tracks that loop across the library screen in a shuffled, per-session order, with an on/off toggle and next/previous track controls in the top bar. Off by default; the on/off preference persists locally across sessions. Music automatically pauses when an embedded game opens and resumes when returning to the library; external launches (OpenMW) are unaffected since those play in a separate window. See `games/../audio/music/SOURCE-AND-LICENSES.txt` for full per-track attribution and a licensing note that still needs confirmation from the source.
