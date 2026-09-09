@@ -229,7 +229,7 @@
     $("playerTitle").textContent = game.title.toUpperCase();
     $("scoreLabel").textContent = "SCORE 000000";
     frame.src = game.entry;
-    if (osfui.available()) osfui.send("starcade.arcade.score.submit", { game:game.id, score:0, newRun:true });
+    if (osfui.available()) osfui.send("starcade.arcade.score.submit", { game:game.id, title:game.title, score:0, newRun:true });
     library.classList.add("hidden");
     player.classList.remove("hidden");
     $("statusText").textContent = "APPLICATION RUNNING";

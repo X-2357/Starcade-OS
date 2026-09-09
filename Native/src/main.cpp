@@ -439,6 +439,19 @@ namespace Starcade
         return pluginDir.parent_path() / "AISS" / "state" / "starcade.ini";
     }
 
+    // Prefers the real catalog title (sent by the JS side on launch, stored on the
+    // game's own state entry) over a guess derived from the id - several ids diverge
+    // from their real title (e.g. "five-card-draw" is really "Red Mile Hold 'Em").
+    // Falls back to the derived form only for state saved before this field existed.
+    std::string DisplayTitleForGame(const std::string& a_id)
+    {
+        const auto it = g_state["games"].find(a_id);
+        if (it != g_state["games"].end() && it->is_object()) {
+            if (const auto title = it->value("title", std::string{}); !title.empty()) return title;
+        }
+        return TitleFromGameId(a_id);
+    }
+
     void WriteAISSStarcadeState()
     {
         const auto path = AISSStatePath();
@@ -452,7 +465,7 @@ namespace Starcade
             const auto best = entry.value("highScore", 0LL);
             if (best <= 0) continue;
             if (!highScores.empty()) highScores += ",";
-            highScores += IniSingleLine(TitleFromGameId(id)) + ":" + std::to_string(best);
+            highScores += IniSingleLine(DisplayTitleForGame(id)) + ":" + std::to_string(best);
         }
         const auto lastPlayed = g_state.value("lastPlayedGame", std::string{});
 
@@ -460,7 +473,7 @@ namespace Starcade
         out << "[starcade]\n";
         out << "ready=1\n";
         out << "schema_version=1\n";
-        out << "last_played_game=" << (lastPlayed.empty() ? "" : IniSingleLine(TitleFromGameId(lastPlayed))) << "\n";
+        out << "last_played_game=" << (lastPlayed.empty() ? "" : IniSingleLine(DisplayTitleForGame(lastPlayed))) << "\n";
         out << "last_played_time_unix=" << g_state.value("lastPlayedTime", 0LL) << "\n";
         out << "high_scores=" << highScores << "\n";
 
@@ -735,6 +748,11 @@ namespace Starcade
                 if (!entry.contains("xpRewardedScore")) entry["xpRewardedScore"] = entry.value("highScore", 0LL);
                 entry["highScore"] = (std::max)(entry.value("highScore", 0LL), score);
                 entry["lastScore"] = score;
+                // Real catalog title from the JS side, so AISS export shows what the
+                // player actually sees on screen rather than a guess derived from the
+                // id (several ids diverge from their real title, e.g. "five-card-draw"
+                // is really "Red Mile Hold 'Em").
+                if (const auto title = p.value("title", ""); !title.empty()) entry["title"] = title;
                 if (p.value("newRun", false)) {
                     entry["plays"] = entry.value("plays", 0LL) + 1;
                     g_state["lastPlayedGame"] = game;
