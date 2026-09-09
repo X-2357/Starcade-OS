@@ -29,10 +29,22 @@ The real, live file (the one `Starcade.dll` actually writes) is generated at run
 location and immediately overwrites this seed - nothing here needs updating by hand as the game
 is played.
 
+## Why the seed lives here, not in AISS
+
+Per AISS's own integration contract: each companion mod ships the inert seed for *its own*
+`state/<mod>.ini` file, inside its own package - not AISS. AISS handles a missing file cleanly on
+its own (the reader returns `not_found` and the health check stays silent about it), so the seed
+isn't there for AISS's benefit - it's purely mod-manager path hygiene, so Vortex/MO2 place
+`starcade.ini` under the right owning mod from install. If AISS shipped this seed instead, it
+would need updating every time a new companion mod integrates - a dependency pointing the wrong
+way. Every future companion mod seeds its own file the same way; AISS never needs to know they
+exist in advance.
+
 ## AISS-side support required
 
 This only does something once AISS's own code reads `Data/SFSE/AISS/state/starcade.ini` into its
 conversation context - that's a change on the AISS project itself, not something this repo can
 do. See AISS's own `Docs/AISS_INTEGRATION_CONTRACT.md` for the read-side contract; the concrete
 ask for that project is: read the `[starcade]` section above and surface `last_played_game`/
-`high_scores` the same way it already does for Crew Titles/SSaW's own state sections.
+`high_scores` the same generic way it already reads any other companion mod's state file - no
+seed or advance knowledge of Starcade specifically required on AISS's side.
