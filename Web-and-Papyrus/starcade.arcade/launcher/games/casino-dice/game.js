@@ -1,12 +1,20 @@
 "use strict";
 (()=>{
-  const balance=document.querySelector("#balance"),result=document.querySelector("#result"),status=document.querySelector("#status"),mode=document.querySelector("#bet"),wager=document.querySelector("#wager"),play=document.querySelector("#play");
+  const balance=document.querySelector("#balance"),die1=document.querySelector("#die1"),die2=document.querySelector("#die2"),resultTotal=document.querySelector("#resultTotal"),status=document.querySelector("#status"),mode=document.querySelector("#bet"),wager=document.querySelector("#wager"),play=document.querySelector("#play");
   let busy=false,point=0,activeWager=0,rolls=0;
   const die=()=>1+Math.floor(Math.random()*6),show=()=>balance.textContent=`CREDITS: ${CasinoBank.balance??"---"}`;
+  const wait=(ms)=>new Promise((r)=>setTimeout(r,ms));
+  async function rollDice(a,b){
+    die1.classList.add("rolling");die2.classList.add("rolling");
+    for(let i=0;i<5;i++){die1.dataset.value=die();die2.dataset.value=die();await wait(80)}
+    die1.classList.remove("rolling");die2.classList.remove("rolling");
+    die1.dataset.value=a;die2.dataset.value=b;
+    resultTotal.textContent=`${a} + ${b} = ${a+b}`;
+  }
   async function settle(multiplier,message){const score=Math.max(0,Math.floor(activeWager*(multiplier-1)));await CasinoBank.payout(Math.floor(activeWager*multiplier));status.textContent=message;StarcadeHost.score(score);StarcadeHost.finish(score);point=0;activeWager=0;play.textContent="NEW PASS";mode.disabled=false;wager.disabled=false;show()}
   async function roll(){if(busy)return;busy=true;play.disabled=true;try{
     if(!point){activeWager=Number(wager.value);await CasinoBank.wager(activeWager);mode.disabled=true;wager.disabled=true;rolls=0}
-    const a=die(),b=die(),total=a+b;rolls++;result.textContent=`${a} + ${b} = ${total}`;
+    const a=die(),b=die(),total=a+b;rolls++;await rollDice(a,b);
     if(mode.value!=="pass"){
       const win=mode.value==="low"?total<7:mode.value==="high"?total>7:total===7;
       if(win)await settle(mode.value==="seven"?5:2,mode.value==="seven"?"EXACT SEVEN · 5x RETURN":"PREDICTION CORRECT · 2x RETURN");
