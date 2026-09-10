@@ -34,7 +34,13 @@ function scaleCanvas() {
 }
 
 function setBottomContainer() {
-    var buttonOffset = $("#buttonCont").offset().top;
+    // #buttonCont (social-share/store-badge row) is deliberately removed by
+    // starcade-bridge.js - guard against that rather than assume it's always
+    // present, since this fires on every window resize (including the very
+    // first one, when Starcade's iframe goes from hidden to visible).
+    var buttonEl = $("#buttonCont");
+    if (!buttonEl.length) return;
+    var buttonOffset = buttonEl.offset().top;
     var playOffset = trueCanvas.height / 2 + 100 * settings.scale;
     var delta = buttonOffset - playOffset - 29;
     if (delta < 0) {
@@ -44,8 +50,10 @@ function setBottomContainer() {
 
 function set_score_pos() {
     $("#container").css('margin-top', '0');
+    var buttonEl = $("#buttonCont");
+    if (!buttonEl.length) return;
     var middle_of_container = ($("#container").height()/2 + $("#container").offset().top);
-    var top_of_bottom_container = $("#buttonCont").offset().top
+    var top_of_bottom_container = buttonEl.offset().top
     var igt = $("#highScoreInGameText")
     var igt_bottom = igt.offset().top + igt[0].offsetHeight
     var target_midpoint = (top_of_bottom_container + igt_bottom)/2
