@@ -1,6 +1,6 @@
-# Starcade OS 1.9.2
+# Starcade OS 1.9.3
 
-Starcade OS is a portable, controller-friendly arcade, strategy library, and casino for Starfield. Use the automatically granted Starcade Pad or the configurable OSF UI hotkey to open the local game library. Version 1.9 adds optional looping 8-bit background music to the library screen (off by default; toggle, next/previous, and a volume slider are in the top bar) - drop your own `.mp3` files into the game's `audio/music/` folder and they play automatically, no editing required. Also makes OpenMW/Morrowind launch fullscreen by default and fixes Micropolis's "Play!" button not responding in some setups.
+Starcade OS is a portable, controller-friendly arcade, strategy library, and casino for Starfield. Use the automatically granted Starcade Pad or the configurable OSF UI hotkey to open the local game library. Version 1.9 adds optional looping 8-bit background music to the library screen (off by default; toggle, next/previous, and a volume slider are in the top bar) - drop your own `.mp3` files into the game's `audio/music/` folder and they play automatically, no editing required. Also makes OpenMW/Morrowind launch fullscreen by default and fixes Micropolis's "Play!" button not responding in some setups. 1.9.3 fixes a real Hextris rendering bug, gives Settled Systems Dice actual visual dice instead of plain numbers, and closes a Space Racer exploit that let the ship dodge every hazard by sitting between lanes.
 
 ## Included games
 

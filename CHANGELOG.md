@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.3 - 2026-09-10
+
+- Fixed Hextris not spawning any blocks in some sessions: the code that positions the score/button row didn't check whether that row still existed after Starcade's own privacy cleanup removes it, and threw before the game board could finish rendering.
+- Settled Systems Dice now shows real physical dice with pips and a short roll animation instead of plain "X + Y" numbers.
+- Fixed a Space Racer exploit where the ship could sit motionless between lanes and never be hit by traffic. Steering is now lane-locked (one lane per key press, smooth slide into place) so the ship always ends up somewhere traffic can actually reach it.
+
 ## 1.9.2 - 2026-09-09
 
 - Music player now auto-discovers any `.mp3` dropped into `audio/music/` at runtime instead of only playing a fixed bundled list - replace or add tracks without editing anything. Bundled tracks keep their curated title/artist credit; new files get a readable title guessed from the filename. Added a volume slider next to the existing on/off and next/previous controls.
