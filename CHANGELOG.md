@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.5 - 2026-09-15
+
+- The reusable Starcade Pad is now a wrist-worn watch instead of a dataslate (visual/CK change only - same item, same Aid-inventory behavior).
+
 ## 1.9.4 - 2026-09-15
 
 - Made the music volume slider bigger (was noticeably smaller than the buttons next to it).
