@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.4 - 2026-09-15
+
+- Made the music volume slider bigger (was noticeably smaller than the buttons next to it).
+- Fixed the library footer showing "VERSION 1.7.3" - a leftover literal that never got updated across the last five releases. Now shows the real running version.
+
 ## 1.9.3 - 2026-09-10
 
 - Fixed Hextris not spawning any blocks in some sessions: the code that positions the score/button row didn't check whether that row still existed after Starcade's own privacy cleanup removes it, and threw before the game board could finish rendering.
