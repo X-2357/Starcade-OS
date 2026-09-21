@@ -93,6 +93,17 @@ network call sites were disabled at the source level before building - see
 buildable source is included at `Billiards-Engine/`. Upstream:
 https://github.com/tailuge/billiards
 
+## Background music
+
+`SFSE/Plugins/OSFUI/views/starcade.arcade/launcher/audio/music/` contains 28
+royalty-free 8-bit/chiptune tracks sourced from Pixabay, played as optional
+looping background music on the library screen. Licensed under the Pixabay
+Content License (https://pixabay.com/service/terms/): free for personal and
+commercial use, no attribution legally required. Full per-track attribution,
+the exact controlling license terms, and the "Standalone use" analysis for
+why bundling these tracks as background music in a larger mod is permitted
+are in `audio/music/SOURCE-AND-LICENSES.txt`.
+
 ## nlohmann/json
 
 The native component uses nlohmann/json by Niels Lohmann and contributors,
