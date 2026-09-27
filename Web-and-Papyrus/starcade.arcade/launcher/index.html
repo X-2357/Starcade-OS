@@ -20,6 +20,7 @@
           <button id="musicToggle" class="music-btn" title="Toggle music" aria-label="Toggle music">&#9834; MUSIC</button>
           <button id="musicNext" class="music-btn" title="Next track" aria-label="Next track">&#9654;&#9654;</button>
           <input id="musicVolume" class="music-volume" type="range" min="0" max="100" value="45" title="Music volume" aria-label="Music volume">
+          <button id="musicListButton" class="music-btn" title="Show installed songs" aria-label="Show installed songs">&#9776;</button>
         </span>
       </div>
     </header>
@@ -68,6 +69,15 @@
         <div id="licenseList"></div>
       </div>
     </section>
+    <section id="trackList" class="modal hidden">
+      <div class="modal-card">
+        <button id="closeTrackList" class="modal-close">&times;</button>
+        <p class="eyebrow">BACKGROUND MUSIC &middot; CREATED BY X-2357</p>
+        <h2>Now Installed</h2>
+        <p class="license-summary">Every <code>.mp3</code> currently in the game's <code>audio/music/</code> folder, in shuffle order. Click a track to play it now.</p>
+        <div id="trackListBody"></div>
+      </div>
+    </section>
     <section id="leaderboard" class="modal hidden">
       <div class="modal-card leaderboard-card">
         <button id="closeLeaderboard" class="modal-close">&times;</button>
@@ -80,7 +90,7 @@
       </div>
     </section>
 
-    <footer><span>ARROWS / D-PAD TO NAVIGATE &middot; ENTER / A TO SELECT &middot; ESC / B TO RETURN</span><span>CREATED BY X-2357 &middot; VERSION 1.9.5</span></footer>
+    <footer><span>ARROWS / D-PAD TO NAVIGATE &middot; ENTER / A TO SELECT &middot; ESC / B TO RETURN</span><span>CREATED BY X-2357 &middot; VERSION 1.9.6</span></footer>
   </main>
   <script src="../../shared/osfui.js"></script>
   <script src="games/catalog.js"></script>

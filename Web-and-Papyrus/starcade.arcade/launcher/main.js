@@ -128,6 +128,28 @@
     musicPlayer.volume = volume;
     localStorage.setItem("starcade.music.volume", String(volume));
   }
+  function jumpToTrack(index) {
+    if (!musicTracks[index]) return;
+    const pos = musicOrder.indexOf(index);
+    musicPos = pos >= 0 ? pos : 0;
+    loadCurrentTrack();
+    setMusicEnabled(true);
+  }
+  function renderTrackList() {
+    const currentFile = musicTracks[musicOrder[musicPos]]?.file;
+    $("trackListBody").innerHTML = musicTracks.length
+      ? musicTracks.map((track, i) => {
+          const playing = musicEnabled && track.file === currentFile;
+          return `<div class="track-row${playing ? " playing" : ""}" data-index="${i}" tabindex="0" role="button">` +
+            `<span class="track-mark">${playing ? "&#9654;" : ""}</span>` +
+            `<span class="track-title">${escapeHtml(track.title)}</span>` +
+            `<span class="track-artist">${escapeHtml(track.artist || "")}</span></div>`;
+        }).join("")
+      : `<p class="license-summary">No music files found in <code>audio/music/</code>.</p>`;
+    $("trackListBody").querySelectorAll(".track-row[data-index]").forEach((row) => {
+      row.onclick = () => { jumpToTrack(Number(row.dataset.index)); renderTrackList(); };
+    });
+  }
   musicPlayer.addEventListener("ended", () => stepTrack(1));
   updateMusicButton();
 
@@ -384,6 +406,8 @@
   $("musicPrev").onclick = () => stepTrack(-1);
   $("musicNext").onclick = () => stepTrack(1);
   if (musicVolumeSlider) musicVolumeSlider.oninput = () => setMusicVolume(Number(musicVolumeSlider.value) / 100);
+  $("musicListButton").onclick = () => { renderTrackList(); $("trackList").classList.remove("hidden"); };
+  $("closeTrackList").onclick = () => $("trackList").classList.add("hidden");
   $("backButton").onclick = closeGame;
   $("exitButton").onclick = () => osfui.available() ? osfui.send("close") : window.close();
   $("licensesButton").onclick = () => $("licenses").classList.remove("hidden");

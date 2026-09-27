@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.6 - 2026-09-26
+
+- Added a button next to the music controls that shows every track currently in `audio/music/`, with title and artist. Click any track to play it immediately.
+
 ## 1.9.5 - 2026-09-15
 
 - The reusable Starcade Pad is now a wrist-worn watch instead of a dataslate (visual/CK change only - same item, same Aid-inventory behavior).
