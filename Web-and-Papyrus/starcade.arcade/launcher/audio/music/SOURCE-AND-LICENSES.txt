@@ -1,12 +1,16 @@
 STARCADE BACKGROUND MUSIC - SOURCE AND LICENSE NOTICE
 
 WHAT THIS IS
-  28 royalty-free 8-bit/chiptune-style tracks, supplied directly by X-2357
-  (Michael) from his own downloaded collection, played as looping background
-  music across the Starcade library screen. Starcade plays them in a
-  per-session shuffled order via a plain HTML5 <audio> element in the
-  launcher shell (main.js) - no third-party player library or network
-  fetch is involved; every file is bundled locally under this folder.
+  63 royalty-free 8-bit/chiptune-style tracks (28 original + 35 added
+  2026-09-26), supplied directly by X-2357 (Michael) from his own
+  downloaded collection, played as looping background music across the
+  Starcade library screen. Starcade plays them in a per-session shuffled
+  order via a plain HTML5 <audio> element in the launcher shell (main.js)
+  - no third-party player library or network fetch is involved; every file
+  is bundled locally under this folder. Any file dropped into this folder
+  is auto-discovered at runtime (native `ListMusicFiles()` directory scan)
+  and shows up in the in-game track list with no code changes needed -
+  this is a deliberate "bring your own music" feature, not a fixed list.
 
 LICENSE STATUS - VERIFIED
   Every filename in this folder follows the exact "<creator>-<title>-<id>.mp3"
@@ -40,7 +44,9 @@ LICENSE STATUS - VERIFIED
   "combination" case, not Standalone redistribution of the raw audio files
   as a competing product. No trademarks/logos are depicted in the audio
   itself, so the commercial-use trademark restriction does not apply
-  either.
+  either. This same reasoning and license applies identically to the
+  2026-09-26 batch (also downloaded directly from Pixabay by Michael) -
+  same filename convention, same site, same terms.
 
 ATTRIBUTION (creator name parsed from each filename's prefix)
   arpmedia - Retro Arcade Game Music
@@ -70,6 +76,53 @@ ATTRIBUTION (creator name parsed from each filename's prefix)
   A duplicate download of "djartmusic-return-to-the-8-bit-past-301282.mp3"
   (Windows-suffixed "(1)") was dropped as an exact duplicate; only one copy
   ships.
+
+ATTRIBUTION - 2026-09-26 BATCH (35 tracks added; identical sourcing/license)
+  8059346 - Chiptune Grooving
+  BrutalDesign - A Chiptune Tale
+  DopeStuff - Neon Gaming
+  FreeMusicForVideo - Retro Arcade Game Music
+  Grushin - Rage Hyperpop Synth Beat
+  Hexxel - Enter The Dungeon
+  Kissan4 - Glitch Mode
+  Kissan4 - Pixel Paradise
+  Kissan4 - Pixel Rap City
+  Kissan4 - Trap 808
+  KMacLeod - Bit Bit Loop
+  LesiaKower - Cosmos
+  LesiaKower - Pixify
+  LightyearTraxx - Kim Lightyear: Just A Dream, Wake Up
+  MaksymMalko - 8-Bit Gaming Background Music
+  Monume - Retro Arcade Game Music (a second, distinct track from the same
+    creator already credited above - different track id, not a duplicate)
+  MoodMode - 8-Bit Air Fight
+  MoodMode - 8-Bit Retro Game Music
+  MoodMode - Level IX (Short)
+  Narzeky - Lucid Dreams (Retro Mix)
+  NickPanek - Chiptune Hard Boss Mode
+  NickPanek - Chiptune Nu Metal
+  Niknet Art - Retro 8-Bit Happy Videogame Music (two more variations)
+  PhantasticBeats - 8-Bit Hero
+  Pydim - Byte Smoothie
+  ReflexTunes - Game Zone
+  "retro-bgm-chan-lab" - creator/title split is not clean from the filename
+    alone; left as the raw slug rather than guess wrong
+  SoundUniverseStudio - Flat 8-Bit Gaming Music (Instrumental)
+  Spencer Yk - Little Slime's Adventure (filename literally reads
+    "slimex27s" - an escaped-apostrophe artifact from Pixabay's own
+    download naming, not a Starcade bug; cosmetic only, left as downloaded
+    for accurate provenance rather than renamed)
+  Tim Kulig Free Music - 2D Explorer
+  Tim Kulig Free Music - Beep Boopity Exploration
+  TopSecretMusicNetwork - Bounce Trap Beat (ft. Piano, Horns and 8-Bit
+    Melody at 120 BPM)
+  Uiopash - Synth Feel Good
+  White Records - Pixel Fight (8-Bit Arcade Music / Background Music For
+    Video)
+
+  One exact duplicate was found against the existing 28 and skipped, not
+  copied twice: "thatlofishow-pixelate-pixelated-dreams-313358.mp3" was
+  already bundled.
 
 STARCADE-SIDE INTEGRATION
   Added by Claude (Sonnet 5) at Michael's request, 2026-08-30. Music plays

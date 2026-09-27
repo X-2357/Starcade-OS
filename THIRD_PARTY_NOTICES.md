@@ -95,7 +95,7 @@ https://github.com/tailuge/billiards
 
 ## Background music
 
-`SFSE/Plugins/OSFUI/views/starcade.arcade/launcher/audio/music/` contains 28
+`SFSE/Plugins/OSFUI/views/starcade.arcade/launcher/audio/music/` contains 63
 royalty-free 8-bit/chiptune tracks sourced from Pixabay, played as optional
 looping background music on the library screen. Licensed under the Pixabay
 Content License (https://pixabay.com/service/terms/): free for personal and

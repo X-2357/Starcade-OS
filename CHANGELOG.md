@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.7 - 2026-09-26
+
+- Added 35 more royalty-free background tracks (63 total), all Pixabay-sourced under the same license as the original set. See `audio/music/SOURCE-AND-LICENSES.txt` for full attribution.
+
 ## 1.9.6 - 2026-09-26
 
 - Added a button next to the music controls that shows every track currently in `audio/music/`, with title and artist. Click any track to play it immediately.
