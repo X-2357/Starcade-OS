@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.8 - 2026-09-27
+
+- Fixed Hextris never spawning any blocks: `init()` crashed on a Content Security Policy violation every single launch (a bundled library used `eval` to restore save data, which Starcade's own hardened CSP blocks) - the game never got past that point to start. Fixed by using plain JSON parsing instead, since Hextris's save data was never anything but plain numbers and arrays to begin with. Also fixed a second, related bug this uncovered: after a real save, the hex core and its docked/falling blocks were being restored as bare data instead of real game objects, breaking the "draw" step on every frame after the first save. Both are now fixed - verified across a full play session and a save-then-reload cycle, not just "no crash."
+
 ## 1.9.7 - 2026-09-26
 
 - Added 35 more royalty-free background tracks (63 total), all Pixabay-sourced under the same license as the original set. See `audio/music/SOURCE-AND-LICENSES.txt` for full attribution.

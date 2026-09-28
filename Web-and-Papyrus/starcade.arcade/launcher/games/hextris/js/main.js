@@ -122,7 +122,7 @@ function init(b) {
 	$("#pauseBtn").attr('src',"./images/btn_pause.svg");
 	hideUIElements();
 	var saveState = localStorage.getItem("saveState") || "{}";
-	saveState = JSONfn.parse(saveState);
+	saveState = JSON.parse(saveState);
 	document.getElementById("canvas").className = "";
 	history = {};
 	importedHistory = undefined;
@@ -140,24 +140,34 @@ function init(b) {
 
 	settings.blockHeight = settings.baseBlockHeight * settings.scale;
 	settings.hexWidth = settings.baseHexWidth * settings.scale;
-	MainHex = saveState.hex || new Hex(settings.hexWidth);
+	// Always construct a real Hex instance so its own methods (draw/shake/etc,
+	// set directly in the constructor, not on a prototype) exist - plain
+	// JSON.stringify/parse of a saved hex drops functions entirely, so
+	// restoring saveState.hex wholesale as MainHex left it without a working
+	// draw() the moment any save had ever been written.
+	MainHex = new Hex(settings.hexWidth);
 	if (saveState.hex) {
+		$.extend(true, MainHex, saveState.hex);
 		MainHex.playThrough += 1;
 	}
 	MainHex.sideLength = settings.hexWidth;
 
-	var i;
-	var block;
-	if (saveState.blocks) {
-		saveState.blocks.map(function(o) {
-			if (rgbToHex[o.color]) {
-				o.color = rgbToHex[o.color];
-			}
-		});
+	// Same reasoning as MainHex above: a saved Block/waveGen is plain JSON
+	// data with no draw()/update()/etc (JSON.stringify drops function
+	// values), so every restored block - falling or already docked on the
+	// hex - needs a real Block instance underneath it, not the saved plain
+	// object used as-is.
+	function reviveBlock(data) {
+		var revived = new Block();
+		$.extend(true, revived, data);
+		if (rgbToHex[revived.color]) revived.color = rgbToHex[revived.color];
+		return revived;
+	}
 
+	var i;
+	if (saveState.blocks) {
 		for (i = 0; i < saveState.blocks.length; i++) {
-			block = saveState.blocks[i];
-			blocks.push(block);
+			blocks.push(reviveBlock(saveState.blocks[i]));
 		}
 	} else {
 		blocks = [];
@@ -169,23 +179,17 @@ function init(b) {
 
 	for (i = 0; i < MainHex.blocks.length; i++) {
 		for (var j = 0; j < MainHex.blocks[i].length; j++) {
+			MainHex.blocks[i][j] = reviveBlock(MainHex.blocks[i][j]);
 			MainHex.blocks[i][j].height = settings.blockHeight;
 			MainHex.blocks[i][j].settled = 0;
 		}
 	}
 
-	MainHex.blocks.map(function(i) {
-		i.map(function(o) {
-			if (rgbToHex[o.color]) {
-				o.color = rgbToHex[o.color];
-			}
-		});
-	});
-
 	MainHex.y = -100;
 
 	startTime = Date.now();
-	waveone = saveState.wavegen || new waveGen(MainHex);
+	waveone = new waveGen(MainHex);
+	if (saveState.wavegen) $.extend(true, waveone, saveState.wavegen);
 
 	MainHex.texts = []; //clear texts
 	MainHex.delay = 15;
@@ -261,7 +265,7 @@ function animLoop() {
 
 		if (checkGameOver() && !importing) {
 			var saveState = localStorage.getItem("saveState") || "{}";
-			saveState = JSONfn.parse(saveState);
+			saveState = JSON.parse(saveState);
 			gameState = 2;
 
 			setTimeout(function() {
