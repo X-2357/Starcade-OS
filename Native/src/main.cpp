@@ -455,9 +455,16 @@ namespace Starcade
     void WriteAISSStarcadeState()
     {
         const auto path = AISSStatePath();
-        if (path.empty()) return;
+        if (path.empty()) {
+            REX::WARN("Starcade: AISS bridge skipped - PluginDirectory() resolved empty, cannot compute a state path");
+            return;
+        }
+        REX::INFO("Starcade: AISS bridge writing to {}", Utf8(path));
         std::error_code ec;
         std::filesystem::create_directories(path.parent_path(), ec);
+        if (ec) {
+            REX::WARN("Starcade: AISS bridge create_directories failed for {}: {}", Utf8(path.parent_path()), ec.message());
+        }
 
         std::string highScores;
         for (const auto& [id, entry] : g_state["games"].items()) {
@@ -481,8 +488,13 @@ namespace Starcade
         { std::ofstream f(temp, std::ios::trunc); f << out.str(); }
         std::filesystem::rename(temp, path, ec);
         if (ec) {
-            std::filesystem::copy_file(temp, path, std::filesystem::copy_options::overwrite_existing, ec);
+            REX::WARN("Starcade: AISS bridge rename failed ({}), falling back to copy", ec.message());
+            std::error_code copyEc;
+            std::filesystem::copy_file(temp, path, std::filesystem::copy_options::overwrite_existing, copyEc);
+            if (copyEc) REX::WARN("Starcade: AISS bridge copy fallback also failed: {}", copyEc.message());
             std::filesystem::remove(temp, ec);
+        } else {
+            REX::INFO("Starcade: AISS bridge write succeeded ({})", Utf8(path));
         }
     }
 
