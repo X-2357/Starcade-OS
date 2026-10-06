@@ -17,34 +17,16 @@ This lets an AISS companion who's installed alongside Starcade bring up what the
 playing - "still trying to beat your Hextris record?" - without Starcade knowing or caring whether
 AISS exists.
 
-## Deployment
+## Deployment and seed ownership
 
-`state/starcade.ini` in this folder is the **inert seed** (`ready=0`, empty fields) - per AISS's
-own contract, this needs to ship at `Data/SFSE/AISS/state/starcade.ini` in every release so mod
-managers place it correctly and a fresh install never replays stale data. Include this folder's
-`state/` contents at that path when building a release package, same as `SFSE/Plugins/` and
-`Scripts/`.
+AISS v3.6.0 and later owns and ships the inert SFSE/AISS/state/starcade.ini seed. Starcade must ship NO files under SFSE/AISS/ in a runtime archive. The AISS-Bridge/state seed here is reference documentation only; never copy it into a Starcade release.
 
-The real, live file (the one `Starcade.dll` actually writes) is generated at runtime in the same
-location and immediately overwrites this seed - nothing here needs updating by hand as the game
-is played.
+Under MO2 the mod shipping a file owns its VFS write destination. The AISS backend reads AISS's physical mod folder outside that VFS. A Starcade-owned seed or an overwrite shadow can therefore leave AISS reading ready=0 forever while the publisher writes elsewhere. Inspect actual ownership, preserve old contents and verify the next save's destination before claiming the link works.
 
-## Why the seed lives here, not in AISS
+## Actual AISS support
 
-Per AISS's own integration contract: each companion mod ships the inert seed for *its own*
-`state/<mod>.ini` file, inside its own package - not AISS. AISS handles a missing file cleanly on
-its own (the reader returns `not_found` and the health check stays silent about it), so the seed
-isn't there for AISS's benefit - it's purely mod-manager path hygiene, so Vortex/MO2 place
-`starcade.ini` under the right owning mod from install. If AISS shipped this seed instead, it
-would need updating every time a new companion mod integrates - a dependency pointing the wrong
-way. Every future companion mod seeds its own file the same way; AISS never needs to know they
-exist in advance.
+AISS has a dedicated reader, seed, prompt integration, health-check row and tests since v3.6.0. It accepts schema 1, raw title/score pairs, legacy absence of source and arbitrarily old save-driven scores. Do not expire those facts on a timer. Titles with colons are supported; commas in a title cannot be represented by this schema.
 
-## AISS-side support required
+Current native publisher writes a complete temporary file with ready=1 then attempts rename and copy fallback. This is not Cassiopeia publication and does not use a ready=0/payload/ready=1 sequence. Stream/fallback atomicity needs verification; a ready flag alone is no guarantee.
 
-This only does something once AISS's own code reads `Data/SFSE/AISS/state/starcade.ini` into its
-conversation context - that's a change on the AISS project itself, not something this repo can
-do. See AISS's own `Docs/AISS_INTEGRATION_CONTRACT.md` for the read-side contract; the concrete
-ask for that project is: read the `[starcade]` section above and surface `last_played_game`/
-`high_scores` the same generic way it already reads any other companion mod's state file - no
-seed or advance knowledge of Starcade specifically required on AISS's side.
+The live writer destination and conversation result remain unverified after seed-shadow correction. See Docs/AISS_HANDOFF_2026-09-30.md (historical receiving handoff), Docs/INTEGRATION_CONTRACT.md (current contract), and PT-001 in Docs/PLAYTEST_LOG.md. No published payouts, favorite cabinet, stable event identity or complete play history exists in this snapshot.

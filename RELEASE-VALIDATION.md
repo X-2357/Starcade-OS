@@ -1,5 +1,7 @@
 # Starcade OS 1.7.3 release validation
 
+Historical July 28, 2026 validation, preserved in its original scope. Current feature/evidence checklist is Docs/FEATURE_CHECKLIST.md; pending gameplay cards are Docs/PLAYTEST_LOG.md. This document is not a current 1.9.8 release signoff.
+
 ## 1.7 expansion verification
 
 - `tools/validate.ps1`: validates all JavaScript files and 26 catalog entries.

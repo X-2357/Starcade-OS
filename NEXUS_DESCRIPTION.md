@@ -3,15 +3,15 @@
 **Created by X-2357**
 
 Starcade OS adds a portable arcade operating system to Starfield. It contains
-twenty-five original games plus four clearly identified open-source
-adaptations (Freedoom: Phase 1, Micropolis, Hextris, and Mah Jong) inside a
+twenty-five original games plus seven clearly identified open-source
+adaptations (Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards) inside a
 unified Starfield-themed interface, supports keyboard and controller input,
 preserves high scores, and can be opened with a reusable inventory pad or
-configurable hotkey. A fifth card, OpenMW: Morrowind, is an optional external
+configurable hotkey. An additional card, OpenMW: Morrowind, is an optional external
 launcher rather than an embedded game - see below.
 
 The 25 original Starcade games were written specifically for Starcade OS.
-Freedoom: Phase 1, Micropolis, Hextris, and Mah Jong are clearly identified
+Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards are clearly identified
 open-source adaptations, each distributed with its required license notices
 and corresponding source. The download contains no proprietary Doom WAD,
 advertising, analytics, external fonts, or remotely downloaded gameplay
@@ -23,13 +23,25 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ## Main features
 
+### Current development copy — October 6, 2026
+
+The current source library contains 32 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
+
+Music includes a selectable 63-track library, shuffle and volume controls. The track list and expanded library were confirmed in-game by the author on September 27.
+
+Recent source updates include the 1.9.5 wrist-watch appearance and the 1.9.8 Hextris startup/save-restoration corrections. Hextris passed browser play and save/reload checks; its current in-Starfield retest remains pending. The latest public upload confirmed in the project records is 1.9.5; check the Nexus Files tab for the download version. This maintained description is a development draft, not confirmation that all source changes are public.
+
+With AISS v3.6.0 or later, an optional read-only adapter lets companions discuss the published most recent game and personal best scores. AISS never plays for you or changes scores or payouts. The reader exists; the current MO2 publication-to-conversation test remains pending.
+
+Future colony recreation, Legacy milestones, holo-sports and sponsorship ideas are planning goals. They are not included gameplay features.
+
 ### Version 1.8.0 update
 
 - Adds **Micropolis**, an adaptation of Electronic Arts' 2008 open-source (GPL-3) release of the original SimCity engine and data. Camera panning and all menu/toolbar navigation work without a mouse; placing zones and roads still needs one.
 - Adds **Hextris**, a GPL-3.0-or-later hex-puzzle game, fully embedded and offline with all networking/analytics/social features removed.
 - Adds **OpenMW: Morrowind**, Starcade's first external-launch card. Detects a legally installed Steam copy of Morrowind and launches the bundled GPL-3.0-or-later OpenMW engine against it. No Morrowind or other Bethesda data is bundled; the card does nothing without a real, owned installation.
 - Adds **Mah Jong**, an adaptation of the MIT-licensed ffalt/mah project - a complete Mah Jong Solitaire game with 84 boards and 13 tile sets. Not yet wired into Starcade's own leaderboard/XP system.
-- The public library now contains 29 embedded/launchable entries: 25 original games, Freedoom: Phase 1, Micropolis, Hextris, and Mah Jong, plus the OpenMW external card.
+- The 1.8.0 library contained 29 embedded games: 25 original games, Freedoom: Phase 1, Micropolis, Hextris, and Mah Jong. The OpenMW external card was additional.
 
 ### Version 1.7.3 update
 
@@ -183,6 +195,10 @@ selects matching tile pairs on the board itself; every menu, dialog, and
 settings screen is Tab/D-pad navigable. Not yet wired into Starcade's own
 leaderboard/XP system - it manages its own save/progress state internally.
 MIT-licensed; no proprietary assets are included.
+
+### Quadrilactic, Clumsy Bird and Billiards
+
+Quadrilactic is an Apache-2.0 procedurally generated platform climber. Clumsy Bird is a GPL-3.0 bird-flight game. Billiards is a GPL-3.0 3D pool adaptation using offline practice mode with upstream networking disabled; aiming and shots use the mouse. Per-component notices and source identify the upstream authors and Starcade adaptations.
 
 ## External applications
 
@@ -358,6 +374,10 @@ folder as `game.js` and `index.html`. They are the preferred form for editing;
 there is no separate hidden or generated game-code bundle.
 
 ## Compatibility
+
+- If the OSF UI overlay flickers, turn Frame Generation off in Starfield Display settings. This shared OSF UI issue was confirmed in the ecosystem on September 25.
+- Starcade works without other X-2357 mods. Proposed integrations preserve each mod's ownership of crew progression, communities, fleets, campaigns, archives and financial markets.
+
 
 - Starcade does not replace vanilla interface files.
 - Starcade does not ship an OSF UI configuration override.

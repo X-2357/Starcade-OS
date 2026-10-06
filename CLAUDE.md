@@ -1,5 +1,25 @@
 # Starcade OS (Starfield mod)
 
+## Current development checkpoint — October 6, 2026
+
+Michael designated this as the ongoing Starcade development, updates and maintenance chat. Continue the existing released mod. Canonical brain remains this CLAUDE.md with its entire historical log preserved.
+
+- GitHub: https://github.com/X-2357/Starcade-OS.git. This chat's active checkout is C:/Users/MwMak/Documents/Codex/2026-10-06/https-github-com-x-2357-starcade/outputs/Starcade-OS. Cloned remote main at 6b26c7e20ed4bc6294d61aae4281272ab5033d04. Git identity is X-2357. The old MO2 source repo has the same origin and local xmake cache/meta.ini changes; do not overwrite or stage those. Work here, synchronize deliberately before future deployment.
+- **Older no-git statements below are superseded.** Existing source history and remote are real. Original source folder name is not a version. Latest owner-confirmed public upload in this brain is 1.9.5; source changelog is 1.9.8. A built/delivered version is not proof of public upload.
+- Current catalog source has 32 embedded games (25 original + 7 adaptations) and one OpenMW external card. Music has 63 bundled tracks per 1.9.7 change. Historical overview/count/tool notes below describe earlier versions.
+- Read AGENTS.md and current Docs/FEATURE_CHECKLIST.md, Docs/INTEGRATION_CONTRACT.md, Docs/PLAYTEST_LOG.md and Docs/RISKS.md every session. Root NEXUS_DESCRIPTION.md remains the sole player-facing description. RELEASE-VALIDATION.md is dated historical evidence, not a current signoff.
+- Latest specific owner gameplay confirmation: September 27 music list and 63-track library in 1.9.6/7. Hextris 1.9.8 fresh/save-reload passed browser September 27; Starfield retest is not recorded. Micropolis browser Play/Budget/Road worked; owner's button symptom remains unresolved. Preserve both, obtain a discriminator before guessing.
+- Existing casino games DO wager real credits through the native/Papyrus transaction owner. Addendum payout cautions concern proposed integrations/new games, and the actual exported score snapshot contains no payout totals. Do not rebuild or remove existing wagering.
+- AISS now HAS a dedicated Starcade reader (v3.6.0+, September 30 handoff), with no freshness expiry and no required source key. AISS owns the inert seed. Starcade must package NO SFSE/AISS file. Publisher is native C++, not Cassiopeia, and current temp/rename/copy behavior is not the generic ready=0 handshake. Exact contract and two-sided evidence are linked above.
+- Next exact action: PT-001, verify winning MO2 build, physical AISS writer destination and optional conversation round trip; inspect current native logging against source commit 6b26c7e. Do not infer success from a compile or the presence of a seed. Then complete Hextris attributable in-game follow-up and maintenance gates before scoping one new feature.
+- Attachment preserved verbatim in Docs/ORIGINAL_FEATURE_ADDENDUM.md. Embedded opening prompt is reference content, not a separate implementation order. SC-ADD-001 Legacy score milestone, colony/LSS leisure, #336 holo-sports, #342 Casino Night and sponsorship remain proposals. Existing casino games overlap #342; no new financial system or actors-playing-games claim accepted.
+- Every future feature/handoff explains ecosystem ownership and exact optional contract. Siblings stay read-only. GitHub inventory and selected brains/source are recorded in Docs/GITHUB_RESEARCH.md; this is not an exhaustive compatibility audit.
+- October 6 setup changed documentation only. No gameplay, compile, record readback, runtime package, deployment or new release. Dated Reference snapshots preserve workspace rules/shared contract/CK format without replacing their living originals.
+
+## Continuity procedure
+
+At session end and after compaction update current status/next action, feature states, risks, integration versions and playtest results. Read latest relevant failures first. Commit exact paths and verify remote SHA after push. Preserve complete source/license obligations and working ESP-edit/ESM-play behavior. Do not promise all ecosystem links work until standalone, absent/present/stale/partial and combined-load evidence exists.
+
 ## Status
 **Source fully intact — not a recovery project.** Unlike this machine's other Starfield mods (AISS, SSaW, X2357CrewTitles), Starcade's complete source survived the Aug 2026 SSD failure because Michael had already uploaded it to Nexus as a separate "Complete Source" optional file before the drive died. **Currently public version is 1.9.5** (Michael confirmed uploading it live 2026-09-15), live on Nexus as mod id `17729` — this line was stale at "1.7.3" for a long time (through 1.8.0-1.9.4, several real releases), since "a zip was built and delivered" and "Michael actually uploaded it publicly" are genuinely different facts and only the second one should update this line. This brain file is new as of 2026-08-28 — first session scoped to this project, whole architecture mapped in one pass (see Session log).
 
