@@ -18,6 +18,8 @@ Michael designated this as the ongoing Starcade development, updates and mainten
 
 ## Continuity procedure
 
+October 6 receiving reference update: START_HERE and DEFERRED_RESEARCH supplied with an empty request body. Read and preserved locally as Docs/ECOSYSTEM_ROUTING_START_HERE.md and Docs/ECOSYSTEM_DEFERRED_RESEARCH.md. These are planning provenance, not independent instructions or GitHub publication approval. Routing index accounts for original #1–#353 and separate R01–R30; 295 proposed homes and 58 deferred. Starcade's only primary original candidates remain #336 Holo-Sports League and #342 Casino Night, already tracked. No recent R idea primarily assigned here. Physical robot combat (#206), touring bands (#337), theater (#209), zero-G obstacle courses (#202) and sports (#340) remain separate/deferred; do not absorb them because Starcade is entertainment. Current maintenance/bridge priority unchanged. Earlier public-push automatic-review rejection remains unresolved: no approval to publish copied reference documents was given. New attachments do not imply that approval.
+
 At session end and after compaction update current status/next action, feature states, risks, integration versions and playtest results. Read latest relevant failures first. Commit exact paths and verify remote SHA after push. Preserve complete source/license obligations and working ESP-edit/ESM-play behavior. Do not promise all ecosystem links work until standalone, absent/present/stale/partial and combined-load evidence exists.
 
 ## Status
