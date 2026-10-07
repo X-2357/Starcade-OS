@@ -2,6 +2,8 @@
 
 ## Current development checkpoint — October 6, 2026
 
+**Backup update October 7, 2026:** Michael explicitly confirmed publishing the pending changes, including copied reference documents and music. The previous approval block is resolved. Pushed c8eae5b, d93cc1c and 82f8487 to origin/main; live git ls-remote returned 82f8487d61eb6b671be8e7be85ec40af8babe385, exactly matching local HEAD. This backs up 21 added MP3s, track/hash manifest, brain, Nexus draft, feature/playtest/integration records and supplied reference documents. Later commits supersede this checkpoint; verify their remote SHA independently. No Nexus release or live MO2 deployment was performed; new music playback and individual source/license verification remain pending.
+
 Michael designated this as the ongoing Starcade development, updates and maintenance chat. Continue the existing released mod. Canonical brain remains this CLAUDE.md with its entire historical log preserved.
 
 - GitHub: https://github.com/X-2357/Starcade-OS.git. This chat's active checkout is C:/Users/MwMak/Documents/Codex/2026-10-06/https-github-com-x-2357-starcade/outputs/Starcade-OS. Cloned remote main at 6b26c7e20ed4bc6294d61aae4281272ab5033d04. Git identity is X-2357. The old MO2 source repo has the same origin and local xmake cache/meta.ini changes; do not overwrite or stage those. Work here, synchronize deliberately before future deployment.
