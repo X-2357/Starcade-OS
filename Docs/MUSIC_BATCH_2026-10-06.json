@@ -1,0 +1,182 @@
+{
+  "date": "2026-10-06",
+  "before": 63,
+  "after": 84,
+  "rows": [
+    {
+      "file": "enlia-cozy-cyberpunk-8bit-music-571630.mp3",
+      "status": "added",
+      "sha256": "b0aa59144cbeaa5690bed09a5385e7547e4922f7835361eceb50257307e050b9",
+      "bytes": 4571637,
+      "artist": "enlia",
+      "title": "Cozy Cyberpunk 8Bit Music"
+    },
+    {
+      "file": "sergequadrado-ice-339536.mp3",
+      "status": "added",
+      "sha256": "c6bc17a25046e1dbda8c63526a3767a15ac0a9211abe8986a6fb6aa9316328e9",
+      "bytes": 4269871,
+      "artist": "sergequadrado",
+      "title": "Ice"
+    },
+    {
+      "file": "sergequadrado-lo-fi-beat-339572.mp3",
+      "status": "added",
+      "sha256": "e64d418256e1138c6bcb38674d8e48fcec8d8a4d1e2ab09c7dd200fa01cd4405",
+      "bytes": 5717681,
+      "artist": "sergequadrado",
+      "title": "Lo Fi Beat"
+    },
+    {
+      "file": "premiummusicodyssey-echoes-in-the-attic-227944.mp3",
+      "status": "added",
+      "sha256": "c3d2839a8321614976ae0c4a6546ec3146ededb7118c2a8e86a71b5e6c01e0f2",
+      "bytes": 3352320,
+      "artist": "premiummusicodyssey",
+      "title": "Echoes In The Attic"
+    },
+    {
+      "file": "moonwalk1-game-over-8-bit-chiptune-164330.mp3",
+      "status": "added",
+      "sha256": "413cc021ff349191cdf3a74160f0c8de193cc279d23b5f849efe6fe5ac4fcd17",
+      "bytes": 6536045,
+      "artist": "moonwalk1",
+      "title": "Game Over 8 Bit Chiptune"
+    },
+    {
+      "file": "u_5v7tonufva-time-travel-249345.mp3",
+      "status": "added",
+      "sha256": "b5e26815cb09fa5e1708558248e930ba6c236551b205d554c62f4434661f86dd",
+      "bytes": 3969024,
+      "artist": "u_5v7tonufva",
+      "title": "Time Travel"
+    },
+    {
+      "file": "slimeyfox-midnight-high-score-487270.mp3",
+      "status": "added",
+      "sha256": "59baa9602cb76e7c5a42ca64b4182fffa57ab7b9916088113c555313028fce0e",
+      "bytes": 6152448,
+      "artist": "slimeyfox",
+      "title": "Midnight High Score"
+    },
+    {
+      "file": "pixelmaniaxx-varnen-377757.mp3",
+      "status": "added",
+      "sha256": "ff28241fc769baecc0cb9ea227f0db99f0c2523fdbe6c77bf4b547bb0df612b4",
+      "bytes": 3137201,
+      "artist": "pixelmaniaxx",
+      "title": "Varnen"
+    },
+    {
+      "file": "artur_aravidi_music-game-over-retrowaver-synthwave-vaporwave-retro-80s-198365.mp3",
+      "status": "added",
+      "sha256": "1b36b5182b6d0ff1ebefad118d4cadf3a17da15ef4d658c8186ca5058da44df3",
+      "bytes": 4053368,
+      "artist": "artur_aravidi_music",
+      "title": "Game Over Retrowaver Synthwave Vaporwave Retro 80S"
+    },
+    {
+      "file": "kissan4-turbo-mode-441545.mp3",
+      "status": "added",
+      "sha256": "3ba7b280f52055060f1a2226769b36e7dd9b46f95320a3dcf994df40b809b78b",
+      "bytes": 3742406,
+      "artist": "kissan4",
+      "title": "Turbo Mode"
+    },
+    {
+      "file": "onesevenbeatxs-sweet-bitcrush-8-bit-lofi-rap-beat-prod-by-onesevenbeatxs-321302.mp3",
+      "status": "added",
+      "sha256": "9d20c4e6b3f6784547942efe7e3603aef15084a0e84653b09ad92d45f1a4b9d9",
+      "bytes": 2744320,
+      "artist": "onesevenbeatxs",
+      "title": "Sweet Bitcrush 8 Bit Lofi Rap Beat Prod By Onesevenbeatxs"
+    },
+    {
+      "file": "thebirdbrand-8-bit-hip-hop-rapbeatzchiptunevideogamepodcast-153463.mp3",
+      "status": "added",
+      "sha256": "4747d68a81f95b517a1f08749e7936c8c9423c337e83f91aa89f6c9e3b39cf9c",
+      "bytes": 11298816,
+      "artist": "thebirdbrand",
+      "title": "8 Bit Hip Hop Rapbeatzchiptunevideogamepodcast"
+    },
+    {
+      "file": "enlia-cozy-cyberpunk-8bit-music-571630(1).mp3",
+      "status": "duplicate",
+      "matches": "enlia-cozy-cyberpunk-8bit-music-571630.mp3",
+      "sha256": "b0aa59144cbeaa5690bed09a5385e7547e4922f7835361eceb50257307e050b9"
+    },
+    {
+      "file": "turning_pages-tall-grass-embers-569861.mp3",
+      "status": "added",
+      "sha256": "353a144792e135b40cffd39cd23b3c194bc52a76833a5e740415c768928e87a3",
+      "bytes": 4376032,
+      "artist": "turning_pages",
+      "title": "Tall Grass Embers"
+    },
+    {
+      "file": "turning_pages-lakeside-tension-584172.mp3",
+      "status": "added",
+      "sha256": "82d6de64f73bdf5401eca919dddb748557380ec096b1f0a9aafa6f26e6001001",
+      "bytes": 4661916,
+      "artist": "turning_pages",
+      "title": "Lakeside Tension"
+    },
+    {
+      "file": "turning_pages-the-mission-569868.mp3",
+      "status": "added",
+      "sha256": "70ef86b5a1ecf6093236d251d6db1d79a9e7dcdb12622b89f38dbb67c1249829",
+      "bytes": 6112235,
+      "artist": "turning_pages",
+      "title": "The Mission"
+    },
+    {
+      "file": "turning_pages-8-bit-morning-sun-569857.mp3",
+      "status": "added",
+      "sha256": "85adbc6f779d39c70f1c0bee531d683ee635c2b6ea0c4fdc5f0a2b9f7a1b710f",
+      "bytes": 4304979,
+      "artist": "turning_pages",
+      "title": "8 Bit Morning Sun"
+    },
+    {
+      "file": "turning_pages-cherrygrove-morning-590773.mp3",
+      "status": "added",
+      "sha256": "c39422507ba59492edd8f1e3389d7204dba84a6d6266803c377d026f6cbf3dc3",
+      "bytes": 4566622,
+      "artist": "turning_pages",
+      "title": "Cherrygrove Morning"
+    },
+    {
+      "file": "turning_pages-new-bark-morning-light-590775.mp3",
+      "status": "added",
+      "sha256": "94a5f9d7b3c265ecfd5440f67f3e483c18fa2172f170ec574c1c7bd2cb322c8c",
+      "bytes": 5208607,
+      "artist": "turning_pages",
+      "title": "New Bark Morning Light"
+    },
+    {
+      "file": "turning_pages-the-dex-entry-groove-590780.mp3",
+      "status": "added",
+      "sha256": "b4aff2193b938ba1816a4f07a6556fa6dd9cd05f88c89c222857c9fb4a4dcc8e",
+      "bytes": 4732969,
+      "artist": "turning_pages",
+      "title": "The Dex Entry Groove"
+    },
+    {
+      "file": "turning_pages-synced-rhythm-569874.mp3",
+      "status": "added",
+      "sha256": "3469a16d424df3fc2fe1b705e7070a57d518cb6b2f82a75cba84a9ab5708a928",
+      "bytes": 5136718,
+      "artist": "turning_pages",
+      "title": "Synced Rhythm"
+    },
+    {
+      "file": "kissan4-secret-level-reggae-571050.mp3",
+      "status": "added",
+      "sha256": "e82f3e9f1f866a2208454881ac386510842977183e22ffa0b45fa27017cc3f7e",
+      "bytes": 4796928,
+      "artist": "kissan4",
+      "title": "Secret Level Reggae"
+    }
+  ],
+  "sourcing": "Supplied by owner; creator/title inferred from filenames; individual source pages/licenses not yet verified for this batch"
+}

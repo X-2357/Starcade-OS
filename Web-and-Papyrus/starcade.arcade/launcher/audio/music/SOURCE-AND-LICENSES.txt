@@ -1,8 +1,8 @@
 STARCADE BACKGROUND MUSIC - SOURCE AND LICENSE NOTICE
 
 WHAT THIS IS
-  63 royalty-free 8-bit/chiptune-style tracks (28 original + 35 added
-  2026-09-26), supplied directly by X-2357 (Michael) from his own
+  84 owner-supplied background tracks (63 previously bundled + 21 added
+  2026-10-06), supplied directly by X-2357 (Michael) from his own
   downloaded collection, played as looping background music across the
   Starcade library screen. Starcade plays them in a per-session shuffled
   order via a plain HTML5 <audio> element in the launcher shell (main.js)
@@ -138,3 +138,31 @@ CORRESPONDING SOURCE
   This is original Starcade launcher-shell code (main.js/index.html/
   style.css), released under the same MIT license as the rest of the
   original Starcade codebase. No third-party player code is used.
+
+ATTRIBUTION - 2026-10-06 BATCH (21 unique tracks)
+  Supplied directly by Michael for Starcade. Creator/title below are
+  parsed from filenames. Individual source pages and redistribution terms
+  for this new batch have NOT been verified; the verified prior-batch
+  license section above does not establish these new tracks' provenance.
+  enlia - Cozy Cyberpunk 8Bit Music (enlia-cozy-cyberpunk-8bit-music-571630.mp3)
+  sergequadrado - Ice (sergequadrado-ice-339536.mp3)
+  sergequadrado - Lo Fi Beat (sergequadrado-lo-fi-beat-339572.mp3)
+  premiummusicodyssey - Echoes In The Attic (premiummusicodyssey-echoes-in-the-attic-227944.mp3)
+  moonwalk1 - Game Over 8 Bit Chiptune (moonwalk1-game-over-8-bit-chiptune-164330.mp3)
+  u_5v7tonufva - Time Travel (u_5v7tonufva-time-travel-249345.mp3)
+  slimeyfox - Midnight High Score (slimeyfox-midnight-high-score-487270.mp3)
+  pixelmaniaxx - Varnen (pixelmaniaxx-varnen-377757.mp3)
+  artur_aravidi_music - Game Over Retrowaver Synthwave Vaporwave Retro 80S (artur_aravidi_music-game-over-retrowaver-synthwave-vaporwave-retro-80s-198365.mp3)
+  kissan4 - Turbo Mode (kissan4-turbo-mode-441545.mp3)
+  onesevenbeatxs - Sweet Bitcrush 8 Bit Lofi Rap Beat Prod By Onesevenbeatxs (onesevenbeatxs-sweet-bitcrush-8-bit-lofi-rap-beat-prod-by-onesevenbeatxs-321302.mp3)
+  thebirdbrand - 8 Bit Hip Hop Rapbeatzchiptunevideogamepodcast (thebirdbrand-8-bit-hip-hop-rapbeatzchiptunevideogamepodcast-153463.mp3)
+  turning_pages - Tall Grass Embers (turning_pages-tall-grass-embers-569861.mp3)
+  turning_pages - Lakeside Tension (turning_pages-lakeside-tension-584172.mp3)
+  turning_pages - The Mission (turning_pages-the-mission-569868.mp3)
+  turning_pages - 8 Bit Morning Sun (turning_pages-8-bit-morning-sun-569857.mp3)
+  turning_pages - Cherrygrove Morning (turning_pages-cherrygrove-morning-590773.mp3)
+  turning_pages - New Bark Morning Light (turning_pages-new-bark-morning-light-590775.mp3)
+  turning_pages - The Dex Entry Groove (turning_pages-the-dex-entry-groove-590780.mp3)
+  turning_pages - Synced Rhythm (turning_pages-synced-rhythm-569874.mp3)
+  kissan4 - Secret Level Reggae (kissan4-secret-level-reggae-571050.mp3)
+  Enlia's Windows-suffixed (1) download is byte-identical and excluded.

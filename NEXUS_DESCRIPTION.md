@@ -27,7 +27,7 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 The current source library contains 32 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
 
-Music includes a selectable 63-track library, shuffle and volume controls. The track list and expanded library were confirmed in-game by the author on September 27.
+Music development source now contains 84 tracks, including 21 unique additions supplied October 6. The prior 63-track library and track list were confirmed in-game September 27; playback of the new batch remains pending, and its individual source/license pages have not yet been verified. Shuffle and volume controls are unchanged.
 
 Recent source updates include the 1.9.5 wrist-watch appearance and the 1.9.8 Hextris startup/save-restoration corrections. Hextris passed browser play and save/reload checks; its current in-Starfield retest remains pending. The latest public upload confirmed in the project records is 1.9.5; check the Nexus Files tab for the download version. This maintained description is a development draft, not confirmation that all source changes are public.
 

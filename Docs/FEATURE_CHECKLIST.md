@@ -28,3 +28,5 @@ States: proposed / scoped / implemented / compiled / record-verified / runtime-p
 | SC-FUT-003 historical | Skyrim/Oblivion external cards | deferred, removed on owner failed-test report | Ask detection vs launch discriminator before implementation |
 
 For each next scoped feature append: source ID, visible benefit, owner, prerequisites, full state machine/exits, exact CK records, siblings/contract, standalone fallback, compile result, generated-record readback, winning digest and attributable runtime result. No new CK batch or release created in this session.
+
+October 6 SC-MUSIC-001: 21 new unique songs added to existing auto-discovered library, total 84. Implemented content; copy hashes verified. Audio-only overlay packaged and archive bytes inspected. No JS/native/Papyrus/CK changes, live deployment or gameplay test. Prior 63-track owner runtime pass is preserved separately. New-batch licensing/source verification pending.
