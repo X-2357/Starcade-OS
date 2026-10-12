@@ -2,6 +2,8 @@
 
 ## Current development checkpoint — October 6, 2026
 
+**October 12 rendering handoff:** Docs/OSF_UI_RENDERING_HANDOFF.md is the reusable receiving-chat reference for HTML/Canvas, WebGL 3D, software framebuffers, browser engine ports and external applications. It separates Billiards' owner-confirmed 3D from Warzone's unresolved first-frame failure and OpenMW's separate window; covers origin, pinned capabilities, assets, input, resize, teardown, data authority, shared cadence, MO2 mirrors and verification. Source/API research only; no new runtime test or gameplay changes. Copy-ready deliverable is also in this chat's outputs/OSF_UI_RENDERING_HANDOFF.md. Future receiving chats read their own brains and latest installed SDK before implementation.
+
 **Backup update October 7, 2026:** Michael explicitly confirmed publishing the pending changes, including copied reference documents and music. The previous approval block is resolved. Pushed c8eae5b, d93cc1c and 82f8487 to origin/main; live git ls-remote returned 82f8487d61eb6b671be8e7be85ec40af8babe385, exactly matching local HEAD. This backs up 21 added MP3s, track/hash manifest, brain, Nexus draft, feature/playtest/integration records and supplied reference documents. Later commits supersede this checkpoint; verify their remote SHA independently. No Nexus release or live MO2 deployment was performed; new music playback and individual source/license verification remain pending.
 
 Michael designated this as the ongoing Starcade development, updates and maintenance chat. Continue the existing released mod. Canonical brain remains this CLAUDE.md with its entire historical log preserved.
