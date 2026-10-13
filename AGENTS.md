@@ -4,6 +4,8 @@ Read CLAUDE.md current checkpoint, latest affected session evidence, Docs/FEATUR
 
 This is Michael's ongoing Starcade development and maintenance project. Apply all 25 workspace rules at C:/Users/MwMak/OneDrive/Documents/CLAUDE.md. Read the shared ecosystem, release gate and CK format under My Games/Starfield/ModSource. Reference/ contains dated archival copies for continuity, not competing living contracts.
 
+Standing October 13 direction: design every feature as part of Michael's giant mod ecosystem. Look for supported workload sharing: reuse an owner's cached facts/capabilities and verified research rather than duplicate systems. Name owner/provider/consumer, optional contract, fallback and combined resource cost. Do not infer executable commands from snapshots or create hard sibling dependencies. Keep sibling edits in their own chats through concrete handoffs.
+
 - No deadline. Verify mechanisms and current evidence; extend working behavior. Before changing released behavior, document visible improvement, exact blast radius, CK/save rework and additive alternative; obtain approval where workspace rules require it.
 - Keep edits and Git actions in Starcade only. Siblings are read-only; required sibling changes become concrete handoffs. No proactive agent fan-outs.
 - Fully scope ONE accepted lifecycle before code: authoritative state, triggers, all exits, None/empty/limits, cancellation, timeout, travel/unload, death, quest stop and reload; diagnostics and acceptance tests first.
