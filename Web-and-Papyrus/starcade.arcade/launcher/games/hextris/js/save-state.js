@@ -1,3 +1,11 @@
+// Saves written by the old JSONfn code hold methods as source text; drop it so it can never overwrite a real method.
+function parseSavedState(text) {
+	return JSON.parse(text, function(key, value) {
+		if (typeof value === "string" && (value.indexOf("function") === 0 || value.indexOf("_PxEgEr_") === 0)) return undefined;
+		return value;
+	});
+}
+
 function exportSaveState() {
 	var state = {};
 

@@ -21,6 +21,9 @@ Evidence: attach both file snapshots, hash/build manifest, native/AISS log excer
 Cleanup: preserve actual score state; restore any temporary test configuration. Shadow cleanup requires verified destination and protected prior content.
 
 ## PT-002: Hextris 1.9.8 follow-up
+October 20 update: owner reported Hextris still broken in Starfield after 1.9.8 (reports of Oct 14-20). Cause found from the owner's real WebView2 saveState: 58 old function-source strings that the 1.9.8 save merge copied over the real methods (fresh-profile browser tests could not see this). Fix: parseSavedState in save-state.js / main.js, deployed to MO2 Starcadeos (main.js sha256 a2ffd4bd37e59b32..., save-state.js 7bdf29629e8d4737...; rollback copies kept in session scratchpad). Browser-verified only.
+Test card (needs a FULL Starfield restart, not a save reload - OSF UI mirrors views at launch): launch Starfield, open the arcade, start Hextris, press Play. Pass: blocks fall and the hex rotates with the arrow keys / A-D. Then quit Hextris, reopen it: pass = it restores or starts without blank screen. Fail: describe exactly what is on screen (blank, frozen, menu only) and whether the hex is drawn.
+Original card follows.
 Winning build/hash + initial localStorage/native save attribution required. Cold-start corrected view, begin fresh run, observe blocks/rotation, save, close and reload, confirm restored blocks animate. Expected no CSP eval error and callable restored game objects. Observed NOT RUN in Starfield for 1.9.8. Record failure stage and actual error; do not reuse disproven focus/rAF theories.
 
 Future cards: exact build, initial state, one action sequence, expected/observed, evidence, cleanup. Completion/repeat/cancel/timeout/combat/actor loss/quest stop/unload/death/reload/missing dependencies coverage selected per actual feature lifecycle.

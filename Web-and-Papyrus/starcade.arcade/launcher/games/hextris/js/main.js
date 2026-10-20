@@ -122,7 +122,7 @@ function init(b) {
 	$("#pauseBtn").attr('src',"./images/btn_pause.svg");
 	hideUIElements();
 	var saveState = localStorage.getItem("saveState") || "{}";
-	saveState = JSON.parse(saveState);
+	saveState = parseSavedState(saveState);
 	document.getElementById("canvas").className = "";
 	history = {};
 	importedHistory = undefined;
@@ -265,7 +265,7 @@ function animLoop() {
 
 		if (checkGameOver() && !importing) {
 			var saveState = localStorage.getItem("saveState") || "{}";
-			saveState = JSON.parse(saveState);
+			saveState = parseSavedState(saveState);
 			gameState = 2;
 
 			setTimeout(function() {
