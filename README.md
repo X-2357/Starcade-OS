@@ -1,4 +1,4 @@
-# Starcade OS 1.9.8
+# Starcade OS 1.9.9
 
 Development checkpoint October 14, 2026: start with [the Claude handoff](Docs/CLAUDE_HANDOFF_2026-10-14.md), CLAUDE.md and AGENTS.md. Current source has 84 music tracks, including 21 unreleased October 6 additions; gameplay and individual source/license verification for that batch remain pending. The audio-only overlay can be rebuilt with Python: `python tools/package_music_additions.py --output <new-output-path>.zip`. This source repository is not a complete installable runtime archive; compiled runtime artifacts must be located/rebuilt and verified separately.
 

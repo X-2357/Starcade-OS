@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased - 2026-10-06
+## 1.9.9 - 2026-10-21
 
-- Fixed Hextris still failing in the real game after 1.9.8. Saves written by the older Hextris code stored the game's methods as source text; 1.9.8 restored saves by merging them over the live objects, so those strings replaced the real methods and the game then re-saved them. Hextris now discards any such text when reading a save (`parseSavedState` in `save-state.js`, used at start-up and on game over). Reproduced with a copy of a real poisoned save from a player profile (58 method strings). Browser-verified for fresh, poisoned, re-save and relaunch paths; Starfield confirmation pending. No version bump: 1.9.8's public status is unconfirmed.
-- Added 21 unique owner-supplied background tracks (84 total). The second Enlia download was an exact duplicate and excluded. Existing automatic MP3 discovery handles the additions; no native/player-code changes. New batch playback and individual source/license verification remain pending.
+- Fixed Hextris still failing in the real game after 1.9.8. Saves written by the older Hextris code stored the game's methods as source text; 1.9.8 restored saves by merging them over the live objects, so those strings replaced the real methods and the game then re-saved them. Hextris now discards any such text when reading a save (`parseSavedState` in `save-state.js`, used at start-up and on game over). Reproduced with a copy of a real poisoned save from a player profile (58 method strings). Confirmed working in Starfield by the owner on 2026-10-20 after a full game restart.
+- Added 21 more background tracks (84 total). The second Enlia download was an exact duplicate and excluded. Existing automatic MP3 discovery handles the additions. Confirmed playing in Starfield by the owner on 2026-10-20; individual source/license pages for this batch have not been separately verified.
+- The AISS file bridge now logs where it writes and whether the write succeeded, to `SFSE/Logs/Starcade.log`. Observed writing a complete file (`ready=1`, last played game, high scores) on 2026-10-20. AISS reading that file in conversation is not yet confirmed.
+- This release also includes the 1.9.6-1.9.8 changes below if you are updating from 1.9.5.
 
 ## 1.9.8 - 2026-09-27
 
