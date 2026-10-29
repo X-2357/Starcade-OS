@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased - 2026-10-29
+
+- Native plugin 1.7.3: Starcade now reads the game's Address Library file at plugin load, with a short retry that logs the Windows error of every failed attempt, instead of first opening it at the end of data loading. If it cannot be read at all, only the features that need game addresses (casino wagers, XP, player name) switch off, and the log says why; the arcade itself keeps working. Addresses the "Starcade.dll: REL/IDDB.cpp(25): Failed to open Address Library file" dialog reported 2026-10-27/29. Built and checked outside the game; in-game confirmation pending. Not part of the 1.9.9 zip.
+
 ## 1.9.9 - 2026-10-21
 
 - Fixed Hextris still failing in the real game after 1.9.8. Saves written by the older Hextris code stored the game's methods as source text; 1.9.8 restored saves by merging them over the live objects, so those strings replaced the real methods and the game then re-saved them. Hextris now discards any such text when reading a save (`parseSavedState` in `save-state.js`, used at start-up and on game over). Reproduced with a copy of a real poisoned save from a player profile (58 method strings). Confirmed working in Starfield by the owner on 2026-10-20 after a full game restart.

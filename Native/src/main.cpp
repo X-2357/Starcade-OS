@@ -5,6 +5,8 @@
 #include <SFSE/SFSE.h>
 #include <RE/Starfield.h>
 #include <REX/REX/LOG.h>
+#include <REX/FModule.h>
+#include <REL/IDDB.h>
 #include <RE/B/BSScriptUtil.h>
 
 #include <ShlObj.h>
@@ -16,12 +18,16 @@
 #include <sstream>
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cctype>
+#include <cerrno>
+#include <chrono>
 #include <cstdlib>
 #include <ctime>
 #include <mutex>
 #include <regex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -69,6 +75,66 @@ namespace Starcade
         std::string result(static_cast<std::size_t>(size), '\0');
         WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), static_cast<int>(wide.size()), result.data(), size, nullptr, nullptr);
         return result;
+    }
+
+    // The game's Address Library file is opened the first time anything asks for a
+    // game address (REL::IDDB), and commonlib treats a failed open as fatal: a message
+    // box, then the game ends. Starcade's first such request used to be BindPapyrus at
+    // kPostDataLoad, right after the game finished loading its data - the moment a
+    // momentary open failure was seen on 2026-10-27 (REL/IDDB.cpp(25), file present).
+    // So the file is read here instead: early, with a short bounded retry, logging the
+    // Windows error of every failed attempt, and only then handed to commonlib. If it
+    // cannot be read at all, g_addressLibraryReady stays false and the features that
+    // need game addresses (wagers, XP, player name) switch off for the session.
+    std::atomic<bool> g_addressLibraryReady{ false };
+
+    std::filesystem::path AddressLibraryPath()
+    {
+        const auto dir = PluginDirectory();
+        if (dir.empty()) return {};
+        const auto version = REX::FModule::GetExecutingModule().GetFileVersion().wstring(L"-");
+        return dir / (L"versionlib-" + version + L".bin");
+    }
+
+    bool ProbeAddressLibrary(const std::filesystem::path& a_path, int& a_errno, DWORD& a_winError)
+    {
+        errno = 0;
+        SetLastError(0);
+        std::ifstream in(a_path, std::ios::in | std::ios::binary);
+        char header[4]{};
+        if (in.is_open()) in.read(header, sizeof(header));
+        if (in.is_open() && in.gcount() == static_cast<std::streamsize>(sizeof(header))) return true;
+        a_errno = errno;
+        a_winError = GetLastError();
+        return false;
+    }
+
+    bool EnsureAddressLibrary(const char* a_stage, int a_attempts)
+    {
+        if (g_addressLibraryReady) return true;
+        const auto path = AddressLibraryPath();
+        if (path.empty()) {
+            REX::WARN("Starcade: Address Library path could not be worked out (stage: {})", a_stage);
+            return false;
+        }
+        for (int attempt = 1; attempt <= a_attempts; ++attempt) {
+            std::error_code ec;
+            const bool exists = std::filesystem::exists(path, ec);
+            int err = 0;
+            DWORD winError = 0;
+            if (exists && ProbeAddressLibrary(path, err, winError)) {
+                REX::INFO("Starcade: Address Library readable (stage: {}, attempt {}): {}", a_stage, attempt, Utf8(path));
+                // Let commonlib open it for real now, while it is known to be readable.
+                (void)REL::IDDB::GetSingleton();
+                g_addressLibraryReady = true;
+                return true;
+            }
+            REX::WARN("Starcade: Address Library not readable (stage: {}, attempt {}/{}): exists={} errno={} winerror={} path={}",
+                a_stage, attempt, a_attempts, exists, err, winError, Utf8(path));
+            if (attempt < a_attempts) std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        }
+        REX::WARN("Starcade: Address Library could not be read (stage: {}); wagers, XP and player name are off this session", a_stage);
+        return false;
     }
 
     std::filesystem::path ReadRegistryPath(HKEY a_root, const wchar_t* a_key, const wchar_t* a_value)
@@ -517,7 +583,7 @@ namespace Starcade
     {
         std::scoped_lock lock(g_lock);
         auto payload = g_state;
-        if (auto* player = RE::PlayerCharacter::GetSingleton()) {
+        if (auto* player = g_addressLibraryReady ? RE::PlayerCharacter::GetSingleton() : nullptr) {
             if (const auto* name = player->GetDisplayFullName(); name && name[0] != '\0') payload["playerName"] = name;
         }
         if (!payload.contains("playerName")) payload["playerName"] = "PLAYER";
@@ -546,7 +612,7 @@ namespace Starcade
     void DispatchXP(std::int32_t a_amount)
     {
         if (a_amount <= 0) return;
-        auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+        auto* vm = g_addressLibraryReady ? RE::BSScript::Internal::VirtualMachine::GetSingleton() : nullptr;
         if (!vm) {
             REX::WARN("Starcade: could not award {} XP because the Papyrus VM is unavailable", a_amount);
             return;
@@ -639,7 +705,7 @@ namespace Starcade
             g_creditRequests.emplace(request, CreditRequest{ a_source ? a_source : kView, game, action, amount });
         }
 
-        auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+        auto* vm = g_addressLibraryReady ? RE::BSScript::Internal::VirtualMachine::GetSingleton() : nullptr;
         if (!vm) {
             std::scoped_lock lock(g_lock);
             if (action == "payout" || action == "cancel") g_wagerSettlementPending = false;
@@ -717,6 +783,10 @@ namespace Starcade
 
     void BindPapyrus()
     {
+        if (!EnsureAddressLibrary("data loaded", 20)) {
+            REX::WARN("Starcade: Papyrus VM unavailable; casino transactions disabled");
+            return;
+        }
         if (auto* gameVM = RE::GameVM::GetSingleton(); gameVM && gameVM->GetVM()) {
             gameVM->GetVM()->BindNativeMethod("x2357StarcadeNative", "ReportCreditResult", &ReportCreditResult, true, false);
             gameVM->GetVM()->BindNativeMethod("x2357StarcadeNative", "ReportXPResult", &ReportXPResult, true, false);
@@ -885,6 +955,7 @@ SFSE_PLUGIN_LOAD(const SFSE::LoadInterface* sfse)
 {
     SFSE::Init(sfse, { .logLevel = REX::ELogLevel::Info });
     Starcade::LoadState();
+    Starcade::EnsureAddressLibrary("plugin load", 20);
     if (const auto* messaging = SFSE::GetMessagingInterface()) messaging->RegisterListener(Starcade::OnMessage);
     return true;
 }

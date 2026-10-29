@@ -1,7 +1,7 @@
 includes("../osf-ui/lib/commonlibsf")
 
 set_project("Starcade")
-    set_version("1.7.2")
+    set_version("1.7.3")
 set_license("GPL-3.0-or-later")
 set_languages("c++23")
 set_warnings("allextra")
