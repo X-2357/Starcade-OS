@@ -1,5 +1,9 @@
 # Starcade Address Library file-open error — October 27, 2026
 
+## October 29 result: rebuilt test working
+
+Owner: “starcade works after the rebuild.” Native 1.7.3 DLL in Starcadeos hashes to 0389eded65e57c8a9bcf69f3933ade8349d975e18f54733aaa966ef3829239fb. Latest log confirms Address Library readable on first plugin-load attempt, OSF UI connected and Papyrus credit/XP callbacks bound. Close the active load-blocking regression for this rebuilt test. This does not prove the original file-open cause or separate wager/XP/quit/reload cases. The old 1.9.9 release ZIP has not been refreshed to include this DLL.
+
 Owner reports dialog when trying to close Starfield. Screenshot 2026-10-27 121255.png shows Starcade.dll, REL/IDDB.cpp(25), Failed to open Address Library file, requested C:/Steam/steamapps/common/Starfield/Data/SFSE/Plugins/versionlib-1-16-244-0.bin.
 
 ## Read-only findings

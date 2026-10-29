@@ -1,4 +1,6 @@
 # Gameplay evidence and next test
+
+October 29 native rebuild: owner confirms “starcade works after the rebuild.” Starcadeos native 1.7.3 SHA256 0389eded65e57c8a9bcf69f3933ade8349d975e18f54733aaa966ef3829239fb; latest native log confirms readable Address Library at plugin load, OSF UI connection and Papyrus credit/XP callback binding. PASS for owner-reported rebuilt functionality/load regression. No separate transaction, XP award, quit or reload result supplied. Original transient cause unresolved; previous release archive still contains old DLL.
 Updated October 6, 2026. No new gameplay, deployment, compilation or record inspection performed during this documentation session.
 
 | Date / build | Result | Evidence limits |
