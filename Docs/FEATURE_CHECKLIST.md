@@ -1,5 +1,7 @@
 # Running feature and evidence checklist
 
+November 2 user directions: SC-CARD-001 original Triple Triad-inspired game (assumed spelling; not implemented); SC-SCREEN-001 live Starcade on physical monitors (research only); SC-SCREEN-002 OpenMW physical-monitor capture (research, consolidates existing embedding goal). Source and prototype gates: Docs/CARD_GAME_AND_WORLD_SCREENS_RESEARCH_2026-11-02.md. ScreenSFSE video playback/internal FrameSource does not establish an interactive browser ABI or support for arbitrary ship monitors.
+
 November 2 online design survey: Docs/GAME_DESIGN_RESEARCH_2026-11-02.md covers 30 requested families, four Civ space-mod references and ten selected Stellaris lenses. SC-RCH-001–015 are PROPOSED research candidates only; #336 Holo-Sports / SC-ADD-003 absorbs the management-sports overlap, #342 retains venue ownership, and real-world fleet/crew/market/case consequences stay with existing owners. No gameplay/CK work accepted or performed by this survey; finish release/maintenance first.
 Updated October 6, 2026. Baseline source 6b26c7e20ed4bc6294d61aae4281272ab5033d04. This is the active list; RELEASE-VALIDATION.md preserves historical July validation.
 
