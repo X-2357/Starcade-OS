@@ -1,4 +1,6 @@
 # Running feature and evidence checklist
+
+November 2 online design survey: Docs/GAME_DESIGN_RESEARCH_2026-11-02.md covers 30 requested families, four Civ space-mod references and ten selected Stellaris lenses. SC-RCH-001–015 are PROPOSED research candidates only; #336 Holo-Sports / SC-ADD-003 absorbs the management-sports overlap, #342 retains venue ownership, and real-world fleet/crew/market/case consequences stay with existing owners. No gameplay/CK work accepted or performed by this survey; finish release/maintenance first.
 Updated October 6, 2026. Baseline source 6b26c7e20ed4bc6294d61aae4281272ab5033d04. This is the active list; RELEASE-VALIDATION.md preserves historical July validation.
 
 States: proposed / scoped / implemented / compiled / record-verified / runtime-partial / runtime-passed / deferred. Evidence dimensions are independent; historical owner confirmation remains valid in its original scope. No new gameplay performed at setup.
