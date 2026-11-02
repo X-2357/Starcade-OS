@@ -17,7 +17,7 @@ foreach ($Entry in $Entries) {
     $Target = Join-Path $View ($Entry.Groups[1].Value -replace '/', '\')
     if (-not (Test-Path -LiteralPath $Target)) { throw "Missing catalog entry: $Target" }
 }
-if ($Entries.Count -ne 32) { throw "Expected 32 embedded catalog games, found $($Entries.Count)" }
+if ($Entries.Count -ne 33) { throw "Expected 33 embedded catalog games, found $($Entries.Count)" }
 if ($CatalogText -notmatch 'external:"openmw"') { throw 'OpenMW external integration is missing' }
 if ($CatalogText -notmatch 'Freedoom: Phase 1') { throw 'Freedoom catalog identity is missing' }
 $IndexText = Get-Content -LiteralPath (Join-Path $View 'index.html') -Raw

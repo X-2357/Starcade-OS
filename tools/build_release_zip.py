@@ -75,6 +75,13 @@ def collect(install):
         if not os.path.isfile(src):
             sys.exit('missing repo override: ' + repo_rel)
         entries[rel] = src
+    # New original game and its single catalog addition travel together. Do not
+    # overlay the entire source view: adapted engines have generated runtime assets.
+    entries[VIEW + 'launcher/games/catalog.js'] = os.path.join(
+        REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/catalog.js')
+    card_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/constellation-cards')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/constellation-cards/' + name] = os.path.join(card_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')

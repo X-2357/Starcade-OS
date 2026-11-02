@@ -1,5 +1,7 @@
 # Running feature and evidence checklist
 
+SC-CARD-001 and SC-RCH-001: Constellation Cards and factual move-derived debrief implemented; 33 embedded games. Rules simulation/browser passed, Starfield UNVERIFIED. SC-SPORT-001 is now Razor Derby; old Blitzball/sphere/six-a-side notes are inspiration only. User authorized continued implementation, one complete lifecycle at a time.
+
 November 2 master research: appended Starcade applications to the explicitly authorized shared canonical file; own evidence in Docs/MASTER_RESEARCH_CONTRIBUTION_2026-11-02.md. SC-SPORT-001 playable original Blitzball-inspired six-a-side sphere sport is a requested design direction consolidated under #336, not implemented. See Docs/SPHERE_SPORT_DIRECTION_2026-11-02.md for gameplay/AI/render/save/ownership gates. Multiple new games are a roadmap; scope/build one complete lifecycle at a time. Other chats must contribute to the same master then return to their own mod.
 
 November 2 user directions: SC-CARD-001 original Triple Triad-inspired game (assumed spelling; not implemented); SC-SCREEN-001 live Starcade on physical monitors (research only); SC-SCREEN-002 OpenMW physical-monitor capture (research, consolidates existing embedding goal). Source and prototype gates: Docs/CARD_GAME_AND_WORLD_SCREENS_RESEARCH_2026-11-02.md. ScreenSFSE video playback/internal FrameSource does not establish an interactive browser ABI or support for arbitrary ship monitors.

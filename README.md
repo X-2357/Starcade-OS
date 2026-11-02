@@ -1,12 +1,12 @@
-# Starcade OS 1.9.9
+# Starcade OS 1.9.9 + Cards — development candidate
 
-Development checkpoint October 14, 2026: start with [the Claude handoff](Docs/CLAUDE_HANDOFF_2026-10-14.md), CLAUDE.md and AGENTS.md. Current source has 84 music tracks, including 21 unreleased October 6 additions; gameplay and individual source/license verification for that batch remain pending. The audio-only overlay can be rebuilt with Python: `python tools/package_music_additions.py --output <new-output-path>.zip`. This source repository is not a complete installable runtime archive; compiled runtime artifacts must be located/rebuilt and verified separately.
+Current checkpoint November 2, 2026: read CLAUDE.md and Docs/DEVELOPMENT_HANDOFF_2026-11-02.md. Source has 33 embedded games and 84 music tracks. Owner confirmed Hextris and new music October 20 and native 1.7.3 rebuild October 29. Constellation Cards passed desktop browser checks; Starfield acceptance is pending. Individual new-music license/source verification remains pending. Runtime packaging uses the verified installed native artifacts plus explicit source overrides; it is not buildable from this Git checkout alone.
 
 Starcade OS is a portable, controller-friendly arcade, strategy library, and casino for Starfield. Use the automatically granted Starcade Pad or the configurable OSF UI hotkey to open the local game library. Version 1.9 adds optional looping 8-bit background music to the library screen (off by default; toggle, next/previous, and a volume slider are in the top bar) - drop your own `.mp3` files into the game's `audio/music/` folder and they play automatically, no editing required. Also makes OpenMW/Morrowind launch fullscreen by default and fixes Micropolis's "Play!" button not responding in some setups. 1.9.3 fixes a real Hextris rendering bug, gives Settled Systems Dice actual visual dice instead of plain numbers, and closes a Space Racer exploit that let the ship dodge every hazard by sitting between lanes. 1.9.4 is a small polish pass: a bigger volume slider and a corrected version display. 1.9.5 reskins the reusable Starcade Pad as a wrist-worn watch. 1.9.6 adds a button to browse and jump straight to any installed song. 1.9.7 more than doubles the bundled music library to 63 tracks. 1.9.8 fixes the real reason Hextris never spawned blocks - a Content Security Policy violation that crashed it on every launch.
 
 ## Included games
 
-Great Serpent, Meteor Field, Orbital Paddle, Reactor Breaker, Minefield Protocol, Lunar Descent, Memory Matrix, Signal Relay, Void Invaders, Starfall Blocks, Docking Vector, Space Racer, Fleet Command, Missile Defense, Orbital Checkers vs CPU, Galactic Chess vs CPU, Red Mile Blackjack, UC Video Poker, Red Mile Hold 'Em, Orbital Roulette, Neon Constellation Slots, Settled Systems Dice, Celestial High / Low, Red Mile Racing Book, Constellation Codebreaker, Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards.
+Constellation Cards, Great Serpent, Meteor Field, Orbital Paddle, Reactor Breaker, Minefield Protocol, Lunar Descent, Memory Matrix, Signal Relay, Void Invaders, Starfall Blocks, Docking Vector, Space Racer, Fleet Command, Missile Defense, Orbital Checkers vs CPU, Galactic Chess vs CPU, Red Mile Blackjack, UC Video Poker, Red Mile Hold 'Em, Orbital Roulette, Neon Constellation Slots, Settled Systems Dice, Celestial High / Low, Red Mile Racing Book, Constellation Codebreaker, Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards.
 
 The OpenMW card launches the bundled GPL OpenMW engine using an existing legal Morrowind installation. Starcade searches registered Steam libraries and `C:\Steam`; Morrowind assets are never copied into or redistributed with Starcade.
 
@@ -42,7 +42,7 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 ## Credits and licenses
 
 - OSF UI and its public bridge API by ozooma10.
-- Starcade OS concept, integration, and all 25 original game implementations by X-2357.
+- Starcade OS concept, integration, and all 26 original game implementations by X-2357.
 - Freedoom: Phase 1 data is BSD-3-Clause; its Doom engine port is GPL-2.0. Full notices and corresponding source are supplied.
 - Hextris and Starcade's offline modifications are GPL-3.0-or-later; editable source is included with the runtime.
 - Mah Jong is MIT-licensed (ffalt/mah); editable source is included with the runtime.
@@ -52,3 +52,5 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 - OpenMW is GPL-3.0-or-later with separately licensed components. The exact corresponding source revision is included in the Complete Source archive.
 
 All editable HTML/JavaScript game source is included. See `THIRD_PARTY_NOTICES.md`, the license files, and the separate 1.7.3 corresponding-source archive.
+
+Development addition (November 2): Constellation Cards is an original tactical card duel with capture previews and automatic resume. Browser validation and Starfield acceptance are tracked separately; this is not a public-release claim.

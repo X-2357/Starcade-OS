@@ -1,3 +1,8 @@
+## Unreleased development — November 2, 2026
+- Add original Constellation Cards: tactical duels, capture previews, opponent, controller/keyboard/mouse, automatic match resume.
+- Refresh runtime packaging with owner-confirmed native 1.7.3; no native behavior change in this batch.
+- Razor Derby is the sport direction; sport and physical-monitor gameplay remain future work.
+
 # Changelog
 
 ## Unreleased - 2026-10-29

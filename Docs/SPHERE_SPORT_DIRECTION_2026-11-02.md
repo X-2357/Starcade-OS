@@ -1,4 +1,6 @@
-# Starcade playable sphere-sport direction
+# Starcade Razor Derby direction
+November 2 update: user chose **Razor Derby**, named in Starfield Ryujin Top Secrets dialogue. Secondary corroboration: https://eip.gg/starfield/guides/top-secrets/ . No complete canon rulebook established. Six-a-side, spherical arena and Blitzball mechanics below are earlier proposals, not canon or settled Razor Derby rules. Settle original rules before implementing.
+
 November 2, 2026. User asks if a Blitzball-style game is achievable, citing its PS2 history. Direction accepted for research/design, not a promise of exact Final Fantasy recreation or already working gameplay.
 
 ## Assessment

@@ -4,6 +4,12 @@ const originalLicense = "Original Starcade game - released under the Starcade OS
 
 window.STARCADE_GAMES = [
   {
+    id: "constellation-cards", title: "Constellation Cards", category: "strategy",
+    description: "Command a five-card flight deck. Capture rival ships through stronger touching edges.",
+    entry: "games/constellation-cards/index.html", controls: "Arrows / D-pad + Enter / A; mouse",
+    color: "#8df7c7", license: originalLicense
+  },
+  {
     id: "xeno-serpent", title: "Great Serpent", category: "arcade",
     description: "Guide the Great Serpent through the stars and consume the light of creation.",
     entry: "games/xeno-serpent/index.html", controls: "Arrow keys / D-pad",

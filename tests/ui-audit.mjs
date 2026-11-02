@@ -19,6 +19,9 @@ const MIME = { ".html":"text/html", ".js":"text/javascript", ".mjs":"text/javasc
 function serveDir(root) {
   return http.createServer((req, res) => {
     const reqPath = decodeURIComponent(req.url.split("?")[0]);
+    // Browser-generated tab icon request, not a game asset. The mod host has no
+    // site favicon; report missing game resources normally.
+    if (reqPath === "/favicon.ico") { res.writeHead(204); res.end(); return; }
     const filePath = path.join(root, reqPath);
     if (!filePath.startsWith(root)) { res.writeHead(403); res.end(); return; }
     fs.readFile(filePath, (error, data) => {
@@ -32,7 +35,7 @@ function serveDir(root) {
 const root = path.resolve(import.meta.dirname, "../Web-and-Papyrus/starcade.arcade/launcher");
 const catalogText = fs.readFileSync(path.join(root, "games/catalog.js"), "utf8");
 const entries = [...catalogText.matchAll(/entry:\s*"([^"]+)"/g)].map((match) => match[1]);
-if (entries.length !== 32) throw new Error(`Expected 32 embedded games, found ${entries.length}`);
+if (entries.length !== 33) throw new Error(`Expected 33 embedded games, found ${entries.length}`);
 
 const server = serveDir(root);
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));

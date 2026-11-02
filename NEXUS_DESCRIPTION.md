@@ -1,16 +1,18 @@
 # STARCADE OS
 
+Description draft for the unreleased Cards development candidate; not a claim of Nexus publication.
+
 **Created by X-2357**
 
 Starcade OS adds a portable arcade operating system to Starfield. It contains
-twenty-five original games plus seven clearly identified open-source
+twenty-six original games plus seven clearly identified open-source
 adaptations (Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards) inside a
 unified Starfield-themed interface, supports keyboard and controller input,
 preserves high scores, and can be opened with a reusable inventory pad or
 configurable hotkey. An additional card, OpenMW: Morrowind, is an optional external
 launcher rather than an embedded game - see below.
 
-The 25 original Starcade games were written specifically for Starcade OS.
+The 26 original Starcade games were written specifically for Starcade OS.
 Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards are clearly identified
 open-source adaptations, each distributed with its required license notices
 and corresponding source. The download contains no proprietary Doom WAD,
@@ -23,13 +25,13 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ## Main features
 
-### Current development copy — October 6, 2026
+### Current development copy — November 2, 2026
 
-The current source library contains 32 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
+The current source library contains 33 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
 
-Music development source now contains 84 tracks, including 21 unique additions supplied October 6. The prior 63-track library and track list were confirmed in-game September 27; playback of the new batch remains pending, and its individual source/license pages have not yet been verified. Shuffle and volume controls are unchanged.
+Music development source now contains 84 tracks, including 21 unique additions supplied October 6. The prior 63-track library and track list were confirmed in-game September 27; the owner confirmed new-track playback October 20, while individual source/license pages have not yet been verified. Shuffle and volume controls are unchanged.
 
-Recent source updates include the 1.9.5 wrist-watch appearance and the 1.9.8 Hextris startup/save-restoration corrections. Hextris passed browser play and save/reload checks; its current in-Starfield retest remains pending. The latest public upload confirmed in the project records is 1.9.5; check the Nexus Files tab for the download version. This maintained description is a development draft, not confirmation that all source changes are public.
+Recent source updates include the 1.9.5 wrist-watch appearance and the 1.9.8 Hextris startup/save-restoration corrections. Hextris passed browser play and save/reload checks; the owner confirmed it working after a full Starfield restart October 20. Native 1.7.3 was owner-confirmed working after the October 29 rebuild. The latest public upload confirmed in the project records is 1.9.5; check the Nexus Files tab for the download version. This maintained description is a development draft, not confirmation that all source changes are public.
 
 With AISS v3.6.0 or later, an optional read-only adapter lets companions discuss the published most recent game and personal best scores. AISS never plays for you or changes scores or payouts. The reader exists; the current MO2 publication-to-conversation test remains pending.
 
@@ -63,9 +65,11 @@ Future colony recreation, Legacy milestones, holo-sports and sponsorship ideas a
 - Varied in-world rival leaderboards and repeatable vanilla XP rewards for new personal records (non-casino games only).
 - Automatic OSF UI view and settings registration through an SFSE plugin.
 - No replacement interface files and no OSF UI configuration overwrite.
-- Editable source for the 25 original games is included in the installation; complete corresponding Freedoom engine source is supplied as a separate source archive.
+- Editable source for the 26 original games is included in the installation; complete corresponding Freedoom engine source is supplied as a separate source archive.
 
 ## Included games
+
+- **Constellation Cards** — original tactical card duel. Pick a ship card and claim spaces by beating touching edges; automatic match resume and keyboard/controller/mouse play.
 
 ### Great Serpent
 
@@ -278,7 +282,7 @@ overwritten.
 
 ## Game source code and modding permissions
 
-The full editable source for all 25 original games is distributed with the mod.
+The full editable source for all 26 original games is distributed with the mod.
 Those browser games do not use hidden binaries, obfuscated bundles, downloaded
 scripts, or proprietary game engines. Freedoom uses a generated asm.js engine;
 its preferred C source, adaptations, build instructions, exact license texts,
@@ -341,7 +345,7 @@ not replace those files.
 
 ## Game-by-game code provenance
 
-No implementation among the 25 original Starcade games was downloaded from
+No implementation among the 26 original Starcade games was downloaded from
 GitHub, copied from a browser-game collection, extracted from another mod, or
 translated from a ROM. Those games were written specifically for this project
 by X-2357. Freedoom: Phase 1 is a separately identified open-source inclusion,
@@ -455,7 +459,7 @@ Please include:
 
 ## Credits
 
-- **X-2357** — Starcade concept, design, launcher, native integration, Papyrus integration, and all twenty-five original Starcade games.
+- **X-2357** — Starcade concept, design, launcher, native integration, Papyrus integration, and all twenty-six original Starcade games.
 - **Freedoom contributors** — Freedoom: Phase 1 v0.13.0 game data (BSD-3-Clause).
 - **id Software, DoomGeneric contributors, and ading2210** — GPL-2.0 Doom engine lineage and asm.js port basis.
 - **Graeme McCutcheon** — micropolisJS, the HTML5/JavaScript port of Micropolis that Starcade adapts.
@@ -482,3 +486,5 @@ Dependency and platform notices are in `THIRD_PARTY_NOTICES.md`. All game
 source is included in the main mod; complete native and dependency source,
 including Micropolis's, Mah Jong's, and OpenMW's exact corresponding source,
 is supplied as a separate source archive on the same Nexus page.
+
+Development addition (November 2): Constellation Cards is an original tactical card duel with capture previews and automatic resume. Browser validation and Starfield acceptance are tracked separately; this is not a public-release claim.

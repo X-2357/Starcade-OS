@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; img-src 'self' data:">
+<title>Constellation Cards</title><link rel="icon" href="data:,"><link rel="stylesheet" href="../game.css"><link rel="stylesheet" href="style.css"></head>
+<body><main><header><div><small>STARCADE TACTICAL DECK</small><h1>CONSTELLATION CARDS</h1></div><button id="exit">Return to arcade</button></header>
+<p id="status" role="status" aria-live="polite"></p><p id="notice" role="status"></p>
+<p id="preview" role="status" aria-live="polite">Both captains receive the same five ships. First player is chosen at random.</p>
+<section class="play"><aside><h2>Your flight deck</h2><div id="hand"></div></aside><div id="board" aria-label="Nine-space board"></div><aside><h2>Opponent</h2><p id="opponent"></p><h2>Control</h2><p id="score"></p><button id="new">New duel</button><p id="confirm" hidden>Abandon this duel? Press New duel again to confirm.</p></aside></section>
+<p id="debrief"></p><footer><p>Choose a card, then an empty space. Higher touching edges capture enemy cards. Equal edges do not capture. Most controlled cards wins; the unplayed card counts.</p><p>ARROWS / D-PAD: navigate · ENTER / A: choose / place · X: change card · Y: new duel · ESC / B: return · TAB: controls</p></footer></main>
+<script src="../host.js"></script><script src="rules.js"></script><script src="game.js"></script></body></html>

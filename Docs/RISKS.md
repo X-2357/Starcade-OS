@@ -1,4 +1,6 @@
 # Open risks and measurements
+
+November 2: Constellation Cards browser tests and 200 match simulations pass; actual OSF UI rendering, gamepad forwarding and cold-start/resume in Starfield remain unmeasured (one short owner playtest). Card scoring is controlled-card count ×100; not comparable across games. Crash between final save and finish may omit that completion notification; never replay rewards on load. Razor Derby and physical screens remain unbuilt.
 October 6, 2026. Owner of all Starcade follow-ups: this project; sibling corrections are handoffs.
 | ID | Risk | Missing measurement / next action |
 |---|---|---|

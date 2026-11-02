@@ -1,4 +1,6 @@
 # Starcade ecosystem contract
+
+November 2 card addition: constellation-cards owns only fictional match data (schema 1, seed, first, legal move history). Uses existing host save/finish routes; no sibling file or native command added. No wagers or custom XP. Existing non-casino completion reward policy still applies. No new adapter, cadence or VM polling. Standalone browser fallback uses a uniquely named local save; host native save is preferred when provided.
 Checkpoint October 6, 2026; reference source 6b26c7e. Shared living design remains ModSource/X2357_MOD_ECOSYSTEM.md. Dated Reference copy is archival. Every future feature handoff must include this ownership map plus its specific contract.
 
 ## Actual Starcade to AISS seam
