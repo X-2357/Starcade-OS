@@ -1,5 +1,7 @@
 # Open risks and measurements
 
+November 3 continuation: Razor Derby exhibition and Frontier Convoy implemented in source; catalog now 35 embedded games. Razor engine: 30 full matches and deterministic restore passed; browser movement/pause/checkpoint/reopen tests passed November 2. Convoy: 200 winning runs and every-choice replay restore passed November 3. JavaScript/catalog validation passed. Actual Starfield input, balance, rendering and combined ecosystem performance remain UNVERIFIED. No native/Papyrus/CK or sibling edits. Razor transport uses launch serials to reject stale saves; no new cross-mod state publisher. Full scopes: Docs/RAZOR_DERBY_IMPLEMENTATION_2026-11-02.md and Docs/FRONTIER_CONVOY_IMPLEMENTATION_2026-11-02.md.
+
 November 2: Constellation Cards browser tests and 200 match simulations pass; actual OSF UI rendering, gamepad forwarding and cold-start/resume in Starfield remain unmeasured (one short owner playtest). Card scoring is controlled-card count ×100; not comparable across games. Crash between final save and finish may omit that completion notification; never replay rewards on load. Razor Derby and physical screens remain unbuilt.
 October 6, 2026. Owner of all Starcade follow-ups: this project; sibling corrections are handoffs.
 | ID | Risk | Missing measurement / next action |

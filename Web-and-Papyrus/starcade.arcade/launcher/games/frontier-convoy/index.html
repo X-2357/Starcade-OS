@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'self' data:">
+<title>Frontier Convoy</title><link rel="icon" href="data:,"><link rel="stylesheet" href="../game.css"><link rel="stylesheet" href="style.css"></head><body><main>
+<header><div><small>STARCADE EXPEDITION SIMULATOR</small><h1>FRONTIER CONVOY</h1></div><button id="exit">Return to arcade</button></header>
+<p class="intro">Escort your convoy through six legs. Every route has a visible cost. Arrive with hull intact; conserve enough fuel for the remaining journey.</p>
+<div id="map" aria-label="Six-leg route"></div><section id="resources" aria-label="Convoy reserves"></section>
+<section class="panel"><p id="stage"></p><h2 id="title"></h2><p id="story"></p><div id="choices"></div><p id="notice" role="status"></p></section>
+<section class="log"><h2>Captain's log</h2><div id="log"></div></section><footer><button id="new">New expedition (Y)</button><span>ARROWS / D-PAD: navigate · A / ENTER: choose · Y: new expedition · B / ESC: return</span></footer>
+</main><script src="../host.js"></script><script src="rules.js"></script><script src="game.js"></script></body></html>

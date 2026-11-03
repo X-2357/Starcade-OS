@@ -10,6 +10,8 @@
   let filter = "all";
   let selected = 0;
   let current = null;
+  let closeCheckpointTimer = 0;
+  let launchSerial = 0;
   let currentScore = 0;
   let runFinished = false;
   let leaderboardGame = 0;
@@ -283,6 +285,7 @@
     }
     musicPlayer.pause();
     current = game;
+    launchSerial++;
     currentScore = 0;
     runFinished = false;
     $("playerTitle").textContent = game.title.toUpperCase();
@@ -296,7 +299,17 @@
     frame.focus();
   }
 
-  function closeGame() {
+  function closeGame(flushed = false) {
+    // This real-time game checkpoints before ordinary launcher closes. Older
+    // games keep their immediate-close behavior. Child exit follows its save.
+    if (current?.id === "razor-derby" && flushed !== true) {
+      if (!closeCheckpointTimer) {
+        frame.contentWindow?.postMessage({ channel:"starcade", type:"prepareClose", session:launchSerial }, "*");
+        closeCheckpointTimer = setTimeout(() => closeGame(true), 250);
+      }
+      return;
+    }
+    if (closeCheckpointTimer) { clearTimeout(closeCheckpointTimer); closeCheckpointTimer = 0; }
     releaseControllerInputs();
     setRawGamepad(false);
     if (current && current.category === "casino" && osfui.available()) {
@@ -358,6 +371,9 @@
   window.addEventListener("message", (event) => {
     if (event.source !== frame.contentWindow || !event.data || event.data.channel !== "starcade") return;
     const message = event.data;
+    if (message.game && message.game !== current?.id) return;
+    if (current?.id === "razor-derby" && message.type !== "ready" &&
+        (message.game !== current.id || message.session !== launchSerial)) return;
     if (message.type === "score" && current) {
       const score = Math.max(0, Math.floor(Number(message.value) || 0));
       if (score === 0 && currentScore > 0) runFinished = false;
@@ -376,12 +392,12 @@
       if (osfui.available()) osfui.send("starcade.arcade.achievement.unlock", { game:current.id, id:message.value });
     } else if (message.type === "ready" && current) {
       const saved = nativeState.games?.[current.id]?.save ?? JSON.parse(localStorage.getItem(`starcade.save.${current.id}`) || "null");
-      frame.contentWindow.postMessage({ channel:"starcade", type:"load", value:saved }, "*");
+      frame.contentWindow.postMessage({ channel:"starcade", type:"load", value:saved, session:launchSerial }, "*");
     } else if (message.type === "credits" && current) {
       const request = message.value || {};
       if (osfui.available()) osfui.send("starcade.arcade.credits.transaction", { game:current.id, ...request });
       else frame.contentWindow.postMessage({ channel:"starcade", type:"credits", value:{ requestId:request.requestId, success:false, error:"Starfield credit service unavailable" } }, "*");
-    } else if (message.type === "exit") closeGame();
+    } else if (message.type === "exit") closeGame(true);
   });
 
   window.addEventListener("keydown", (event) => {

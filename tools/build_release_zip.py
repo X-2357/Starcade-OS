@@ -26,6 +26,7 @@ VIEW = 'SFSE/Plugins/OSFUI/views/starcade.arcade/'
 
 # Files taken from the repo instead of the install folder: (zip-relative path, repo path)
 OVERRIDES = {
+    VIEW + 'launcher/main.js': 'Web-and-Papyrus/starcade.arcade/launcher/main.js',
     VIEW + 'launcher/index.html': 'Web-and-Papyrus/starcade.arcade/launcher/index.html',
     VIEW + 'launcher/audio/music/SOURCE-AND-LICENSES.txt':
         'Web-and-Papyrus/starcade.arcade/launcher/audio/music/SOURCE-AND-LICENSES.txt',
@@ -82,6 +83,12 @@ def collect(install):
     card_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/constellation-cards')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/constellation-cards/' + name] = os.path.join(card_root, name)
+    derby_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby')
+    for name in ('index.html', 'style.css', 'engine.js', 'game.js'):
+        entries[VIEW + 'launcher/games/razor-derby/' + name] = os.path.join(derby_root, name)
+    convoy_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/frontier-convoy')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/frontier-convoy/' + name] = os.path.join(convoy_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')

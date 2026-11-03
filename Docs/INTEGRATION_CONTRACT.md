@@ -1,5 +1,7 @@
 # Starcade ecosystem contract
 
+November 3 continuation: Razor Derby exhibition and Frontier Convoy implemented in source; catalog now 35 embedded games. Razor engine: 30 full matches and deterministic restore passed; browser movement/pause/checkpoint/reopen tests passed November 2. Convoy: 200 winning runs and every-choice replay restore passed November 3. JavaScript/catalog validation passed. Actual Starfield input, balance, rendering and combined ecosystem performance remain UNVERIFIED. No native/Papyrus/CK or sibling edits. Razor transport uses launch serials to reject stale saves; no new cross-mod state publisher. Full scopes: Docs/RAZOR_DERBY_IMPLEMENTATION_2026-11-02.md and Docs/FRONTIER_CONVOY_IMPLEMENTATION_2026-11-02.md.
+
 November 2 card addition: constellation-cards owns only fictional match data (schema 1, seed, first, legal move history). Uses existing host save/finish routes; no sibling file or native command added. No wagers or custom XP. Existing non-casino completion reward policy still applies. No new adapter, cadence or VM polling. Standalone browser fallback uses a uniquely named local save; host native save is preferred when provided.
 Checkpoint October 6, 2026; reference source 6b26c7e. Shared living design remains ModSource/X2357_MOD_ECOSYSTEM.md. Dated Reference copy is archival. Every future feature handoff must include this ownership map plus its specific contract.
 

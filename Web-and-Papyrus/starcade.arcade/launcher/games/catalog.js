@@ -4,6 +4,18 @@ const originalLicense = "Original Starcade game - released under the Starcade OS
 
 window.STARCADE_GAMES = [
   {
+    id: "frontier-convoy", title: "Frontier Convoy", category: "strategy",
+    description: "Escort a convoy through six crossings. Balance fuel, hull and supplies with visible route costs and twelve original encounters.",
+    entry: "games/frontier-convoy/index.html", controls: "Arrows / D-pad + Enter / A; mouse",
+    color: "#91c7ed", license: originalLicense
+  },
+  {
+    id: "razor-derby", title: "Razor Derby", category: "arcade",
+    description: "Play a six-a-side holo-sport exhibition. Pass, challenge and shoot before the possession clock expires.",
+    entry: "games/razor-derby/index.html", controls: "Arrows + A / Enter, X, Y; LB / Shift sprint",
+    color: "#ffe59a", license: originalLicense
+  },
+  {
     id: "constellation-cards", title: "Constellation Cards", category: "strategy",
     description: "Command a five-card flight deck. Capture rival ships through stronger touching edges.",
     entry: "games/constellation-cards/index.html", controls: "Arrows / D-pad + Enter / A; mouse",
