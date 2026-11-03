@@ -3,6 +3,7 @@
 const originalLicense = "Original Starcade game - released under the Starcade OS MIT License";
 
 window.STARCADE_GAMES = [
+  { id: "ship-crisis", title: "Ship Crisis", category: "strategy", description: "Allocate reactor power, repair damage and fight or escape a ten-turn ship emergency.", entry: "games/ship-crisis/index.html", controls: "Arrows / D-pad + Enter / A", color: "#85c7ec", license: originalLicense },
   {
     id: "frontier-convoy", title: "Frontier Convoy", category: "strategy",
     description: "Escort a convoy through six crossings. Balance fuel, hull and supplies with visible route costs and twelve original encounters.",

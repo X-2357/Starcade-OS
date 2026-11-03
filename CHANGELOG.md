@@ -1,3 +1,7 @@
+## November 3 Ship Crisis development
+- Add complete tactical reactor-management simulation with repair, combat, escape and surrender outcomes.
+- Add seeded replay saves, forecast/debrief and automated lifecycle acceptance.
+
 ## November 3 manual pass targeting
 - Add explicit teammate selection in Razor Derby via C / RB, with visible target feedback.
 - Preserve automatic defaults, AI behavior, exhibition saves and practice isolation.

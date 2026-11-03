@@ -1,4 +1,4 @@
-# Starcade OS 1.9.9 + Cards — development candidate
+# Starcade OS — November 3 development candidate
 
 Current checkpoint November 2, 2026: read CLAUDE.md and Docs/DEVELOPMENT_HANDOFF_2026-11-02.md. Source has 33 embedded games and 84 music tracks. Owner confirmed Hextris and new music October 20 and native 1.7.3 rebuild October 29. Constellation Cards passed desktop browser checks; Starfield acceptance is pending. Individual new-music license/source verification remains pending. Runtime packaging uses the verified installed native artifacts plus explicit source overrides; it is not buildable from this Git checkout alone.
 
@@ -42,7 +42,7 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 ## Credits and licenses
 
 - OSF UI and its public bridge API by ozooma10.
-- Starcade OS concept, integration, and all 26 original game implementations by X-2357.
+- Starcade OS concept, integration, and all 29 original game implementations by X-2357.
 - Freedoom: Phase 1 data is BSD-3-Clause; its Doom engine port is GPL-2.0. Full notices and corresponding source are supplied.
 - Hextris and Starcade's offline modifications are GPL-3.0-or-later; editable source is included with the runtime.
 - Mah Jong is MIT-licensed (ffalt/mah); editable source is included with the runtime.
@@ -56,3 +56,5 @@ All editable HTML/JavaScript game source is included. See `THIRD_PARTY_NOTICES.m
 Development addition (November 2): Constellation Cards is an original tactical card duel with capture previews and automatic resume. Browser validation and Starfield acceptance are tracked separately; this is not a public-release claim.
 
 Razor Derby development: C / RB cycles passing receivers; the diamond and target label show the selection, and X passes. Automatic targeting remains the default. Actual Starfield acceptance is pending.
+
+Ship Crisis development addition: ten-turn reactor-management simulation. Allocate engines/shields/weapons, repair hull, and destroy the attacker or escape. Explicit attack forecast and damage log, automatic action checkpoints and keyboard/controller/mouse selection. Browser acceptance passed; Starfield acceptance pending.

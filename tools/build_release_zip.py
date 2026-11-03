@@ -89,6 +89,9 @@ def collect(install):
     convoy_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/frontier-convoy')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/frontier-convoy/' + name] = os.path.join(convoy_root, name)
+    crisis_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/ship-crisis')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/ship-crisis/' + name] = os.path.join(crisis_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')

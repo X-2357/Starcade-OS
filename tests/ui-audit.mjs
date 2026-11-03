@@ -35,7 +35,7 @@ function serveDir(root) {
 const root = path.resolve(import.meta.dirname, "../Web-and-Papyrus/starcade.arcade/launcher");
 const catalogText = fs.readFileSync(path.join(root, "games/catalog.js"), "utf8");
 const entries = [...catalogText.matchAll(/entry:\s*"([^"]+)"/g)].map((match) => match[1]);
-if (entries.length !== 35) throw new Error(`Expected 35 embedded games, found ${entries.length}`);
+if (entries.length !== 36) throw new Error(`Expected 36 embedded games, found ${entries.length}`);
 
 const server = serveDir(root);
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));

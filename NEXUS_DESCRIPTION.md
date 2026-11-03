@@ -5,14 +5,14 @@ Description draft for the unreleased Cards development candidate; not a claim of
 **Created by X-2357**
 
 Starcade OS adds a portable arcade operating system to Starfield. It contains
-twenty-eight original games plus seven clearly identified open-source
+twenty-nine original games plus seven clearly identified open-source
 adaptations (Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards) inside a
 unified Starfield-themed interface, supports keyboard and controller input,
 preserves high scores, and can be opened with a reusable inventory pad or
 configurable hotkey. An additional card, OpenMW: Morrowind, is an optional external
 launcher rather than an embedded game - see below.
 
-The 28 original Starcade games were written specifically for Starcade OS.
+The 29 original Starcade games were written specifically for Starcade OS.
 Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards are clearly identified
 open-source adaptations, each distributed with its required license notices
 and corresponding source. The download contains no proprietary Doom WAD,
@@ -27,7 +27,7 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ### Current development copy — November 2, 2026
 
-The current source library contains 35 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
+The current source library contains 36 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
 
 Music development source now contains 84 tracks, including 21 unique additions supplied October 6. The prior 63-track library and track list were confirmed in-game September 27; the owner confirmed new-track playback October 20, while individual source/license pages have not yet been verified. Shuffle and volume controls are unchanged.
 
@@ -65,7 +65,7 @@ Future colony recreation, Legacy milestones, holo-sports and sponsorship ideas a
 - Varied in-world rival leaderboards and repeatable vanilla XP rewards for new personal records (non-casino games only).
 - Automatic OSF UI view and settings registration through an SFSE plugin.
 - No replacement interface files and no OSF UI configuration overwrite.
-- Editable source for the 28 original games is included in the installation; complete corresponding Freedoom engine source is supplied as a separate source archive.
+- Editable source for the 29 original games is included in the installation; complete corresponding Freedoom engine source is supplied as a separate source archive.
 
 ## Included games
 
@@ -282,7 +282,7 @@ overwritten.
 
 ## Game source code and modding permissions
 
-The full editable source for all 28 original games is distributed with the mod.
+The full editable source for all 29 original games is distributed with the mod.
 Those browser games do not use hidden binaries, obfuscated bundles, downloaded
 scripts, or proprietary game engines. Freedoom uses a generated asm.js engine;
 its preferred C source, adaptations, build instructions, exact license texts,
@@ -345,7 +345,7 @@ not replace those files.
 
 ## Game-by-game code provenance
 
-No implementation among the 28 original Starcade games was downloaded from
+No implementation among the 29 original Starcade games was downloaded from
 GitHub, copied from a browser-game collection, extracted from another mod, or
 translated from a ROM. Those games were written specifically for this project
 by X-2357. Freedoom: Phase 1 is a separately identified open-source inclusion,
@@ -459,7 +459,7 @@ Please include:
 
 ## Credits
 
-- **X-2357** — Starcade concept, design, launcher, native integration, Papyrus integration, and all twenty-eight original Starcade games.
+- **X-2357** — Starcade concept, design, launcher, native integration, Papyrus integration, and all twenty-nine original Starcade games.
 - **Freedoom contributors** — Freedoom: Phase 1 v0.13.0 game data (BSD-3-Clause).
 - **id Software, DoomGeneric contributors, and ading2210** — GPL-2.0 Doom engine lineage and asm.js port basis.
 - **Graeme McCutcheon** — micropolisJS, the HTML5/JavaScript port of Micropolis that Starcade adapts.
@@ -494,3 +494,5 @@ November 3 development additions: Razor Derby (original exhibition rules, six-a-
 Razor Derby development: optional practice uses separate checkpoints and awards no scores or rewards. Exhibition remains the scored mode.
 
 Razor Derby development: C / RB cycles passing receivers; the diamond and target label show the selection, and X passes. Automatic targeting remains the default. Actual Starfield acceptance is pending.
+
+Ship Crisis development addition: ten-turn reactor-management simulation. Allocate engines/shields/weapons, repair hull, and destroy the attacker or escape. Explicit attack forecast and damage log, automatic action checkpoints and keyboard/controller/mouse selection. Browser acceptance passed; Starfield acceptance pending.
