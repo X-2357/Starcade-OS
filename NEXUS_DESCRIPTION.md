@@ -1,6 +1,6 @@
 # STARCADE OS
 
-Description draft for the unreleased Cards development candidate; not a claim of Nexus publication.
+Description draft for the unreleased career development candidate; not a claim of Nexus publication.
 
 **Created by X-2357**
 
@@ -25,7 +25,9 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ## Main features
 
-### Current development copy — November 2, 2026
+### Current development copy — November 3, 2026
+
+Razor Derby now offers an eight-team career with 64 named athletes, reserve selection, seven-round seasons, player and team statistics, previous-season archives and career totals. Earn training points and athlete XP, develop your team and track season honours. These are rewards within Razor Derby; Starfield credits and inventory prizes are not included. Existing four-team seasons remain playable until you choose to roll into the new career. Development acceptance in Starfield remains pending.
 
 The current source library contains 39 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
 

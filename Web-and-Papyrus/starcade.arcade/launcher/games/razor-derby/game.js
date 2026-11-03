@@ -8,7 +8,8 @@
   let selectedTactic="balanced";
   const tactics=["balanced","wide","press"],tacticNames={balanced:"Balanced",wide:"Wide outlets",press:"High press"},tacticHelp={balanced:"Two defenders press; support keeps balanced lanes.",wide:"Support runners offer wider passing outlets.",press:"Three defenders press; fewer hold their shape."};
   let league=false,seasonState=null,seasonSettled=false,settling=false;
-  const seasonKey="starcade.razor-derby.season.v1";
+  const careerKey="starcade.razor-derby.career.v2",legacySeasonKey="starcade.razor-derby.season.v1";
+  let seasonKey=careerKey;
   let practice=false,selectedTarget=-1,targetCarrier=-1;
   const recordsKey="starcade.razor-derby.records.v1";
   function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
@@ -36,7 +37,7 @@
   async function finishSeasonRound(){
     if(settling)return;settling=true;
     const base=seasonState,completed=state,r=RazorSeason.round(base);persist();
-    try{const goals=await RazorSeason.simulateAsync((base.seed+r*7919)>>>0);
+    try{const goals=await RazorSeason.simulateRoundAsync(base);
       if(!league||seasonState!==base||state!==completed)return;
       const next=RazorSeason.settle(base,completed,r,goals);localStorage.setItem(seasonKey,JSON.stringify(next));seasonState=next;seasonSettled=true;$("notice").textContent=`Round ${r+1} saved.`;
     }catch(_){$("notice").textContent="Season result could not be saved. Resume retries settlement.";}
@@ -48,18 +49,18 @@
     $("start").disabled=settling;$("new").disabled=settling;$("practice").disabled=settling;
     $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
     $("practice").hidden=practice;
-    $("season").hidden=league;$("fixtures").hidden=!league;
+    $("season").hidden=league;$("fixtures").hidden=!league;for(const id of ["roster","career","history"])$(id).hidden=!league||seasonState.schema!==2;
     $("overlay").hidden=state?.phase==="live";
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
-    $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=3;
+    $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState);
     $("start").textContent=practice?"Resume practice":state?"Resume exhibition":"Start exhibition";
     $("heading").textContent=done?(state.goals[0]>state.goals[1]?"Teal victory":state.goals[0]<state.goals[1]?"Rose victory":"Honors even"):state?(practice?"Practice paused":"Exhibition paused"):"Take the pitch";
     if(done){const t=state.stats;$("body").textContent=`Full time: ${state.goals[0]} – ${state.goals[1]}. Shots ${t.shots[0]} / ${t.shots[1]}; completed challenges ${t.steals[0]} / ${t.steals[1]}; keeper saves ${t.saves[0]} / ${t.saves[1]}. Teal / Rose. Move closer before shooting; use your marked passing outlet under pressure.`;}
     else if(state)$("body").textContent="Your match is saved. Resume when ready; the clock does not run while paused. Teal attacks right. Use X to pass or challenge, A to shoot or switch defender.";
-    if(league){const r=RazorSeason.round(seasonState);$("mode").textContent=`LEAGUE · ROUND ${Math.min(3,r+1)}/3 · LOCAL SEASON`;
+    if(league){const r=RazorSeason.round(seasonState);$("mode").textContent=`LEAGUE · ROUND ${Math.min(RazorSeason.rounds(seasonState),r+1)}/${RazorSeason.rounds(seasonState)} · LOCAL SEASON`;
       $("new").hidden=false;$("new").textContent=confirmNew?"Confirm abandon season":"New season";
-      $("heading").textContent=r===3?"Season complete":`Relay Runners vs ${RazorSeason.teams[r+1]}`;
+      $("heading").textContent=r===RazorSeason.rounds(seasonState)?"Season complete":`Relay Runners vs ${RazorSeason.teams[r+1]}`;
       $("body").textContent=RazorSeason.table(seasonState).map(t=>`${t.name}: ${t.points} pts, ${t.played} played, goals ${t.for}:${t.against}`).join("\n")+"\nTeal is your team. Ranked by points, goal difference and goals scored. Level records remain tied.";
       $("start").textContent=settling?"Settling round…":state?.phase==="result"&&!seasonSettled?"Retry result settlement":state&&state.phase!=="result"?"Resume league match":"Play next league match";
     }
@@ -68,7 +69,7 @@
   function resume(){
     if(document.hidden)return;
     if(league&&state?.phase==="result"&&!seasonSettled){finishSeasonRound();show();return;}
-    if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=3)return;state=RazorSeason.start(seasonState);seasonSettled=false;localTick=hostTick=0;}
+    if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState))return;state=RazorSeason.start(seasonState);seasonSettled=false;localTick=hostTick=0;}
     if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice&&!league)H.score(0);}
     if(state.phase==="result")return;
     if(!practice&&!league&&!state.matchId)state.matchId=identity();
@@ -76,7 +77,7 @@
     if(!raf)raf=requestAnimationFrame(frame);
   }
   function newMatch(){
-    if(league){if(seasonState&&RazorSeason.round(seasonState)<3&&!confirmNew){confirmNew=true;show();return;}stop();seasonState=RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);state=null;seasonSettled=false;confirmNew=false;persist();show();draw();return;}
+    if(league){if(seasonState&&RazorSeason.round(seasonState)<RazorSeason.rounds(seasonState)&&!confirmNew){confirmNew=true;show();return;}stop();try{const next=RazorSeason.nextSeason(seasonState,crypto.getRandomValues(new Uint32Array(1))[0]);localStorage.setItem(careerKey,JSON.stringify(next));seasonKey=careerKey;seasonState=next;state=null;seasonSettled=false;confirmNew=false;show();draw();}catch(_){$("notice").textContent="Could not archive/start the next season. Existing career is preserved.";}return;}
     if(state&&state.phase!=="result"&&!confirmNew){confirmNew=true;$("new").textContent="Confirm abandon and start new";return;}
     stop();state=null;confirmNew=false;localTick=0;hostTick=0;resume();persist();
   }
@@ -98,6 +99,7 @@
       if(p.id===state.control){ctx.strokeStyle="#ffe59a";ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(q.x,q.y+5,20,11,0,0,Math.PI*2);ctx.stroke();}
       ctx.fillStyle=side?"#e86b94":"#6ee1c6";ctx.beginPath();ctx.arc(q.x,q.y-8,12,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#d4ffff";ctx.lineWidth=1;ctx.stroke();
       ctx.fillStyle="#05151b";ctx.font="bold 12px Arial";ctx.fillText(p.id%6===0?"K":String(p.id%6+1),q.x,q.y-4);
+      if(league&&seasonState.schema===2&&state.leagueLineup){const id=state.leagueLineup[p.id],athlete=seasonState.rosters.flat().find(a=>a.id===id);if(athlete){ctx.fillStyle="#e8f4f2";ctx.font="10px Arial";ctx.fillText(athlete.name,q.x,q.y+24);}}
       if(p.id===target){ctx.fillStyle="#ffe59a";ctx.beginPath();ctx.moveTo(q.x,q.y-40);ctx.lineTo(q.x+7,q.y-32);ctx.lineTo(q.x,q.y-24);ctx.lineTo(q.x-7,q.y-32);ctx.closePath();ctx.fill();}
     }
     const ball=project(state.ball.x,state.ball.y);ctx.fillStyle="#fff4bc";ctx.shadowColor="#ffd36e";ctx.shadowBlur=14;ctx.beginPath();ctx.arc(ball.x,ball.y-18,6,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
@@ -127,10 +129,10 @@
     }catch(_){state=null;$("notice").textContent="The saved exhibition could not be restored. Start a fresh match.";}
     show();draw();
   }
-  $("resetSeason").onclick=()=>{if(!$("resetSeason").dataset.confirm){$("resetSeason").dataset.confirm="1";$("resetSeason").textContent="Confirm replace damaged season";return;}localStorage.removeItem(seasonKey);$("resetSeason").hidden=true;$("resetSeason").dataset.confirm="";$("season").click();};
+  $("resetSeason").onclick=()=>{if(!$("resetSeason").dataset.confirm){$("resetSeason").dataset.confirm="1";$("resetSeason").textContent="Confirm replace damaged season";return;}localStorage.setItem(careerKey,JSON.stringify(RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0])));seasonKey=careerKey;$("resetSeason").hidden=true;$("resetSeason").dataset.confirm="";$("season").click();};
   $("season").onclick=()=>{
     if(!loaded)return;let saved;
-    try{const text=localStorage.getItem(seasonKey);saved=text?RazorSeason.restore(JSON.parse(text)):RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);}
+    try{seasonKey=localStorage.getItem(careerKey)!==null?careerKey:legacySeasonKey;const text=localStorage.getItem(seasonKey);saved=text?RazorSeason.restore(JSON.parse(text)):RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(saved.schema===2)seasonKey=careerKey;}
     catch(_){$("notice").textContent="Stored season is unsupported or damaged; it has been preserved.";$("resetSeason").hidden=false;return;}
     pause();stop();league=true;practice=false;seasonState=saved;state=saved.match;seasonSettled=!state;confirmNew=false;
     selectedTactic=state?.tactic||"balanced";if(state?.phase==="live")state.phase="paused";if(state)localTick=hostTick=state.tick;show();draw();
@@ -142,8 +144,32 @@
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
     selectedTactic=state.tactic||"balanced";state.phase="paused";show();draw();
   };
-  $("fixtures").onclick=()=>{if(!league)return;pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordsTitle").textContent="Season fixtures";$("recordsSubtitle").textContent="Three rounds · all teams play each other once";$("recordList").replaceChildren();RazorSeason.fixtures.forEach((round,r)=>round.forEach(([a,b])=>{const result=seasonState.results.find(m=>m.round===r&&m.a===a&&m.b===b);const p=document.createElement("p");p.textContent=`Round ${r+1}: ${RazorSeason.teams[a]} ${result?result.goals.join(" : "):"vs"} ${RazorSeason.teams[b]}${result?"":" — scheduled"}`;$("recordList").append(p);}));$("closeRecords").focus();};
-  $("records").onclick=()=>{$("recordsTitle").textContent="Latest exhibition records";$("recordsSubtitle").textContent="Local completion dates · rules revision 1 · latest ten matches";pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordList").replaceChildren();try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));if(!entries.length)$("recordList").textContent="No completed exhibitions recorded yet.";for(const e of entries.slice().reverse()){const p=document.createElement("p");p.textContent=`${new Date(e.ended*1000).toLocaleString()} · Teal ${e.goals[0]} : ${e.goals[1]} Rose · shots ${e.stats.shots.join("/")} · challenges ${e.stats.steals.join("/")} · keeper saves ${e.stats.saves.join("/")}${e.tactic?` · tactic ${tacticNames[e.tactic]}`:""}`;$("recordList").append(p);}}catch(_){$("recordList").textContent="Stored records are unavailable or from an unsupported version.";}$("closeRecords").focus();};
+  function panel(title,subtitle){pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordsTitle").textContent=title;$("recordsSubtitle").textContent=subtitle;$("recordActions").replaceChildren();$("recordList").replaceChildren();}
+  function button(label,fn,disabled=false){const b=document.createElement("button");b.textContent=label;b.disabled=disabled;b.onclick=fn;$("recordActions").append(b);return b;}
+  function detail(text){const p=document.createElement("p");p.textContent=text;$("recordList").append(p);}
+  function careerChange(fn,after){try{const next=fn(seasonState);localStorage.setItem(careerKey,JSON.stringify(next));seasonState=next;after();}catch(_){detail("Change unavailable or storage write failed. Existing career retained.");}}
+  let rosterTeam=0,rosterPeriod='current',rosterSlot=1;
+  function rosterView(){if(!league||seasonState.schema!==2)return;panel('Rosters & player statistics','Actual tracked statistics; missing legacy player data is not reconstructed.');
+    const archives=seasonState.archives.filter(a=>a.schema===2),selected=rosterPeriod==='current'?seasonState:rosterPeriod==='career'?null:archives.find(a=>a.number===rosterPeriod);
+    if(rosterPeriod!=='career'&&!selected){rosterPeriod='current';return rosterView();}
+    for(let t=0;t<8;t++)button(RazorSeason.teams[t],()=>{rosterTeam=t;rosterView();});
+    button('Current season',()=>{rosterPeriod='current';rosterView();});button('Career totals',()=>{rosterPeriod='career';rosterView();});
+    for(const a of archives)button(`Season ${a.number}`,()=>{rosterPeriod=a.number;rosterView();});
+    const managing=rosterTeam===0&&(rosterPeriod==='current'||rosterPeriod==='career');
+    if(managing)button(`Lineup slot ${rosterSlot} (cycle 1–5)`,()=>{rosterSlot=rosterSlot%5+1;rosterView();});
+    const source=selected||seasonState,row=source.rosters[rosterTeam],lineup=source.lineups[rosterTeam];
+    detail(`${RazorSeason.teams[rosterTeam]} · ${rosterPeriod==='career'?'Career':`Season ${source.number}`} · training points available ${RazorSeason.rewards(seasonState).available}`);
+    for(const p of row){const v=RazorSeason.playerStats(seasonState,p.id,rosterPeriod==='career'?undefined:source.number),slot=lineup.indexOf(p.id);detail(`${p.name} [${p.id}] · ${p.role} · ${slot<0?'Reserve':slot===0?'Starting keeper':`Starting slot ${slot}`} · appearances ${v.appearances}, tracked minutes ${(v.ticks/3600).toFixed(1)} · goals ${v.goals}, assists ${v.assists}, shots ${v.shots}, passes ${v.completed}/${v.passes}, challenges ${v.steals}, saves ${v.saves}${rosterPeriod==='career'||rosterPeriod==='current'?` · career level ${RazorSeason.playerStats(seasonState,p.id).level}, XP ${RazorSeason.playerStats(seasonState,p.id).xp}, rating ${RazorSeason.rating(seasonState,p.id)}/10`:''}`);
+      if(managing){if(p.id!=='t0p0')button(`Assign ${p.name} to slot ${rosterSlot}`,()=>careerChange(s=>RazorSeason.changeLineup(s,rosterSlot,p.id),rosterView),!!seasonState.match||settling);button(`Train ${p.name} (1 point)`,()=>careerChange(s=>RazorSeason.train(s,p.id),rosterView),!!seasonState.match||settling||RazorSeason.rewards(seasonState).available<1||seasonState.training.filter(t=>t.id===p.id).length>=5);}}
+    $("closeRecords").focus();
+  }
+  let rewardPage=0;
+  function rewardsView(){if(!league||seasonState.schema!==2)return;panel('Career rewards','League training points and athlete XP are fictional; no Starfield currency or inventory payout.');const v=RazorSeason.rewards(seasonState);detail(`Earned ${v.earned} · Spent ${v.spent} · Available ${v.available}`);detail(v.honours.join(' · ')||'No completed season honours yet.');for(const t of RazorSeason.careerTable(seasonState))detail(`${t.name}: career ${t.played} matches, W/D/L ${t.wins}/${t.draws}/${t.losses}, goals ${t.for}:${t.against}`);button('Newer rewards',()=>{rewardPage=Math.max(0,rewardPage-1);rewardsView();},rewardPage===0);button('Older rewards',()=>{rewardPage++;rewardsView();},(rewardPage+1)*10>=v.ledger.length);for(const e of v.ledger.slice().reverse().slice(rewardPage*10,rewardPage*10+10))detail(`${e.text}: +${e.points} training points [${e.id}]`);detail('Spend points in your roster between matches. XP is earned from appearances and recorded actions; levels and training improve league-only speed and shot accuracy.');$("closeRecords").focus();}
+  let historyIndex=0;
+  function historyView(){if(!league||seasonState.schema!==2)return;const list=seasonState.archives;panel('Previous seasons','Archived actual fixtures and final rosters; incomplete seasons are labeled.');if(!list.length){detail('No previous seasons archived yet.');return;}historyIndex=Math.max(0,Math.min(historyIndex,list.length-1));const a=list[list.length-1-historyIndex];button('Newer season',()=>{historyIndex--;historyView();},historyIndex===0);button('Older season',()=>{historyIndex++;historyView();},historyIndex===list.length-1);detail(a.legacy?'Legacy four-team season: team results known, player statistics unavailable.':`Season ${a.number} · ${a.results.length===28?'Complete':'Abandoned / incomplete'} · ${a.results.length}/28 fixtures`);for(const t of RazorSeason.table(a))detail(`${t.name}: ${t.points} points, ${t.played} played, goals ${t.for}:${t.against}`);for(const m of a.results)detail(`Round ${m.round+1}: ${RazorSeason.teams[m.a]} ${m.goals.join(' : ')} ${RazorSeason.teams[m.b]}`);if(!a.legacy)for(const row of a.rosters)detail(row.map(p=>`${p.name} [${p.id}]`).join(' · '));$("closeRecords").focus();}
+  $("roster").onclick=rosterView;$("career").onclick=rewardsView;$("history").onclick=historyView;
+  $("fixtures").onclick=()=>{if(!league)return;pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordsTitle").textContent="Season fixtures";$("recordsSubtitle").textContent="All teams play each other once";$("recordActions").replaceChildren();$("recordList").replaceChildren();RazorSeason.fixturesFor(seasonState).forEach((round,r)=>round.forEach(([a,b])=>{const result=seasonState.results.find(m=>m.round===r&&m.a===a&&m.b===b);const p=document.createElement("p");p.textContent=`Round ${r+1}: ${RazorSeason.teams[a]} ${result?result.goals.join(" : "):"vs"} ${RazorSeason.teams[b]}${result?"":" — scheduled"}`;$("recordList").append(p);}));$("closeRecords").focus();};
+  $("records").onclick=()=>{$("recordsTitle").textContent="Latest exhibition records";$("recordsSubtitle").textContent="Local completion dates · rules revision 1 · latest ten matches";pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordActions").replaceChildren();$("recordList").replaceChildren();try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));if(!entries.length)$("recordList").textContent="No completed exhibitions recorded yet.";for(const e of entries.slice().reverse()){const p=document.createElement("p");p.textContent=`${new Date(e.ended*1000).toLocaleString()} · Teal ${e.goals[0]} : ${e.goals[1]} Rose · shots ${e.stats.shots.join("/")} · challenges ${e.stats.steals.join("/")} · keeper saves ${e.stats.saves.join("/")}${e.tactic?` · tactic ${tacticNames[e.tactic]}`:""}`;$("recordList").append(p);}}catch(_){$("recordList").textContent="Stored records are unavailable or from an unsupported version.";}$("closeRecords").focus();};
   $("closeRecords").onclick=()=>{$("recordPanel").hidden=true;$("overlay").inert=false;document.querySelector("nav").inert=false;show();$("records").focus();};
   $("tactic").onclick=()=>{if(settling||state?.phase==="live")return;selectedTactic=tactics[(tactics.indexOf(selectedTactic)+1)%tactics.length];if(state&&state.phase!=="result"){state.tactic=selectedTactic;persist();}show();};
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
@@ -152,7 +178,9 @@
   $("pass").onclick=()=>{if(state?.phase==="live")action.pass=true;};$("shoot").onclick=()=>{if(state?.phase==="live")action.shoot=true;};
   addEventListener("keydown",e=>{
     const k=e.key.length===1?e.key.toLowerCase():e.key;
-    if(!$("recordPanel").hidden){e.preventDefault();if(k==="Escape"||k==="Enter"||k===" "){e.preventDefault();e.stopImmediatePropagation();$("closeRecords").click();}return;}
+    if(!$("recordPanel").hidden){
+      if(["Escape","Enter"," ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(k)){e.preventDefault();e.stopImmediatePropagation();const buttons=[...$("recordPanel").querySelectorAll("button:not(:disabled)")];const i=buttons.indexOf(document.activeElement);if(k==="Escape")$("closeRecords").click();else if(k==="Enter"||k===" ")(buttons[i]||buttons[0]).click();else buttons[(i+(["ArrowUp","ArrowLeft"].includes(k)?-1:1)+buttons.length)%buttons.length].focus();}return;
+    }
     if(k==="c"||k==="Control"){e.preventDefault();if(!e.repeat)cycleTarget();return;}
     if(k==="Escape"){e.preventDefault();e.stopImmediatePropagation();leave();return;}
     if(["y","p"].includes(k)){e.preventDefault();if(!e.repeat)state?.phase==="live"?pause():resume();return;}

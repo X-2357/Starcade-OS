@@ -7,3 +7,5 @@ body{display:block;overflow:auto;background:radial-gradient(ellipse at top,#1732
 #overlay{overflow:auto;justify-content:flex-start}
 
 #overlay{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;justify-items:stretch;gap:8px;inset:5% 14%;padding:14px}#overlay>h2,#overlay>p,#start{grid-column:1/-1}#overlay>h2{font-size:24px}#overlay>p{font-size:14px;line-height:1.45}#overlay>button{padding:8px 12px}
+
+#recordActions{display:flex;flex-wrap:wrap;gap:6px}#recordActions button{font-size:12px;padding:6px 9px}#recordList p{overflow-wrap:anywhere}#recordPanel{inset:2% 5%}

@@ -5,9 +5,9 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {chromium} from 'playwright';
 const folder=path.resolve(import.meta.dirname,'../Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby');
-const c={window:{}};vm.runInNewContext(fs.readFileSync(path.join(folder,'engine.js'),'utf8'),c);vm.runInNewContext(fs.readFileSync(path.join(folder,'season.js'),'utf8'),c);
+const c={window:{}};vm.runInNewContext(fs.readFileSync(path.join(folder,'engine.js'),'utf8'),c);vm.runInNewContext(fs.readFileSync(path.join(folder,'legacy-season.js'),'utf8'),c);vm.runInNewContext(fs.readFileSync(path.join(folder,'season.js'),'utf8'),c);
 const L=c.window.RazorSeason,E=c.RazorDerby;
-let s=L.create(42);const began=performance.now();
+let s=L.createLegacy(42);const began=performance.now();
 for(let round=0;round<3;round++){const match=L.start(s);match.tick=E.LIMIT;match.phase='result';match.goals=[round+1,0];const next=L.settle(s,match,round);assert.throws(()=>L.settle(next,match,round));s=L.restore(next);assert.equal(s.results.length,(round+1)*2);const table=L.table(s);assert.equal(table.reduce((n,t)=>n+t.for,0),table.reduce((n,t)=>n+t.against,0));}
 assert.equal(L.table(s).find(t=>t.id===0).points,9);assert.throws(()=>L.start(s));assert.throws(()=>L.restore({...s,results:s.results.slice(1)}));console.log(`Season engine: 3 rounds/6 fixtures, dedupe, restore, goals conservation passed; opponent simulation ${Math.round(performance.now()-began)}ms total.`);
 const browser=await chromium.launch({headless:true,executablePath:process.env.STARCADE_BROWSER||undefined});
@@ -15,7 +15,7 @@ try{
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.addInitScript(()=>{const f=sessionStorage.getItem('season.fixture');if(f)localStorage.setItem('starcade.razor-derby.season.v1',f);window.publications=[];addEventListener('message',e=>{if(['save','score','finish'].includes(e.data.type))publications.push(e.data.type);});});
  await page.goto(pathToFileURL(path.join(folder,'index.html')).href);
- let season=L.create(81);
+ let season=L.createLegacy(81);
  for(let r=0;r<3;r++){
   const m=L.start(season);m.tick=E.LIMIT-3;m.phase='paused';m.goals=[r+1,0];season.match=m;
   await page.evaluate(v=>sessionStorage.setItem('season.fixture',JSON.stringify(v)),season);
@@ -29,11 +29,11 @@ try{
  await page.evaluate(()=>sessionStorage.removeItem('season.fixture'));await page.reload();await page.locator('#season').click();assert.equal(await page.locator('#heading').textContent(),'Season complete');
  await page.locator('#new').click();assert.equal(await page.locator('#heading').textContent(),'Relay Runners vs Ion Comets');
  await page.locator('#start').click();await page.waitForTimeout(150);await page.keyboard.press('y');
- const checkpoint=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.season.v1')));assert.ok(checkpoint.match.tick>0);assert.equal(checkpoint.match.phase,'paused');
+ const checkpoint=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.career.v2')));assert.ok(checkpoint.match.tick>0);assert.equal(checkpoint.match.phase,'paused');
  await page.reload();await page.locator('#season').click();assert.equal(await page.locator('#start').textContent(),'Resume league match');
- const prior=await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1'));await page.locator('#new').click();assert.equal(await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1')),prior);
+ const prior=await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.career.v2'));await page.locator('#new').click();assert.equal(await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.career.v2')),prior);
  const failure=await browser.newPage();
- const interrupted=L.create(99);interrupted.match=L.start(interrupted);interrupted.match.tick=E.LIMIT;interrupted.match.phase='result';
+ const interrupted=L.createLegacy(99);interrupted.match=L.start(interrupted);interrupted.match.tick=E.LIMIT;interrupted.match.phase='result';
  await failure.addInitScript(v=>{
   localStorage.setItem('starcade.razor-derby.season.v1',JSON.stringify(v));
   const original=Storage.prototype.setItem;window.failSeason=true;
