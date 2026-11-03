@@ -1,3 +1,7 @@
+## November 3 Razor league development
+- Add complete local four-team season lifecycle with played matches, parallel fixtures, standings and recovery.
+- Yield opponent simulation in bounded frame batches; isolate season from exhibition/practice saves and rewards.
+
 ## November 3 Razor records development
 - Add bounded, duplicate-safe exhibition result journal and paused records view.
 - Exclude practice and legacy-result backfill; preserve unsupported/corrupt archive data.

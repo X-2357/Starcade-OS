@@ -5,13 +5,16 @@
   const send=(type,value)=>parent.postMessage({channel:"starcade",game:"razor-derby",session,type,value},"*");
   const H={save:value=>send("save",value),score:value=>send("score",value),finish:value=>send("finish",value),exit:()=>send("exit")};
   const key="starcade.razor-derby.match.v1",held=new Set();
+  let league=false,seasonState=null,seasonSettled=false,settling=false;
+  const seasonKey="starcade.razor-derby.season.v1";
   let practice=false,selectedTarget=-1,targetCarrier=-1;
   const recordsKey="starcade.razor-derby.records.v1";
   function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
-  function recordResult(){if(practice||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
+  function recordResult(){if(practice||league||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
   const practiceKey="starcade.razor-derby.practice.v1";
   let state=null,loaded=false,raf=0,last=0,acc=0,action={},confirmNew=false,localTick=0,hostTick=0;
   function persist(native=true){
+    if(league){if(!seasonState)return;seasonState.match=seasonSettled?null:state;try{localStorage.setItem(seasonKey,JSON.stringify(seasonState));}catch(_){$("notice").textContent="Season checkpoint unavailable. Keep this match open.";}return;}
     if(!state)return;
     try{localStorage.setItem(practice?practiceKey:key,JSON.stringify(state));}catch(_){$("notice").textContent=practice?"Practice saving unavailable; keep this session open to finish it.":"Local saving unavailable. Use Return to checkpoint through the arcade.";}
     if(native&&!practice)H.save(state);
@@ -28,29 +31,49 @@
     selectedTarget=eligible[(eligible.indexOf(current)+1)%eligible.length];draw();
   }
   function stop(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;acc=0;clearInput();}
+  async function finishSeasonRound(){
+    if(settling)return;settling=true;
+    const base=seasonState,completed=state,r=RazorSeason.round(base);persist();
+    try{const goals=await RazorSeason.simulateAsync((base.seed+r*7919)>>>0);
+      if(!league||seasonState!==base||state!==completed)return;
+      const next=RazorSeason.settle(base,completed,r,goals);localStorage.setItem(seasonKey,JSON.stringify(next));seasonState=next;seasonSettled=true;
+    }catch(_){$("notice").textContent="Season result could not be saved. Resume retries settlement.";}
+    finally{settling=false;show();}
+  }
   function show(){
     const done=state?.phase==="result";
+    $("start").disabled=settling;$("new").disabled=settling;$("practice").disabled=settling;
     $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
     $("practice").hidden=practice;
+    $("season").hidden=league;
     $("overlay").hidden=state?.phase==="live";
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
-    $("start").hidden=done;
+    $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=3;
     $("start").textContent=practice?"Resume practice":state?"Resume exhibition":"Start exhibition";
     $("heading").textContent=done?(state.goals[0]>state.goals[1]?"Teal victory":state.goals[0]<state.goals[1]?"Rose victory":"Honors even"):state?(practice?"Practice paused":"Exhibition paused"):"Take the pitch";
     if(done){const t=state.stats;$("body").textContent=`Full time: ${state.goals[0]} – ${state.goals[1]}. Shots ${t.shots[0]} / ${t.shots[1]}; completed challenges ${t.steals[0]} / ${t.steals[1]}; keeper saves ${t.saves[0]} / ${t.saves[1]}. Teal / Rose. Move closer before shooting; use your marked passing outlet under pressure.`;}
     else if(state)$("body").textContent="Your match is saved. Resume when ready; the clock does not run while paused. Teal attacks right. Use X to pass or challenge, A to shoot or switch defender.";
+    if(league){const r=RazorSeason.round(seasonState);$("mode").textContent=`LEAGUE · ROUND ${Math.min(3,r+1)}/3 · LOCAL SEASON`;
+      $("new").hidden=false;$("new").textContent=confirmNew?"Confirm abandon season":"New season";
+      $("heading").textContent=r===3?"Season complete":`Relay Runners vs ${RazorSeason.teams[r+1]}`;
+      $("body").textContent=RazorSeason.table(seasonState).map(t=>`${t.name}: ${t.points} pts, ${t.played} played, goals ${t.for}:${t.against}`).join("\n")+"\nTeal is your team. Table: points, goal difference, goals; stable id orders ties.";
+      $("start").textContent=settling?"Settling round…":state?.phase==="result"&&!seasonSettled?"Retry result settlement":state&&state.phase!=="result"?"Resume league match":"Play next league match";
+    }
   }
   function pause(){if(!state||state.phase!=="live")return;state.phase="paused";stop();persist();show();draw();}
   function resume(){
     if(document.hidden)return;
-    if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice)H.score(0);}
+    if(league&&state?.phase==="result"&&!seasonSettled){finishSeasonRound();show();return;}
+    if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=3)return;state=RazorSeason.start(seasonState);seasonSettled=false;localTick=hostTick=0;}
+    if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice&&!league)H.score(0);}
     if(state.phase==="result")return;
-    if(!practice&&!state.matchId)state.matchId=identity();
+    if(!practice&&!league&&!state.matchId)state.matchId=identity();
     state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
     if(!raf)raf=requestAnimationFrame(frame);
   }
   function newMatch(){
+    if(league){if(seasonState&&RazorSeason.round(seasonState)<3&&!confirmNew){confirmNew=true;show();return;}stop();seasonState=RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);state=null;seasonSettled=false;confirmNew=false;persist();show();draw();return;}
     if(state&&state.phase!=="result"&&!confirmNew){confirmNew=true;$("new").textContent="Confirm abandon and start new";return;}
     stop();state=null;confirmNew=false;localTick=0;hostTick=0;resume();persist();
   }
@@ -91,7 +114,7 @@
     if(state.tick-localTick>=120){persist(false);localTick=state.tick;}
     if(state.tick-hostTick>=900||oldGoals!==state.goals.join(":")){persist();hostTick=state.tick;}
     draw();
-    if(state.phase==="result"){stop();recordResult();persist();if(!practice)H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
+    if(state.phase==="result"){stop();if(league){finishSeasonRound();show();return;}recordResult();persist();if(!practice)H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
     raf=requestAnimationFrame(frame);
   }
   function load(value){
@@ -101,9 +124,17 @@
     }catch(_){state=null;$("notice").textContent="The saved exhibition could not be restored. Start a fresh match.";}
     show();draw();
   }
+  $("resetSeason").onclick=()=>{if(!$("resetSeason").dataset.confirm){$("resetSeason").dataset.confirm="1";$("resetSeason").textContent="Confirm replace damaged season";return;}localStorage.removeItem(seasonKey);$("resetSeason").hidden=true;$("resetSeason").dataset.confirm="";$("season").click();};
+  $("season").onclick=()=>{
+    if(!loaded)return;let saved;
+    try{const text=localStorage.getItem(seasonKey);saved=text?RazorSeason.restore(JSON.parse(text)):RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);}
+    catch(_){$("notice").textContent="Stored season is unsupported or damaged; it has been preserved.";$("resetSeason").hidden=false;return;}
+    pause();stop();league=true;practice=false;seasonState=saved;state=saved.match;seasonSettled=!state;confirmNew=false;
+    if(state?.phase==="live")state.phase="paused";if(state)localTick=hostTick=state.tick;show();draw();
+  };
   $("practice").onclick=()=>{
     if(!loaded)return;
-    pause();stop();practice=true;state=null;localTick=hostTick=0;
+    pause();stop();league=false;practice=true;state=null;localTick=hostTick=0;
     try{const saved=JSON.parse(localStorage.getItem(practiceKey)||"null");if(saved){state=E.restore(saved);if(state.phase==="result")state=null;else state.phase="paused";}}catch(_){$("notice").textContent="Practice save unavailable; a fresh drill is ready.";}
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
     state.phase="paused";show();draw();

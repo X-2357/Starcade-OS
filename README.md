@@ -64,3 +64,5 @@ Race Director development addition: eight-lap strategy simulation with pace choi
 Supply Chain Puzzle development: produce four modules within twenty shifts by planning ore extraction, smelting and assembly under storage limits. Exact recipe previews, automatic saves and production log. Entirely fictional economy; actual Starfield acceptance pending.
 
 Razor Derby development: Match records retains the latest ten completed exhibition results with goals and actual match statistics. Practice does not enter this archive. Dates are local completion times, not in-world history. Starfield acceptance pending.
+
+Razor Derby development: optional four-team league season, three played matches, simulated parallel fixtures using the same engine, standings and saved match/season progress. Season is local and does not grant exhibition rewards; original fictional teams and exhibition rules. Starfield and human balance acceptance pending.
