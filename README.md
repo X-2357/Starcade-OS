@@ -62,3 +62,5 @@ Ship Crisis development addition: ten-turn reactor-management simulation. Alloca
 Race Director development addition: eight-lap strategy simulation with pace choices, fuel/tyre management, weather forecasts, pit stops and saved race progress. Fictional competitors; no betting or real ship career changes. Actual Starfield acceptance pending.
 
 Supply Chain Puzzle development: produce four modules within twenty shifts by planning ore extraction, smelting and assembly under storage limits. Exact recipe previews, automatic saves and production log. Entirely fictional economy; actual Starfield acceptance pending.
+
+Razor Derby development: Match records retains the latest ten completed exhibition results with goals and actual match statistics. Practice does not enter this archive. Dates are local completion times, not in-world history. Starfield acceptance pending.

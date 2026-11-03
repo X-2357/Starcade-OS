@@ -1,3 +1,7 @@
+## November 3 Razor records development
+- Add bounded, duplicate-safe exhibition result journal and paused records view.
+- Exclude practice and legacy-result backfill; preserve unsupported/corrupt archive data.
+
 ## November 3 Supply Chain Puzzle development
 - Add complete bounded production-planning game, legal replay saves and factual output log.
 - Verify all reachable resource states and browser completion/reload/abandon lifecycle.

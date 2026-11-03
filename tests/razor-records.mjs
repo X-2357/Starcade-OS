@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const context={window:{}};vm.runInNewContext(fs.readFileSync(new URL('../Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby/records.js',import.meta.url),'utf8'),context);
+const R=context.window.RazorRecords;
+const entry={id:'abc1',rules:1,ended:1,goals:[1,0],stats:{shots:[1,0],passes:[0,0],steals:[0,0],saves:[0,0],turnovers:[0,0]}};
+let entries=R.append(R.read(null),entry);entries=R.append(entries,entry);assert.equal(entries.length,1);
+for(let i=0;i<11;i++)entries=R.append(entries,{...entry,id:i.toString(16)});
+assert.equal(entries.length,10);assert.equal(entries[0].id,'1');
+assert.equal(R.read(JSON.stringify({schema:1,entries})).length,10);
+for(const value of ['bad','{"schema":2,"entries":[]}',JSON.stringify({schema:1,entries:[entry,entry]}),JSON.stringify({schema:1,entries:[{...entry,goals:[-1,0]}]})])assert.throws(()=>R.read(value));
+console.log('Razor records: idempotence, retention, roundtrip and corrupt/future/duplicate rejection passed.');

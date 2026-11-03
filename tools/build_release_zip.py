@@ -84,7 +84,7 @@ def collect(install):
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/constellation-cards/' + name] = os.path.join(card_root, name)
     derby_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby')
-    for name in ('index.html', 'style.css', 'engine.js', 'game.js'):
+    for name in ('index.html', 'style.css', 'engine.js', 'records.js', 'game.js'):
         entries[VIEW + 'launcher/games/razor-derby/' + name] = os.path.join(derby_root, name)
     convoy_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/frontier-convoy')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):

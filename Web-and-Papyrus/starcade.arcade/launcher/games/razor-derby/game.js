@@ -6,6 +6,9 @@
   const H={save:value=>send("save",value),score:value=>send("score",value),finish:value=>send("finish",value),exit:()=>send("exit")};
   const key="starcade.razor-derby.match.v1",held=new Set();
   let practice=false,selectedTarget=-1,targetCarrier=-1;
+  const recordsKey="starcade.razor-derby.records.v1";
+  function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
+  function recordResult(){if(practice||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
   const practiceKey="starcade.razor-derby.practice.v1";
   let state=null,loaded=false,raf=0,last=0,acc=0,action={},confirmNew=false,localTick=0,hostTick=0;
   function persist(native=true){
@@ -43,6 +46,7 @@
     if(document.hidden)return;
     if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice)H.score(0);}
     if(state.phase==="result")return;
+    if(!practice&&!state.matchId)state.matchId=identity();
     state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
     if(!raf)raf=requestAnimationFrame(frame);
   }
@@ -87,7 +91,7 @@
     if(state.tick-localTick>=120){persist(false);localTick=state.tick;}
     if(state.tick-hostTick>=900||oldGoals!==state.goals.join(":")){persist();hostTick=state.tick;}
     draw();
-    if(state.phase==="result"){stop();persist();if(!practice)H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
+    if(state.phase==="result"){stop();recordResult();persist();if(!practice)H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
     raf=requestAnimationFrame(frame);
   }
   function load(value){
@@ -104,12 +108,15 @@
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
     state.phase="paused";show();draw();
   };
+  $("records").onclick=()=>{pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordList").replaceChildren();try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));if(!entries.length)$("recordList").textContent="No completed exhibitions recorded yet.";for(const e of entries.slice().reverse()){const p=document.createElement("p");p.textContent=`${new Date(e.ended*1000).toLocaleString()} · Teal ${e.goals[0]} : ${e.goals[1]} Rose · shots ${e.stats.shots.join("/")} · challenges ${e.stats.steals.join("/")} · keeper saves ${e.stats.saves.join("/")}`;$("recordList").append(p);}}catch(_){$("recordList").textContent="Stored records are unavailable or from an unsupported version.";}$("closeRecords").focus();};
+  $("closeRecords").onclick=()=>{$("recordPanel").hidden=true;$("overlay").inert=false;document.querySelector("nav").inert=false;show();$("records").focus();};
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
   $("pause").onclick=()=>state?.phase==="live"?pause():resume();
   $("cycle").onclick=cycleTarget;
   $("pass").onclick=()=>{if(state?.phase==="live")action.pass=true;};$("shoot").onclick=()=>{if(state?.phase==="live")action.shoot=true;};
   addEventListener("keydown",e=>{
     const k=e.key.length===1?e.key.toLowerCase():e.key;
+    if(!$("recordPanel").hidden){e.preventDefault();if(k==="Escape"||k==="Enter"||k===" "){e.preventDefault();e.stopImmediatePropagation();$("closeRecords").click();}return;}
     if(k==="c"||k==="Control"){e.preventDefault();if(!e.repeat)cycleTarget();return;}
     if(k==="Escape"){e.preventDefault();e.stopImmediatePropagation();leave();return;}
     if(["y","p"].includes(k)){e.preventDefault();if(!e.repeat)state?.phase==="live"?pause():resume();return;}

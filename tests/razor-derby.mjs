@@ -70,6 +70,8 @@ try{
  await page.evaluate(()=>{const s=RazorDerby.create(8);s.tick=RazorDerby.LIMIT-3;s.phase='paused';sessionStorage.setItem('razor.fixture',JSON.stringify(s));});
  await page.reload();await page.locator('#start').click();await page.waitForFunction(()=>finishes===1);
  assert.match(await page.locator('#heading').textContent(),/Honors even/);
+ assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.records.v1')).entries.length),1);
+ await page.locator('#records').click();assert.match(await page.locator('#recordList').textContent(),/Teal 0 : 0 Rose/);await page.keyboard.press('Enter');assert.equal(await page.locator('#recordPanel').isVisible(),false);
  await page.evaluate(()=>sessionStorage.removeItem('razor.fixture'));await page.reload();assert.equal(await page.evaluate(()=>finishes),0);
  await page.evaluate(()=>sessionStorage.setItem('razor.fixture','{"schema":999}'));await page.reload();assert.match(await page.locator('#notice').textContent(),/could not be restored/);
  assert.deepEqual(errors,[]);
@@ -86,6 +88,7 @@ try{
  assert.equal(await drill.evaluate(()=>localStorage.getItem('starcade.razor-derby.match.v1')),exhibition);
  await drill.reload();assert.match(await drill.locator('#mode').textContent(),/EXHIBITION/);
  await drill.locator('#practice').click();assert.equal(await drill.locator('#overlay').isVisible(),true);
+ assert.equal(await drill.evaluate(()=>localStorage.getItem('starcade.razor-derby.records.v1')),null);
  await drill.close();
  // Both ends of close-checkpoint seam: actual launcher and game; native API stubbed.
  const launcher=await browser.newPage(),view=path.resolve(folder,'../..');
