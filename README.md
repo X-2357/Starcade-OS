@@ -42,7 +42,7 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 ## Credits and licenses
 
 - OSF UI and its public bridge API by ozooma10.
-- Starcade OS concept, integration, and all 29 original game implementations by X-2357.
+- Starcade OS concept, integration, and all 30 original game implementations by X-2357.
 - Freedoom: Phase 1 data is BSD-3-Clause; its Doom engine port is GPL-2.0. Full notices and corresponding source are supplied.
 - Hextris and Starcade's offline modifications are GPL-3.0-or-later; editable source is included with the runtime.
 - Mah Jong is MIT-licensed (ffalt/mah); editable source is included with the runtime.
@@ -58,3 +58,5 @@ Development addition (November 2): Constellation Cards is an original tactical c
 Razor Derby development: C / RB cycles passing receivers; the diamond and target label show the selection, and X passes. Automatic targeting remains the default. Actual Starfield acceptance is pending.
 
 Ship Crisis development addition: ten-turn reactor-management simulation. Allocate engines/shields/weapons, repair hull, and destroy the attacker or escape. Explicit attack forecast and damage log, automatic action checkpoints and keyboard/controller/mouse selection. Browser acceptance passed; Starfield acceptance pending.
+
+Race Director development addition: eight-lap strategy simulation with pace choices, fuel/tyre management, weather forecasts, pit stops and saved race progress. Fictional competitors; no betting or real ship career changes. Actual Starfield acceptance pending.

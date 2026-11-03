@@ -1,3 +1,7 @@
+## November 3 Race Director development
+- Add eight-lap race strategy with pace/fuel/tyres/weather/pit timing, result and replay saves.
+- Add full engine/browser lifecycle acceptance and preserve existing real-world mod ownership.
+
 ## November 3 Ship Crisis development
 - Add complete tactical reactor-management simulation with repair, combat, escape and surrender outcomes.
 - Add seeded replay saves, forecast/debrief and automated lifecycle acceptance.

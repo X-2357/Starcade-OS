@@ -92,6 +92,9 @@ def collect(install):
     crisis_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/ship-crisis')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/ship-crisis/' + name] = os.path.join(crisis_root, name)
+    race_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/race-director')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/race-director/' + name] = os.path.join(race_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')

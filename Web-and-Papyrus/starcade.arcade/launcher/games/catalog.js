@@ -3,6 +3,7 @@
 const originalLicense = "Original Starcade game - released under the Starcade OS MIT License";
 
 window.STARCADE_GAMES = [
+  { id: "race-director", title: "Race Director", category: "strategy", description: "Manage eight laps through fuel, tyre wear, weather and pit strategy.", entry: "games/race-director/index.html", controls: "Arrows / D-pad + Enter / A", color: "#f3d17e", license: originalLicense },
   { id: "ship-crisis", title: "Ship Crisis", category: "strategy", description: "Allocate reactor power, repair damage and fight or escape a ten-turn ship emergency.", entry: "games/ship-crisis/index.html", controls: "Arrows / D-pad + Enter / A", color: "#85c7ec", license: originalLicense },
   {
     id: "frontier-convoy", title: "Frontier Convoy", category: "strategy",

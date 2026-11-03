@@ -31,7 +31,7 @@ Source is at `Web-and-Papyrus/Source/*.psc`. Compile with Starfield Creation Kit
 
 ## Web launcher and games
 
-The launcher shell (`Web-and-Papyrus/starcade.arcade/launcher/index.html`/`main.js`/`style.css`) and Starcade's 29 original games are plain HTML/JS/CSS - no build step, used as-is.
+The launcher shell (`Web-and-Papyrus/starcade.arcade/launcher/index.html`/`main.js`/`style.css`) and Starcade's 30 original games are plain HTML/JS/CSS - no build step, used as-is.
 
 The adapted third-party engines each have their own toolchain and are vendored with their already-built output committed directly under `Web-and-Papyrus/starcade.arcade/launcher/games/<name>/`, so rebuilding them isn't required to verify or run Starcade itself. To rebuild one from source, see that engine's own folder and its `README.md`/`SOURCE-AND-LICENSES.txt`:
 - `Freedoom-Engine/` (asm.js, DoomGeneric-derived)
