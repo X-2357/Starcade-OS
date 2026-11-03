@@ -18,3 +18,5 @@ Release gates: source/PEX mismatch before Papyrus recompilation, music rights ve
 Source overlap review November3: Fleet Command already contains five operations; Docking Vector and Lunar Descent already provide progressing contracts/landings. SC-RCH-007/008 are consolidated pending a demonstrated additive benefit. Codebreaker is letter/word deduction, so a future evidence-graph casebook remains potentially distinct, but has not been scoped or built. SC-RCH-011 has a bounded first implementation inside Razor Derby; broader cross-game/native archive still separate.
 
 Razor season lifecycle now implemented and browser-tested: four teams, three played matches, same-engine parallel fixtures, standings, six-fixture view, pending settlement, recovery and full completion. Optional future recruiting/training/contracts still need separate complete scopes; human balance/actual OSF acceptance remains pending.
+
+SC-RCH-010 Signal Casebook now implemented as an original three-case evidence campaign, with216 ordering/replay tests and browser lifecycle coverage; actual Starfield acceptance pending. It publishes no real case evidence or sibling commands.

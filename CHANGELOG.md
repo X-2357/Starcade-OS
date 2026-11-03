@@ -1,3 +1,7 @@
+## November 3 Signal Casebook development
+- Add three original evidence puzzles, explanations, campaign saves and guarded conclusions.
+- Verify216 clue-order campaigns and full browser lifecycle.
+
 ## November 3 Razor tactics development
 - Add optional match-owned positioning tactics across all modes; preserve Balanced defaults.
 - Persist selected tactic and annotate new exhibition journal entries.

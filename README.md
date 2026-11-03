@@ -42,7 +42,7 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 ## Credits and licenses
 
 - OSF UI and its public bridge API by ozooma10.
-- Starcade OS concept, integration, and all 31 original game implementations by X-2357.
+- Starcade OS concept, integration, and all 32 original game implementations by X-2357.
 - Freedoom: Phase 1 data is BSD-3-Clause; its Doom engine port is GPL-2.0. Full notices and corresponding source are supplied.
 - Hextris and Starcade's offline modifications are GPL-3.0-or-later; editable source is included with the runtime.
 - Mah Jong is MIT-licensed (ffalt/mah); editable source is included with the runtime.
@@ -68,3 +68,5 @@ Razor Derby development: Match records retains the latest ten completed exhibiti
 Razor Derby development: optional four-team league season, three played matches, simulated parallel fixtures using the same engine, standings and saved match/season progress. Season is local and does not grant exhibition rewards; original fictional teams and exhibition rules. Starfield and human balance acceptance pending.
 
 Razor Derby development: choose Balanced, Wide Outlets or High Press before/resuming a match. Selected plans persist with the match and new exhibition records. Balanced retains the original behavior; tactical balance and actual Starfield acceptance remain pending.
+
+Signal Casebook development: three original evidence cases with clue review, supported conclusions, explanations and saved progress. Entirely fictional, without base-quest spoilers or Shadow Network state. Actual Starfield acceptance pending.

@@ -98,6 +98,9 @@ def collect(install):
     supply_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/supply-chain')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/supply-chain/' + name] = os.path.join(supply_root, name)
+    case_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/signal-casebook')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/signal-casebook/' + name] = os.path.join(case_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')
