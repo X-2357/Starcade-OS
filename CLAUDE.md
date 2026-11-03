@@ -1,5 +1,7 @@
 # Starcade OS (Starfield mod)
 
+November 3 online lore pass: Docs/RAZOR_DERBY_LORE_RESEARCH_2026-11-03.md records corroborated Top Secrets references, uncertain team association and unverified roller-derby/poster leads. No official rulebook found; current exhibition mechanics remain original, not canon. Primary dialogue/poster inspection remains outstanding.
+
 November 3 manual targeting: Razor Derby now supports C / RB receiver cycling, a visible selected/automatic target label and X passes to the selected eligible runner. Automatic passing/AI remains default; transient selection clears on possession change and pause/reload/close. Engine direction/fallback fixtures and browser keyboard/forwarded-controller tests pass alongside 30 complete seeded matches. Practice reward/save isolation remains covered. No native, CK, Papyrus, schema or sibling changes. Actual Starfield input, enjoyment, balance and combined-mod performance remain unverified. Scope: Docs/RAZOR_PASS_TARGET_SCOPE_2026-11-03.md.
 
 November 3 practice continuation: Razor Derby now has explicit separate practice checkpoints and no score/finish/native-save publication from practice; exhibition snapshot and rules unchanged. Full scope Docs/RAZOR_PRACTICE_SCOPE_2026-11-03.md. Repeatable tests/frontier-convoy.mjs covers 200 arrivals, every-choice restores, stranded/invalid fixtures and browser full run/reload/keyboard/abandon. Razor browser regression and practice isolation passed. Actual Starfield/gamepad/performance and human balance remain unverified. No sibling, CK, Papyrus or native changes.
