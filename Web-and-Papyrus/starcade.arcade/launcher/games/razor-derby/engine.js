@@ -85,7 +85,7 @@
     const carrier=s.ball.owner>=0?s.players[s.ball.owner]:s.ball;
     for(const p of s.players){
       const side=team(p.id), dir=side===0?1:-1, own=s.ball.owner>=0&&team(s.ball.owner)===side;
-      if(p.id===s.control){move(p,clamp(input.x||0,-1,1),clamp(input.y||0,-1,1),!!input.sprint,p.id%6===0);continue;}
+      if(p.id===s.control&&!input.computerBoth){move(p,clamp(input.x||0,-1,1),clamp(input.y||0,-1,1),!!input.sprint,p.id%6===0);continue;}
       if(p.id%6===0){if(s.ball.owner===p.id&&p.cool===0)pass(s,p.id);move(p,(side?95:5)-p.x,clamp(s.ball.y,22,38)-p.y,false,true);continue;}
       if(s.ball.owner===p.id){
         if(s.tick%15===0&&p.cool===0){
@@ -95,11 +95,11 @@
         }
         move(p,dir, (30-p.y)*.025);continue;
       }
-      const pursuers=s.players.filter(q=>team(q.id)===side&&q.id%6!==0&&q.id!==s.control).sort((a,b)=>distance(a,carrier)-distance(b,carrier));
-      const chase=!own&&(s.ball.owner<0||pursuers.slice(0,2).some(q=>q.id===p.id));
+      const pursuers=s.players.filter(q=>team(q.id)===side&&q.id%6!==0&&(input.computerBoth||q.id!==s.control)).sort((a,b)=>distance(a,carrier)-distance(b,carrier));
+      const chase=!own&&(s.ball.owner<0||pursuers.slice(0,side===0&&s.tactic==='press'?3:2).some(q=>q.id===p.id));
       const base=bases[p.id%6];
       const tx=chase?carrier.x:clamp((side?100-base[0]:base[0])+(own?(carrier.x-50)*.55+dir*15:dir*8),8,92);
-      const ty=chase?carrier.y:base[1]+(carrier.y-30)*.15;
+      const ty=chase?carrier.y:base[1]+(carrier.y-30)*.15+(side===0&&own&&s.tactic==='wide'?Math.sign(base[1]-30)*5:0);
       if(distance(p,{x:tx,y:ty})>.5)move(p,tx-p.x,ty-p.y);
       if(!own&&s.ball.owner>=0&&distance(p,carrier)<2.8)challenge(s,p.id);
     }
@@ -128,6 +128,7 @@
   function restore(data) {
     if(!data||data.schema!==1||data.rules!==1)throw Error("Unsupported match");
     const s=JSON.parse(JSON.stringify(data));
+    if(s.tactic!==undefined&&!["balanced","wide","press"].includes(s.tactic))throw Error("Invalid tactic");
     const bounded=(n,a,b)=>typeof n==="number"&&Number.isFinite(n)&&n>=a&&n<=b;
     const integer=(n,a,b)=>Number.isInteger(n)&&bounded(n,a,b);
     if(!integer(s.rng,0,0xffffffff)||!integer(s.tick,0,LIMIT)||!["live","paused","result"].includes(s.phase)||!integer(s.control,0,5)||!integer(s.possession,0,1)||!integer(s.shotClock,0,1200))throw Error("Invalid match header");

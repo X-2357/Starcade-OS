@@ -1,3 +1,7 @@
+## November 3 Razor tactics development
+- Add optional match-owned positioning tactics across all modes; preserve Balanced defaults.
+- Persist selected tactic and annotate new exhibition journal entries.
+
 ## November 3 season recovery and fixtures
 - Add six-match fixture view and compact season controls.
 - Verify storage failure/retry, interrupted settlement and preserved unsupported saves with explicit reset.

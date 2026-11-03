@@ -8,6 +8,10 @@ const folder=path.resolve(import.meta.dirname,'../Web-and-Papyrus/starcade.arcad
 vm.runInThisContext(fs.readFileSync(path.join(folder,'engine.js'),'utf8'));
 const E=globalThis.RazorDerby;
 assert.deepEqual(E.restore(E.create(42)),E.create(42));
+const legacy=E.create(42),balanced=E.create(42);balanced.tactic='balanced';
+for(let i=0;i<E.LIMIT;i++){E.step(legacy);E.step(balanced);}delete balanced.tactic;assert.deepEqual(legacy,balanced);
+const base=E.create(42),wide=E.create(42);wide.tactic='wide';for(let i=0;i<120;i++){E.step(base);E.step(wide);}assert.notDeepEqual(base.players,wide.players);assert.equal(E.restore(wide).tactic,'wide');assert.throws(()=>E.restore({...wide,tactic:'unknown'}));
+const press=E.create(9);press.tactic='press';for(let i=0;i<E.LIMIT;i++){E.step(press);if(i%300===0)E.restore(press);}assert.equal(press.phase,'result');
 for(const bad of [null,{}, {...E.create(1),control:6},{...E.create(1),tick:NaN},{...E.create(1),phase:'result'}])assert.throws(()=>E.restore(bad));
 for(const side of [0,1]){
  const s=E.create(1);s.players.forEach(p=>{p.y=5;});s.ball={x:side===0?99.9:.1,y:30,vx:side===0?47:-47,vy:0,owner:-1,ignore:-1,flight:20};
@@ -48,6 +52,7 @@ try{
  const page=await browser.newPage({viewport:{width:1400,height:1000}}),errors=[];
  page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(pathToFileURL(path.join(folder,'index.html')).href);
+ await page.locator('#tactic').click();assert.match(await page.locator('#tactic').textContent(),/Wide/);
  await page.locator('#start').click();
  await page.keyboard.press('c');assert.match(await page.locator('#target').textContent(),/selected/);
  await page.evaluate(()=>window.postMessage({channel:'starcade',type:'input',value:{key:'Control',down:true}},'*'));
@@ -55,7 +60,7 @@ try{
  await page.keyboard.down('ArrowRight');await page.waitForTimeout(600);await page.keyboard.up('ArrowRight');
  await page.keyboard.press('y');assert.equal(await page.locator('#overlay').isVisible(),true);
  const paused=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.match.v1')));
- assert.ok(paused.players[5].x>46);assert.equal(paused.phase,'paused');
+ assert.ok(paused.players[5].x>46);assert.equal(paused.phase,'paused');assert.equal(paused.tactic,'wide');
  await page.reload();assert.equal(await page.locator('#overlay').isVisible(),true);
  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.match.v1')).tick),paused.tick);
  await page.locator('#start').click();await page.keyboard.press('x');await page.waitForTimeout(100);await page.keyboard.press('y');

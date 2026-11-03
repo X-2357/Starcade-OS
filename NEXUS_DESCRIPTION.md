@@ -504,3 +504,5 @@ Supply Chain Puzzle development: produce four modules within twenty shifts by pl
 Razor Derby development: Match records retains the latest ten completed exhibition results with goals and actual match statistics. Practice does not enter this archive. Dates are local completion times, not in-world history. Starfield acceptance pending.
 
 Razor Derby development: optional four-team league season, three played matches, simulated parallel fixtures using the same engine, standings and saved match/season progress. Season is local and does not grant exhibition rewards; original fictional teams and exhibition rules. Starfield and human balance acceptance pending.
+
+Razor Derby development: choose Balanced, Wide Outlets or High Press before/resuming a match. Selected plans persist with the match and new exhibition records. Balanced retains the original behavior; tactical balance and actual Starfield acceptance remain pending.
