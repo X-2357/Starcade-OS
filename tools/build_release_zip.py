@@ -95,6 +95,9 @@ def collect(install):
     race_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/race-director')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/race-director/' + name] = os.path.join(race_root, name)
+    supply_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/supply-chain')
+    for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
+        entries[VIEW + 'launcher/games/supply-chain/' + name] = os.path.join(supply_root, name)
     if DUPLICATE in entries:
         if sha(entries[DUPLICATE]) != sha(entries[KEEP_OF_DUPLICATE]):
             sys.exit('duplicate mp3 is NOT byte-identical to its sibling; refusing to drop it')

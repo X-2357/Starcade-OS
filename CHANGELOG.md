@@ -1,3 +1,7 @@
+## November 3 Supply Chain Puzzle development
+- Add complete bounded production-planning game, legal replay saves and factual output log.
+- Verify all reachable resource states and browser completion/reload/abandon lifecycle.
+
 ## November 3 Race Director development
 - Add eight-lap race strategy with pace/fuel/tyres/weather/pit timing, result and replay saves.
 - Add full engine/browser lifecycle acceptance and preserve existing real-world mod ownership.

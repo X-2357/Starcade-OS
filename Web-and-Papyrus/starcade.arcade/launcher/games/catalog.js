@@ -3,6 +3,7 @@
 const originalLicense = "Original Starcade game - released under the Starcade OS MIT License";
 
 window.STARCADE_GAMES = [
+  { id: "supply-chain", title: "Supply Chain Puzzle", category: "puzzle", description: "Plan extraction, processing and delivery within storage limits and twenty shifts.", entry: "games/supply-chain/index.html", controls: "Arrows / D-pad + Enter / A", color: "#8df7c7", license: originalLicense },
   { id: "race-director", title: "Race Director", category: "strategy", description: "Manage eight laps through fuel, tyre wear, weather and pit strategy.", entry: "games/race-director/index.html", controls: "Arrows / D-pad + Enter / A", color: "#f3d17e", license: originalLicense },
   { id: "ship-crisis", title: "Ship Crisis", category: "strategy", description: "Allocate reactor power, repair damage and fight or escape a ten-turn ship emergency.", entry: "games/ship-crisis/index.html", controls: "Arrows / D-pad + Enter / A", color: "#85c7ec", license: originalLicense },
   {

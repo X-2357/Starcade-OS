@@ -3,7 +3,7 @@ This is dependency routing, not full scopes or implementation claims. Each next 
 
 Implemented: Constellation Cards; Razor Derby exhibition, isolated practice and manual receiver selection; Frontier Convoy; Ship Crisis; factual reports inside these new games. Actual Starfield acceptance remains pending for every new game.
 
-Race Director is now implemented with engine/browser acceptance; actual gameplay remains pending. Next independent candidate: Supply Chain Puzzle. Scope one fully before implementation. Fleet Gauntlet/Orbital Workshop/Signal Casebook first compare existing Fleet Command, Docking Vector, Lunar Descent and Codebreaker to prevent duplication.
+Race Director is now implemented with engine/browser acceptance; actual gameplay remains pending. Supply Chain Puzzle is now implemented with engine/browser acceptance; actual gameplay remains pending. Scope one fully before implementation. Fleet Gauntlet/Orbital Workshop/Signal Casebook first compare existing Fleet Command, Docking Vector, Lunar Descent and Codebreaker to prevent duplication.
 
 Razor league: reuse the actual exhibition engine and stable fictional team identities, validate match balance and usable controls before adding standings/season transitions. No real crew or vessel career mutation. No official league rules inferred from lore references.
 
