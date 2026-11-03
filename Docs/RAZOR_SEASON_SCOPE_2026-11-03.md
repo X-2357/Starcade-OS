@@ -33,3 +33,5 @@ no score/finish/native-save writes. Actual OSF input/human balance/performance w
 the full ecosystem remains unverified; this is a development candidate.
 
 Responsiveness refinement before code: browser opponent simulation yields every120 fixed ticks via requestAnimationFrame; hidden tabs suspend it. Result snapshot is checkpointed while settlement is pending. Reopen retries from that result. One in-flight settlement per season; mode changes invalidate the pending write. Exit remains available. Standalone synchronous simulator remains for deterministic engine tests.
+
+Fixture view refinement: display all six scheduled/settled matches from the same authoritative fixtures/results arrays in a paused modal. It mutates no season state and retains the records modal input/close lifecycle. No invented scores for unplayed fixtures. Browser asserts six entries and scheduled/result labels.

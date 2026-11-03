@@ -36,7 +36,7 @@
     const base=seasonState,completed=state,r=RazorSeason.round(base);persist();
     try{const goals=await RazorSeason.simulateAsync((base.seed+r*7919)>>>0);
       if(!league||seasonState!==base||state!==completed)return;
-      const next=RazorSeason.settle(base,completed,r,goals);localStorage.setItem(seasonKey,JSON.stringify(next));seasonState=next;seasonSettled=true;
+      const next=RazorSeason.settle(base,completed,r,goals);localStorage.setItem(seasonKey,JSON.stringify(next));seasonState=next;seasonSettled=true;$("notice").textContent=`Round ${r+1} saved.`;
     }catch(_){$("notice").textContent="Season result could not be saved. Resume retries settlement.";}
     finally{settling=false;show();}
   }
@@ -45,7 +45,7 @@
     $("start").disabled=settling;$("new").disabled=settling;$("practice").disabled=settling;
     $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
     $("practice").hidden=practice;
-    $("season").hidden=league;
+    $("season").hidden=league;$("fixtures").hidden=!league;
     $("overlay").hidden=state?.phase==="live";
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
@@ -57,7 +57,7 @@
     if(league){const r=RazorSeason.round(seasonState);$("mode").textContent=`LEAGUE · ROUND ${Math.min(3,r+1)}/3 · LOCAL SEASON`;
       $("new").hidden=false;$("new").textContent=confirmNew?"Confirm abandon season":"New season";
       $("heading").textContent=r===3?"Season complete":`Relay Runners vs ${RazorSeason.teams[r+1]}`;
-      $("body").textContent=RazorSeason.table(seasonState).map(t=>`${t.name}: ${t.points} pts, ${t.played} played, goals ${t.for}:${t.against}`).join("\n")+"\nTeal is your team. Table: points, goal difference, goals; stable id orders ties.";
+      $("body").textContent=RazorSeason.table(seasonState).map(t=>`${t.name}: ${t.points} pts, ${t.played} played, goals ${t.for}:${t.against}`).join("\n")+"\nTeal is your team. Ranked by points, goal difference and goals scored. Level records remain tied.";
       $("start").textContent=settling?"Settling round…":state?.phase==="result"&&!seasonSettled?"Retry result settlement":state&&state.phase!=="result"?"Resume league match":"Play next league match";
     }
   }
@@ -139,7 +139,8 @@
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
     state.phase="paused";show();draw();
   };
-  $("records").onclick=()=>{pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordList").replaceChildren();try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));if(!entries.length)$("recordList").textContent="No completed exhibitions recorded yet.";for(const e of entries.slice().reverse()){const p=document.createElement("p");p.textContent=`${new Date(e.ended*1000).toLocaleString()} · Teal ${e.goals[0]} : ${e.goals[1]} Rose · shots ${e.stats.shots.join("/")} · challenges ${e.stats.steals.join("/")} · keeper saves ${e.stats.saves.join("/")}`;$("recordList").append(p);}}catch(_){$("recordList").textContent="Stored records are unavailable or from an unsupported version.";}$("closeRecords").focus();};
+  $("fixtures").onclick=()=>{if(!league)return;pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordsTitle").textContent="Season fixtures";$("recordsSubtitle").textContent="Three rounds · all teams play each other once";$("recordList").replaceChildren();RazorSeason.fixtures.forEach((round,r)=>round.forEach(([a,b])=>{const result=seasonState.results.find(m=>m.round===r&&m.a===a&&m.b===b);const p=document.createElement("p");p.textContent=`Round ${r+1}: ${RazorSeason.teams[a]} ${result?result.goals.join(" : "):"vs"} ${RazorSeason.teams[b]}${result?"":" — scheduled"}`;$("recordList").append(p);}));$("closeRecords").focus();};
+  $("records").onclick=()=>{$("recordsTitle").textContent="Latest exhibition records";$("recordsSubtitle").textContent="Local completion dates · rules revision 1 · latest ten matches";pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordList").replaceChildren();try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));if(!entries.length)$("recordList").textContent="No completed exhibitions recorded yet.";for(const e of entries.slice().reverse()){const p=document.createElement("p");p.textContent=`${new Date(e.ended*1000).toLocaleString()} · Teal ${e.goals[0]} : ${e.goals[1]} Rose · shots ${e.stats.shots.join("/")} · challenges ${e.stats.steals.join("/")} · keeper saves ${e.stats.saves.join("/")}`;$("recordList").append(p);}}catch(_){$("recordList").textContent="Stored records are unavailable or from an unsupported version.";}$("closeRecords").focus();};
   $("closeRecords").onclick=()=>{$("recordPanel").hidden=true;$("overlay").inert=false;document.querySelector("nav").inert=false;show();$("records").focus();};
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
   $("pause").onclick=()=>state?.phase==="live"?pause():resume();

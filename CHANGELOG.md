@@ -1,3 +1,7 @@
+## November 3 season recovery and fixtures
+- Add six-match fixture view and compact season controls.
+- Verify storage failure/retry, interrupted settlement and preserved unsupported saves with explicit reset.
+
 ## November 3 Razor league development
 - Add complete local four-team season lifecycle with played matches, parallel fixtures, standings and recovery.
 - Yield opponent simulation in bounded frame batches; isolate season from exhibition/practice saves and rewards.

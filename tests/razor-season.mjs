@@ -24,6 +24,7 @@ try{
   assert.deepEqual(await page.evaluate(()=>publications),[]);
   season=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.season.v1')));
  }
+ await page.locator('#fixtures').click();assert.equal(await page.locator('#recordList p').count(),6);assert.equal((await page.locator('#recordList').textContent()).includes('scheduled'),false);await page.keyboard.press('Enter');
  assert.equal(await page.locator('#heading').textContent(),'Season complete');assert.equal(await page.locator('#start').isVisible(),false);
  await page.evaluate(()=>sessionStorage.removeItem('season.fixture'));await page.reload();await page.locator('#season').click();assert.equal(await page.locator('#heading').textContent(),'Season complete');
  await page.locator('#new').click();assert.equal(await page.locator('#heading').textContent(),'Relay Runners vs Ion Comets');
@@ -31,5 +32,24 @@ try{
  const checkpoint=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.season.v1')));assert.ok(checkpoint.match.tick>0);assert.equal(checkpoint.match.phase,'paused');
  await page.reload();await page.locator('#season').click();assert.equal(await page.locator('#start').textContent(),'Resume league match');
  const prior=await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1'));await page.locator('#new').click();assert.equal(await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1')),prior);
- assert.deepEqual(errors,[]);console.log('Season browser: three played-match completions, atomic round saves, completed reload/new season and zero native reward/save publications passed.');
+ const failure=await browser.newPage();
+ const interrupted=L.create(99);interrupted.match=L.start(interrupted);interrupted.match.tick=E.LIMIT;interrupted.match.phase='result';
+ await failure.addInitScript(v=>{
+  localStorage.setItem('starcade.razor-derby.season.v1',JSON.stringify(v));
+  const original=Storage.prototype.setItem;window.failSeason=true;
+  Storage.prototype.setItem=function(k,value){if(k==='starcade.razor-derby.season.v1'&&window.failSeason)throw Error('simulated storage failure');return original.call(this,k,value);};
+ },interrupted);
+ await failure.goto(pathToFileURL(path.join(folder,'index.html')).href);await failure.locator('#season').click();await failure.locator('#start').click();
+ await failure.waitForFunction(()=>document.getElementById('notice').textContent.includes('could not be saved'));
+ assert.equal(await failure.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.season.v1')).results.length),0);
+ await failure.evaluate(()=>{window.failSeason=false;});await failure.locator('#start').click();
+ await failure.waitForFunction(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.season.v1')).results.length===2);
+ assert.equal(await failure.locator('#notice').textContent(),'Round 1 saved.');
+ await failure.screenshot({path:path.resolve(import.meta.dirname,'../../../Razor-Season-2026-11-03.png')});
+ const corrupt=await browser.newPage();await corrupt.addInitScript(()=>localStorage.setItem('starcade.razor-derby.season.v1','{"schema":99}'));
+ await corrupt.goto(pathToFileURL(path.join(folder,'index.html')).href);await corrupt.locator('#season').click();
+ assert.equal(await corrupt.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1')),'{"schema":99}');
+ await corrupt.locator('#resetSeason').click();assert.equal(await corrupt.evaluate(()=>localStorage.getItem('starcade.razor-derby.season.v1')),'{"schema":99}');
+ await corrupt.locator('#resetSeason').click();assert.match(await corrupt.locator('#mode').textContent(),/LEAGUE/);
+ assert.deepEqual(errors,[]);console.log('Season browser: three played-match completions, atomic round saves, completed reload/new season, interrupted settlement/storage retry, preserved future data/confirmed reset and zero native reward/save publications passed.');
 }finally{await browser.close();}
