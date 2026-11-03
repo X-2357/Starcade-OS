@@ -13,6 +13,11 @@ for(const side of [0,1]){
  const s=E.create(1);s.players.forEach(p=>{p.y=5;});s.ball={x:side===0?99.9:.1,y:30,vx:side===0?47:-47,vy:0,owner:-1,ignore:-1,flight:20};
  E.step(s);assert.equal(s.goals[side],1);assert.equal(s.possession,1-side);
 }
+const directed=E.create(2);directed.players[5].cool=0;
+const from={...directed.players[5]},to={...directed.players[1]};
+assert.equal(E.pass(directed,5,1),true);
+assert.ok(Math.abs(directed.ball.vy/directed.ball.vx-(to.y-from.y)/(to.x-from.x))<1e-10);
+const invalid=E.create(2);invalid.players[5].cool=0;assert.equal(E.pass(invalid,5,11),true);assert.equal(invalid.stats.passes[0],1);
 const clock=E.create(2);clock.shotClock=1;E.step(clock);assert.equal(clock.stats.turnovers[0],1);assert.equal(clock.possession,1);
 const loose=E.create(3);loose.ball={x:50,y:5,vx:0,vy:0,owner:-1,ignore:-1,flight:299};E.step(loose);assert.ok(loose.ball.owner>=0);
 const pass=E.create(4);pass.players[5].cool=0;assert.equal(E.pass(pass,5),true);assert.equal(pass.ball.owner,-1);assert.equal(pass.stats.passes[0],1);
@@ -44,6 +49,9 @@ try{
  page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(pathToFileURL(path.join(folder,'index.html')).href);
  await page.locator('#start').click();
+ await page.keyboard.press('c');assert.match(await page.locator('#target').textContent(),/selected/);
+ await page.evaluate(()=>window.postMessage({channel:'starcade',type:'input',value:{key:'Control',down:true}},'*'));
+ await page.waitForTimeout(30);assert.match(await page.locator('#target').textContent(),/selected/);
  await page.keyboard.down('ArrowRight');await page.waitForTimeout(600);await page.keyboard.up('ArrowRight');
  await page.keyboard.press('y');assert.equal(await page.locator('#overlay').isVisible(),true);
  const paused=await page.evaluate(()=>JSON.parse(localStorage.getItem('starcade.razor-derby.match.v1')));

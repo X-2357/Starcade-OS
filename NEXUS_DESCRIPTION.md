@@ -492,3 +492,5 @@ Development addition (November 2): Constellation Cards is an original tactical c
 November 3 development additions: Razor Derby (original exhibition rules, six-a-side playable holo-sport) and Frontier Convoy (six-leg resource expedition with twelve encounters). Source/browser evidence is separate from pending Starfield acceptance.
 
 Razor Derby development: optional practice uses separate checkpoints and awards no scores or rewards. Exhibition remains the scored mode.
+
+Razor Derby development: C / RB cycles passing receivers; the diamond and target label show the selection, and X passes. Automatic targeting remains the default. Actual Starfield acceptance is pending.

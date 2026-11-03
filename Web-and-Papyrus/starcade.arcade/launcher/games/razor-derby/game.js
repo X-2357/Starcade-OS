@@ -5,7 +5,7 @@
   const send=(type,value)=>parent.postMessage({channel:"starcade",game:"razor-derby",session,type,value},"*");
   const H={save:value=>send("save",value),score:value=>send("score",value),finish:value=>send("finish",value),exit:()=>send("exit")};
   const key="starcade.razor-derby.match.v1",held=new Set();
-  let practice=false;
+  let practice=false,selectedTarget=-1,targetCarrier=-1;
   const practiceKey="starcade.razor-derby.practice.v1";
   let state=null,loaded=false,raf=0,last=0,acc=0,action={},confirmNew=false,localTick=0,hostTick=0;
   function persist(native=true){
@@ -13,7 +13,17 @@
     try{localStorage.setItem(practice?practiceKey:key,JSON.stringify(state));}catch(_){$("notice").textContent=practice?"Practice saving unavailable; keep this session open to finish it.":"Local saving unavailable. Use Return to checkpoint through the arcade.";}
     if(native&&!practice)H.save(state);
   }
-  function clearInput(){held.clear();action={};}
+  function clearInput(){held.clear();action={};selectedTarget=-1;targetCarrier=-1;}
+  function receiver(){
+    if(!state||state.ball.owner!==state.control){selectedTarget=-1;targetCarrier=-1;return -1;}
+    if(targetCarrier!==state.control){selectedTarget=-1;targetCarrier=state.control;}
+    return selectedTarget>=0?selectedTarget:E.target(state,state.control);
+  }
+  function cycleTarget(){
+    if(state?.phase!=="live"||state.ball.owner!==state.control)return;
+    const current=receiver(),eligible=state.players.filter(p=>p.id<6&&p.id!==state.control&&p.id%6!==0).map(p=>p.id);
+    selectedTarget=eligible[(eligible.indexOf(current)+1)%eligible.length];draw();
+  }
   function stop(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;acc=0;clearInput();}
   function show(){
     const done=state?.phase==="result";
@@ -52,7 +62,8 @@
     line(0,21,0,39,"#8df7c7",9);line(100,21,100,39,"#ff94b5",9);
     ctx.font="14px Arial";ctx.textAlign="center";ctx.fillStyle="#6d9da7";ctx.fillText("TEAL  →",315,650);ctx.fillText("←  ROSE",885,650);
     if(!state)return;
-    const target=state.ball.owner===state.control?E.target(state,state.control):-1;
+    const target=receiver();
+    $("target").textContent=target>=0?`Pass target: runner ${target%6+1}${selectedTarget<0?" (auto)":" (selected)"}`:"Pass target: gain possession";
     for(const p of state.players){const q=project(p.x,p.y),side=E.team(p.id);ctx.fillStyle="#0007";ctx.beginPath();ctx.ellipse(q.x,q.y+7,15,7,0,0,Math.PI*2);ctx.fill();
       if(p.id===state.control){ctx.strokeStyle="#ffe59a";ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(q.x,q.y+5,20,11,0,0,Math.PI*2);ctx.stroke();}
       ctx.fillStyle=side?"#e86b94":"#6ee1c6";ctx.beginPath();ctx.arc(q.x,q.y-8,12,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#d4ffff";ctx.lineWidth=1;ctx.stroke();
@@ -70,7 +81,7 @@
     if(last)acc+=Math.min((time-last)/1000,.1);last=time;
     const oldGoals=state.goals.join(":");
     while(acc>=1/60&&state.phase==="live"){
-      const input={x:Number(held.has("ArrowRight")||held.has("d"))-Number(held.has("ArrowLeft")||held.has("a")),y:Number(held.has("ArrowDown")||held.has("s"))-Number(held.has("ArrowUp")||held.has("w")),sprint:held.has("Shift"),...action};
+      const input={x:Number(held.has("ArrowRight")||held.has("d"))-Number(held.has("ArrowLeft")||held.has("a")),y:Number(held.has("ArrowDown")||held.has("s"))-Number(held.has("ArrowUp")||held.has("w")),sprint:held.has("Shift"),passTarget:receiver(),...action};
       E.step(state,input);action={};acc-=1/60;
     }
     if(state.tick-localTick>=120){persist(false);localTick=state.tick;}
@@ -95,9 +106,11 @@
   };
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
   $("pause").onclick=()=>state?.phase==="live"?pause():resume();
+  $("cycle").onclick=cycleTarget;
   $("pass").onclick=()=>{if(state?.phase==="live")action.pass=true;};$("shoot").onclick=()=>{if(state?.phase==="live")action.shoot=true;};
   addEventListener("keydown",e=>{
     const k=e.key.length===1?e.key.toLowerCase():e.key;
+    if(k==="c"||k==="Control"){e.preventDefault();if(!e.repeat)cycleTarget();return;}
     if(k==="Escape"){e.preventDefault();e.stopImmediatePropagation();leave();return;}
     if(["y","p"].includes(k)){e.preventDefault();if(!e.repeat)state?.phase==="live"?pause():resume();return;}
     if(k==="Enter"||k===" "){

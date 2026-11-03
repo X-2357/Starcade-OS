@@ -1,3 +1,7 @@
+## November 3 manual pass targeting
+- Add explicit teammate selection in Razor Derby via C / RB, with visible target feedback.
+- Preserve automatic defaults, AI behavior, exhibition saves and practice isolation.
+
 ## November 3 development continuation
 - Add separate Razor Derby practice with no score/reward publication.
 - Add repeatable Frontier Convoy lifecycle and browser acceptance tests.

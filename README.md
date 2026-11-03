@@ -54,3 +54,5 @@ Close Starfield before updating so `Starcade.dll` can be replaced. Install 1.3 o
 All editable HTML/JavaScript game source is included. See `THIRD_PARTY_NOTICES.md`, the license files, and the separate 1.7.3 corresponding-source archive.
 
 Development addition (November 2): Constellation Cards is an original tactical card duel with capture previews and automatic resume. Browser validation and Starfield acceptance are tracked separately; this is not a public-release claim.
+
+Razor Derby development: C / RB cycles passing receivers; the diamond and target label show the selection, and X passes. Automatic targeting remains the default. Actual Starfield acceptance is pending.

@@ -42,9 +42,9 @@
     const p=s.players[id], d=Math.hypot(x-p.x,y-p.y)||1;
     s.ball={x:p.x,y:p.y,vx:(x-p.x)/d*speed,vy:(y-p.y)/d*speed,owner:-1,ignore:id,flight:0};p.cool=30;
   }
-  function pass(s,id) {
+  function pass(s,id,requested) {
     if(s.ball.owner!==id || s.players[id].cool>0)return false;
-    const j=target(s,id);if(j<0)return false;
+    const j=Number.isInteger(requested)&&requested>=0&&requested<12&&requested!==id&&requested%6!==0&&team(requested)===team(id)?requested:target(s,id);if(j<0)return false;
     const q=s.players[j];release(s,id,q.x,q.y,34);s.stats.passes[team(id)]++;
     announce(s,`${team(id)===0?"Teal":"Rose"} passes to runner ${j%6+1}`);return true;
   }
@@ -81,7 +81,7 @@
     s.players.forEach(p=>{p.cool=Math.max(0,p.cool-1);});
     if(s.tick>=LIMIT){s.phase="result";announce(s,"Full time");return;}
     if(input.shoot){if(s.ball.owner===s.control)shoot(s,s.control);else switchDefender(s);}
-    if(input.pass){if(s.ball.owner===s.control)pass(s,s.control);else challenge(s,s.control);}
+    if(input.pass){if(s.ball.owner===s.control)pass(s,s.control,input.passTarget);else challenge(s,s.control);}
     const carrier=s.ball.owner>=0?s.players[s.ball.owner]:s.ball;
     for(const p of s.players){
       const side=team(p.id), dir=side===0?1:-1, own=s.ball.owner>=0&&team(s.ball.owner)===side;
