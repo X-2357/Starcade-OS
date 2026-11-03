@@ -490,3 +490,5 @@ is supplied as a separate source archive on the same Nexus page.
 Development addition (November 2): Constellation Cards is an original tactical card duel with capture previews and automatic resume. Browser validation and Starfield acceptance are tracked separately; this is not a public-release claim.
 
 November 3 development additions: Razor Derby (original exhibition rules, six-a-side playable holo-sport) and Frontier Convoy (six-leg resource expedition with twelve encounters). Source/browser evidence is separate from pending Starfield acceptance.
+
+Razor Derby development: optional practice uses separate checkpoints and awards no scores or rewards. Exhibition remains the scored mode.

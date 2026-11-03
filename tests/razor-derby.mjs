@@ -65,6 +65,20 @@ try{
  await page.evaluate(()=>sessionStorage.removeItem('razor.fixture'));await page.reload();assert.equal(await page.evaluate(()=>finishes),0);
  await page.evaluate(()=>sessionStorage.setItem('razor.fixture','{"schema":999}'));await page.reload();assert.match(await page.locator('#notice').textContent(),/could not be restored/);
  assert.deepEqual(errors,[]);
+ const drill=await browser.newPage();
+ await drill.addInitScript(()=>{window.awards=[];addEventListener('message',e=>{if(['score','finish','save'].includes(e.data.type))awards.push(e.data.type);});});
+ await drill.goto(pathToFileURL(path.join(folder,'index.html')).href);
+ await drill.locator('#start').click();await drill.waitForTimeout(100);await drill.keyboard.press('y');
+ const exhibition=await drill.evaluate(()=>localStorage.getItem('starcade.razor-derby.match.v1'));
+ await drill.evaluate(()=>{const s=RazorDerby.create(1);s.tick=RazorDerby.LIMIT-3;s.phase='paused';localStorage.setItem('starcade.razor-derby.practice.v1',JSON.stringify(s));});
+ await drill.locator('#practice').click();
+ await drill.evaluate(()=>{awards=[];});await drill.locator('#start').click();await drill.waitForTimeout(100);await drill.keyboard.press('y');
+ assert.match(await drill.locator('#mode').textContent(),/PRACTICE/);
+ assert.deepEqual(await drill.evaluate(()=>awards),[]);
+ assert.equal(await drill.evaluate(()=>localStorage.getItem('starcade.razor-derby.match.v1')),exhibition);
+ await drill.reload();assert.match(await drill.locator('#mode').textContent(),/EXHIBITION/);
+ await drill.locator('#practice').click();assert.equal(await drill.locator('#overlay').isVisible(),true);
+ await drill.close();
  // Both ends of close-checkpoint seam: actual launcher and game; native API stubbed.
  const launcher=await browser.newPage(),view=path.resolve(folder,'../..');
  await launcher.route('http://starcade.test/**',async route=>{

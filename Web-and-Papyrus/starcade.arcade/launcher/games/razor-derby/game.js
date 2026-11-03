@@ -5,28 +5,33 @@
   const send=(type,value)=>parent.postMessage({channel:"starcade",game:"razor-derby",session,type,value},"*");
   const H={save:value=>send("save",value),score:value=>send("score",value),finish:value=>send("finish",value),exit:()=>send("exit")};
   const key="starcade.razor-derby.match.v1",held=new Set();
+  let practice=false;
+  const practiceKey="starcade.razor-derby.practice.v1";
   let state=null,loaded=false,raf=0,last=0,acc=0,action={},confirmNew=false,localTick=0,hostTick=0;
   function persist(native=true){
     if(!state)return;
-    try{localStorage.setItem(key,JSON.stringify(state));}catch(_){$("notice").textContent="Local saving unavailable. Use Return to checkpoint through the arcade.";}
-    if(native)H.save(state);
+    try{localStorage.setItem(practice?practiceKey:key,JSON.stringify(state));}catch(_){$("notice").textContent=practice?"Practice saving unavailable; keep this session open to finish it.":"Local saving unavailable. Use Return to checkpoint through the arcade.";}
+    if(native&&!practice)H.save(state);
   }
   function clearInput(){held.clear();action={};}
   function stop(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;acc=0;clearInput();}
   function show(){
     const done=state?.phase==="result";
+    $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
+    $("practice").hidden=practice;
     $("overlay").hidden=state?.phase==="live";
     $("new").hidden=!state;
+    $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
     $("start").hidden=done;
-    $("start").textContent=state?"Resume exhibition":"Start exhibition";
-    $("heading").textContent=done?(state.goals[0]>state.goals[1]?"Teal victory":state.goals[0]<state.goals[1]?"Rose victory":"Honors even"):state?"Exhibition paused":"Take the pitch";
+    $("start").textContent=practice?"Resume practice":state?"Resume exhibition":"Start exhibition";
+    $("heading").textContent=done?(state.goals[0]>state.goals[1]?"Teal victory":state.goals[0]<state.goals[1]?"Rose victory":"Honors even"):state?(practice?"Practice paused":"Exhibition paused"):"Take the pitch";
     if(done){const t=state.stats;$("body").textContent=`Full time: ${state.goals[0]} – ${state.goals[1]}. Shots ${t.shots[0]} / ${t.shots[1]}; completed challenges ${t.steals[0]} / ${t.steals[1]}; keeper saves ${t.saves[0]} / ${t.saves[1]}. Teal / Rose. Move closer before shooting; use your marked passing outlet under pressure.`;}
     else if(state)$("body").textContent="Your match is saved. Resume when ready; the clock does not run while paused. Teal attacks right. Use X to pass or challenge, A to shoot or switch defender.";
   }
   function pause(){if(!state||state.phase!=="live")return;state.phase="paused";stop();persist();show();draw();}
   function resume(){
     if(document.hidden)return;
-    if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);H.score(0);}
+    if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice)H.score(0);}
     if(state.phase==="result")return;
     state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
     if(!raf)raf=requestAnimationFrame(frame);
@@ -71,7 +76,7 @@
     if(state.tick-localTick>=120){persist(false);localTick=state.tick;}
     if(state.tick-hostTick>=900||oldGoals!==state.goals.join(":")){persist();hostTick=state.tick;}
     draw();
-    if(state.phase==="result"){stop();persist();H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
+    if(state.phase==="result"){stop();persist();if(!practice)H.finish(state.goals[0]*1000+(state.goals[0]>=state.goals[1]?500:0));show();return;}
     raf=requestAnimationFrame(frame);
   }
   function load(value){
@@ -81,6 +86,13 @@
     }catch(_){state=null;$("notice").textContent="The saved exhibition could not be restored. Start a fresh match.";}
     show();draw();
   }
+  $("practice").onclick=()=>{
+    if(!loaded)return;
+    pause();stop();practice=true;state=null;localTick=hostTick=0;
+    try{const saved=JSON.parse(localStorage.getItem(practiceKey)||"null");if(saved){state=E.restore(saved);if(state.phase==="result")state=null;else state.phase="paused";}}catch(_){$("notice").textContent="Practice save unavailable; a fresh drill is ready.";}
+    if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
+    state.phase="paused";show();draw();
+  };
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
   $("pause").onclick=()=>state?.phase==="live"?pause():resume();
   $("pass").onclick=()=>{if(state?.phase==="live")action.pass=true;};$("shoot").onclick=()=>{if(state?.phase==="live")action.shoot=true;};

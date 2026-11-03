@@ -1,3 +1,7 @@
+## November 3 development continuation
+- Add separate Razor Derby practice with no score/reward publication.
+- Add repeatable Frontier Convoy lifecycle and browser acceptance tests.
+
 ## Unreleased development — November 2, 2026
 - Add original Constellation Cards: tactical duels, capture previews, opponent, controller/keyboard/mouse, automatic match resume.
 - Refresh runtime packaging with owner-confirmed native 1.7.3; no native behavior change in this batch.
