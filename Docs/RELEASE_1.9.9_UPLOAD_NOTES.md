@@ -1,5 +1,26 @@
 # Starcade OS 1.9.9 - Nexus upload notes
 
+## r2 (2026-11-04) - USE THIS ONE: same 1.9.9 with the fixed Starcade.dll (1.7.3)
+
+| | |
+|---|---|
+| File | `outputs\Release-1.9.9\Starcade-OS-1.9.9-r2.zip` (kept outside the repo; 498,328,416 bytes) |
+| SHA-256 | `7CBA56F6FBB0791E81E80E85630DB21609D29DC639921EC41923A05A8C70CD18` |
+| What changed vs the original 1.9.9 zip | only `Data/SFSE/Plugins/Starcade.dll` (1.7.2 -> 1.7.3, sha 0389EDED65E57C8A...) and one added line in the bundled `Docs/CHANGELOG.md` |
+| Version to enter on Nexus | `1.9.9` if the original 1.9.9 zip was never uploaded; otherwise it needs a new version number (and the footer/changelog would change with it) |
+
+Why: the 1.7.2 DLL could end the game with "Starcade.dll: Failed to open Address Library file" (see `Docs/ADDRESS_LIBRARY_ERROR_2026-10-27.md`). 1.7.3 was confirmed in game on 2026-11-02 (log: `Starcade v1.7.3.0`, Address Library readable on attempt 1, Papyrus callbacks bound).
+
+How it was made: the original `Release-1.9.9/Starcade-OS-1.9.9.zip` no longer exists on disk (folder last modified 2026-10-21 22:52, not by this session), so r2 was rebuilt from the same inputs with the same builder as at the 1.9.9 commit (`61c629a`: `tools/build_release_zip.py`, repo override files and docs as of that commit) and the `Starcadeos` MO2 folder, which has changed since 1.9.9 only by this DLL. NOTE: `tools/build_release_zip.py` in the repo has since been reworked by Codex for the 1.7.4 Razor Derby package and can no longer produce 1.9.9.
+
+Verified by re-reading the finished zip: 1,683 entries (same count as the original), `Data/` only top-level entry, no `meta.ini`/`starcade.ini`, 84 mp3 and no duplicate, footer VERSION 1.9.9, Hextris `main.js`/`save-state.js`, `x2357starcade.esm` and `x2357StarcadeTerminal.pex` have the same sha256 prefixes recorded when the original zip was verified, DLL is the confirmed 1.7.3 build.
+
+NOT verified: this exact zip has not been installed into a fresh MO2 folder or run. Each part was seen working separately (1.9.9 content on 2026-10-20 with the 1.7.2 DLL; DLL 1.7.3 on 2026-11-02); the combination in one package has not been run. The text further down describes the original zip; where it says `Starcade.dll` unchanged or 1.7.2, r2 differs as above.
+
+---
+
+# Original 1.9.9 build notes (2026-10-21)
+
 Built 2026-10-21 from the tested MO2 folder `C:\Modding\MO2\mods\Starcadeos` with `tools/build_release_zip.py`.
 
 | | |
