@@ -1,0 +1,22 @@
+{
+  "version": "1.7.4",
+  "evidence": "compiled/staged; Starfield inventory acceptance pending",
+  "runtime": {
+    "SFSE/Plugins/Starcade.dll": "86d1274ba292172b7ce4bf3ac3c5e71b655c1b2c3422b3ba174f6d16bd715bdf",
+    "Scripts/x2357StarcadeNative.pex": "7dc4713fb0e577889b30be358caa8c231367fe661b55a681fdb6986a84cf9efd",
+    "Scripts/x2357StarcadePlayerAlias.pex": "1f2a4b55ab7cb5ac3933e0b2297c7e04b446a4a5fa39d583723021c8414bb7f1",
+    "Scripts/x2357StarcadeDerbyPrizes.pex": "e77e4f303e6e7810472f99a7247d52cac532e78b09495221917cc3fcfe127a79"
+  },
+  "source": {
+    "Native/src/main.cpp": "9a2cd380cd16e73f09c06523fc0176de80d0ab95fadaa01ea12d15b844beda80",
+    "Native/src/DerbyPrizePolicy.h": "4d222f75cc79381f939b820437767adb94182a951af55b39a87deb8cba5abcf1",
+    "Native/include/OSFUI_API.h": "5bb157de1dd5e21bfcab8e4a967ffb7d63eff7848a0d1bad5d8727ddd6b69e33",
+    "Native/include/OSFUI_Diagnostics.h": "23fd2a3890bfbf7e4c1e4003a0b0a4a48d2bfb319ba0c3bd86d1cecce4905fad",
+    "Native/include/OSFUI_Settings.h": "853453be8139c7eb39d63a2efeacdeccbd117855793fc33ed46798d4a986e089",
+    "Native/include/OSFUI_Views.h": "3a6dd40f19c6b5fdd49c9330c154c830550ef54c0019b52c91849db2771e3b8a",
+    "Native/xmake.lua": "e4c186aff3f31bb9e3f1e25e4ef1157eed76c83a917b261e14f55531441ada1e",
+    "Web-and-Papyrus/Source/x2357StarcadeNative.psc": "37fb626ee9daae40a0ace4e2896133765f182305f0f9dea2f118f76748b385b2",
+    "Web-and-Papyrus/Source/x2357StarcadePlayerAlias.psc": "9224f39170559c98ad531af22ccb1a42178d7d96393fe8e64f3045d43de87513",
+    "Web-and-Papyrus/Source/x2357StarcadeDerbyPrizes.psc": "0aa9c862a7d2570c75758e122aece785f914d285551fc090d53cc1bc8c3d8b3d"
+  }
+}

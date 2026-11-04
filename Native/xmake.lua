@@ -1,7 +1,7 @@
 includes("../osf-ui/lib/commonlibsf")
 
 set_project("Starcade")
-    set_version("1.7.3")
+    set_version("1.7.4")
 set_license("GPL-3.0-or-later")
 set_languages("c++23")
 set_warnings("allextra")
@@ -20,3 +20,8 @@ target("Starcade")
     add_headerfiles("src/**.h", "include/**.h")
     add_includedirs("src", "include")
     add_syslinks("shell32", "ole32", "advapi32")
+
+target("DerbyPrizePolicyTest")
+    set_kind("binary")
+    set_default(false)
+    add_files("../tests/derby-prize-policy.cpp")

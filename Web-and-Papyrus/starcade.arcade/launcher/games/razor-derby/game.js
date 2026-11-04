@@ -164,7 +164,47 @@
     $("closeRecords").focus();
   }
   let rewardPage=0;
-  function rewardsView(){if(!league||seasonState.schema!==2)return;panel('Career rewards','League training points and athlete XP are fictional; no Starfield currency or inventory payout.');const v=RazorSeason.rewards(seasonState);detail(`Earned ${v.earned} · Spent ${v.spent} · Available ${v.available}`);detail(v.honours.join(' · ')||'No completed season honours yet.');for(const t of RazorSeason.careerTable(seasonState))detail(`${t.name}: career ${t.played} matches, W/D/L ${t.wins}/${t.draws}/${t.losses}, goals ${t.for}:${t.against}`);button('Newer rewards',()=>{rewardPage=Math.max(0,rewardPage-1);rewardsView();},rewardPage===0);button('Older rewards',()=>{rewardPage++;rewardsView();},(rewardPage+1)*10>=v.ledger.length);for(const e of v.ledger.slice().reverse().slice(rewardPage*10,rewardPage*10+10))detail(`${e.text}: +${e.points} training points [${e.id}]`);detail('Spend points in your roster between matches. XP is earned from appearances and recorded actions; levels and training improve league-only speed and shot accuracy.');$("closeRecords").focus();}
+  let prizePending=null,prizeFrontier=null,prizeStatus=0,prizeMessage='';
+  function prizeRequest(action,prize){
+    if(prizePending)return;
+    const requestId=identity(),passport=seasonState.prizePassport;
+    prizePending={requestId,passport};prizeMessage='Waiting for Starfield inventory service…';
+    send('derbyPrize',{rules:1,requestId,passport,action,ordinal:prize?.ordinal||0,result:prize?.result??-1,expectedFrontier:prizeFrontier??0});
+    setTimeout(()=>{if(prizePending?.requestId!==requestId)return;prizePending=null;prizeFrontier=null;prizeMessage='No confirmation received. Delivery is unknown. Check the save ledger before retrying; the native DLL and prize scripts must match.';if(prizeVisible())renderPrizes();},15000);
+    renderPrizes();
+  }
+  function prizeVisible(){return league&&seasonState?.schema===2&&!$('recordPanel').hidden&&$('recordsTitle').textContent==='Starfield prizes';}
+  function renderPrizes(){
+    if(!prizeVisible())return;
+    panel('Starfield prizes','Claims belong to the current Starfield save/character. An earlier save rolls back inventory and its claim ledger together.');
+    detail(prizeMessage);detail('Match: loss 100, draw 150, win 200 credits. Season: 1st 500 + 3 Med Packs; 2nd 300 + 2; 3rd 150 + 1; other placings 100 + 1. No entry fee.');
+    button('Check current save claim ledger',()=>prizeRequest('status'),!!prizePending);
+    try{const list=RazorPrizes.entitlements(seasonState),next=prizeFrontier===null?null:list.find(p=>p.ordinal>prizeFrontier);
+      detail(prizeFrontier===null?'Claim status not confirmed. Query the current save before claiming.':`Recorded through milestone ${prizeFrontier}. ${list.filter(p=>p.ordinal>prizeFrontier).length} earned prizes remain.`);
+      if(next){detail(`Next: ${next.label} — ${next.credits} credits${next.medpacks?` + ${next.medpacks} Med Packs`:''}`);button('Claim next earned prize',()=>prizeRequest('claim',next),!!prizePending||prizeStatus===3||!!seasonState.match||settling);}
+      else if(prizeFrontier!==null)detail('No unclaimed earned prizes. Finish another league match to earn more.');
+      if(seasonState.match||settling)detail('Finish or settle the active match before claiming.');
+      if(prizeStatus===3)detail('A reserved prize has uncertain delivery. Further claims are blocked to prevent duplicate inventory; check inventory and keep this save for diagnosis.');
+    }catch(_){detail('Career prize history unavailable; no claim sent.');}
+    $('closeRecords').focus();
+  }
+  function worldPrizesView(){
+    if(!league||seasonState.schema!==2)return;
+    try{if(!seasonState.prizePassport){const next=RazorSeason.restore({...seasonState,prizePassport:identity()});localStorage.setItem(careerKey,JSON.stringify(next));seasonState=next;}}
+    catch(_){detail('Could not save the career prize identity. No claim sent.');return;}
+    panel('Starfield prizes','Current save inventory rewards');prizeFrontier=null;prizeStatus=0;
+    if(prizePending){prizeMessage='An earlier request is still awaiting confirmation.';renderPrizes();}else prizeRequest('status');
+  }
+  addEventListener('message',event=>{
+    const m=event.data,r=m?.value;
+    if(event.source!==parent||m?.channel!=='starcade'||m.type!=='derbyPrize'||m.session!==session||!r||!prizePending||r.requestId!==prizePending.requestId)return;
+    const pending=prizePending;prizePending=null;
+    if(!league||seasonState?.prizePassport!==pending.passport)return;
+    if(![0,1,2,3].includes(r.status)||!Number.isInteger(r.frontier)||r.frontier<0||r.frontier>8000000){prizeFrontier=null;prizeMessage=r.message||'Prize service unavailable or outdated.';}
+    else {prizeStatus=r.status;prizeFrontier=r.status===0?null:r.frontier;prizeMessage=(r.message||'Prize ledger response')+(r.status===1&&r.credits>0?` · Received ${r.credits} credits and ${r.medpacks||0} Med Packs.`:'');}
+    if(prizeVisible())renderPrizes();
+  });
+  function rewardsView(){if(!league||seasonState.schema!==2)return;panel('Career rewards','League development ledger. Claim Starfield inventory prizes separately below.');button('Starfield inventory prizes',worldPrizesView);const v=RazorSeason.rewards(seasonState);detail(`Earned ${v.earned} · Spent ${v.spent} · Available ${v.available}`);detail(v.honours.join(' · ')||'No completed season honours yet.');for(const t of RazorSeason.careerTable(seasonState))detail(`${t.name}: career ${t.played} matches, W/D/L ${t.wins}/${t.draws}/${t.losses}, goals ${t.for}:${t.against}`);button('Newer rewards',()=>{rewardPage=Math.max(0,rewardPage-1);rewardsView();},rewardPage===0);button('Older rewards',()=>{rewardPage++;rewardsView();},(rewardPage+1)*10>=v.ledger.length);for(const e of v.ledger.slice().reverse().slice(rewardPage*10,rewardPage*10+10))detail(`${e.text}: +${e.points} training points [${e.id}]`);detail('Spend points in your roster between matches. XP is earned from appearances and recorded actions; levels and training improve league-only speed and shot accuracy.');$("closeRecords").focus();}
   let historyIndex=0;
   function historyView(){if(!league||seasonState.schema!==2)return;const list=seasonState.archives;panel('Previous seasons','Archived actual fixtures and final rosters; incomplete seasons are labeled.');if(!list.length){detail('No previous seasons archived yet.');return;}historyIndex=Math.max(0,Math.min(historyIndex,list.length-1));const a=list[list.length-1-historyIndex];button('Newer season',()=>{historyIndex--;historyView();},historyIndex===0);button('Older season',()=>{historyIndex++;historyView();},historyIndex===list.length-1);detail(a.legacy?'Legacy four-team season: team results known, player statistics unavailable.':`Season ${a.number} · ${a.results.length===28?'Complete':'Abandoned / incomplete'} · ${a.results.length}/28 fixtures`);for(const t of RazorSeason.table(a))detail(`${t.name}: ${t.points} points, ${t.played} played, goals ${t.for}:${t.against}`);for(const m of a.results)detail(`Round ${m.round+1}: ${RazorSeason.teams[m.a]} ${m.goals.join(' : ')} ${RazorSeason.teams[m.b]}`);if(!a.legacy)for(const row of a.rosters)detail(row.map(p=>`${p.name} [${p.id}]`).join(' · '));$("closeRecords").focus();}
   $("roster").onclick=rosterView;$("career").onclick=rewardsView;$("history").onclick=historyView;

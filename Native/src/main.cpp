@@ -1,6 +1,7 @@
 // Starcade native bridge - Copyright (C) 2026 X-2357
 // GPL-3.0-or-later. See LICENSE-GPL-3.0.txt in the source distribution.
 #include "OSFUI_API.h"
+#include "DerbyPrizePolicy.h"
 
 #include <SFSE/SFSE.h>
 #include <RE/Starfield.h>
@@ -781,6 +782,51 @@ namespace Starcade
         }
     }
 
+    void ReportDerbyPrize(PapVM&, std::uint32_t, std::monostate, RE::BSFixedString a_request,
+        std::int32_t a_status, std::int32_t a_frontier, std::int32_t a_credits,
+        std::int32_t a_medpacks, RE::BSFixedString a_message)
+    {
+        const json result{{"requestId", a_request.c_str() ? a_request.c_str() : ""},
+            {"status", a_status}, {"frontier", a_frontier}, {"credits", a_credits},
+            {"medpacks", a_medpacks}, {"message", a_message.c_str() ? a_message.c_str() : ""}, {"rules", 1}};
+        g_ui.SendToWeb(kView, "starcade.derbyPrize", result.dump().c_str());
+        REX::INFO("Starcade Derby prize status={} frontier={} credits={} packs={}", a_status, a_frontier, a_credits, a_medpacks);
+    }
+
+    void DispatchDerbyPrize(const json& p, const char* source)
+    {
+        const auto request = p.value("requestId", std::string{});
+        const auto fail = [&](const char* message) {
+            const json result{{"requestId", request}, {"status", 0}, {"frontier", 0}, {"message", message}, {"rules", 1}};
+            g_ui.SendToWeb(source ? source : kView, "starcade.derbyPrize", result.dump().c_str());
+        };
+        const auto passport = p.value("passport", std::string{});
+        const auto action = p.value("action", std::string{});
+        if (!source || std::string_view(source) != kView ||
+            p.value("game", std::string{}) != "razor-derby" || p.value("rules", 0) != 1 ||
+            request.empty() || request.size() > 96 || passport.size() != 24 ||
+            !std::ranges::all_of(passport, [](unsigned char c) { return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'); }) ||
+            (action != "status" && action != "claim")) { fail("Invalid Derby prize request"); return; }
+        if (!p.contains("expectedFrontier") || !p["expectedFrontier"].is_number_integer() ||
+            !p.contains("ordinal") || !p["ordinal"].is_number_integer() ||
+            !p.contains("result") || !p["result"].is_number_integer()) { fail("Prize milestone must be an integer"); return; }
+        const auto ordinal64 = p.value("ordinal", 0LL), result64 = p.value("result", -1LL), expected64 = p.value("expectedFrontier", -1LL);
+        if (ordinal64 < 0 || ordinal64 > 8000000 || result64 < -1 || result64 > 8 || expected64 < 0 || expected64 > 8000000) { fail("Prize outside allowed range"); return; }
+        const auto ordinal = static_cast<std::int32_t>(ordinal64);
+        const auto prize = Derby::PrizeFor(ordinal, static_cast<std::int32_t>(result64));
+        if ((action == "claim" && !prize) || (action == "status" && ordinal != 0)) { fail("Invalid Derby prize milestone"); return; }
+        auto* vm = g_addressLibraryReady ? RE::BSScript::Internal::VirtualMachine::GetSingleton() : nullptr;
+        if (!vm) { fail("Starfield prize service unavailable"); return; }
+        const RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor> noCallback{};
+        vm->DispatchStaticCall("x2357StarcadeDerbyPrizes", "ProcessPrize",
+            [request, passport, ordinal, expected = static_cast<std::int32_t>(expected64), credits = prize ? prize->credits : 0, packs = prize ? prize->medpacks : 0](RE::BSScrapArray<RE::BSScript::Variable>& args) {
+                args.resize(6);
+                args[0] = RE::BSFixedString(request.c_str()); args[1] = RE::BSFixedString(passport.c_str());
+                args[2] = ordinal; args[3] = credits; args[4] = packs; args[5] = expected;
+                return true;
+            }, noCallback, 0);
+    }
+
     void BindPapyrus()
     {
         if (!EnsureAddressLibrary("data loaded", 20)) {
@@ -790,6 +836,7 @@ namespace Starcade
         if (auto* gameVM = RE::GameVM::GetSingleton(); gameVM && gameVM->GetVM()) {
             gameVM->GetVM()->BindNativeMethod("x2357StarcadeNative", "ReportCreditResult", &ReportCreditResult, true, false);
             gameVM->GetVM()->BindNativeMethod("x2357StarcadeNative", "ReportXPResult", &ReportXPResult, true, false);
+            gameVM->GetVM()->BindNativeMethod("x2357StarcadeNative", "ReportDerbyPrize", &ReportDerbyPrize, true, false);
             REX::INFO("Starcade: Papyrus credit and XP callbacks bound");
         } else {
             REX::WARN("Starcade: Papyrus VM unavailable; casino transactions disabled");
@@ -835,6 +882,10 @@ namespace Starcade
             }
             if (std::string_view(command) == "starcade.arcade.credits.transaction") {
                 DispatchCreditTransaction(p, source);
+                return;
+            }
+            if (std::string_view(command) == "starcade.arcade.derby.prize") {
+                DispatchDerbyPrize(p, source);
                 return;
             }
             if (std::string_view(command) == "starcade.arcade.external.status") {
@@ -937,6 +988,7 @@ namespace Starcade
         g_ui.RegisterCommand("starcade.arcade.save.set", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.achievement.unlock", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.credits.transaction", OnCommand, nullptr);
+        g_ui.RegisterCommand("starcade.arcade.derby.prize", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.external.status", OnCommand, nullptr);
         g_ui.RegisterCommand("starcade.arcade.external.launch", OnCommand, nullptr);
         g_ui.SubscribeHotkey("starcade.arcade", "openKey", OnHotkey, nullptr);

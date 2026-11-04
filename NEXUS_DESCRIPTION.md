@@ -27,7 +27,7 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ### Current development copy — November 3, 2026
 
-Razor Derby now offers an eight-team career with 64 named athletes, reserve selection, seven-round seasons, player and team statistics, previous-season archives and career totals. Earn training points and athlete XP, develop your team and track season honours. These are rewards within Razor Derby; Starfield credits and inventory prizes are not included. Existing four-team seasons remain playable until you choose to roll into the new career. Development acceptance in Starfield remains pending.
+Razor Derby now offers an eight-team career with 64 named athletes, reserve selection, seven-round seasons, player and team statistics, previous-season archives and career totals. Earn training points and athlete XP, develop your team and track season honours. The development candidate also adds optional Starfield credit prizes for league matches and credits plus Med Packs for completed seasons. Claim through Career & rewards → Starfield inventory prizes. Claims are recorded in your current Starfield save; real inventory acceptance testing remains pending. Existing four-team seasons remain playable until you choose to roll into the new career. Development acceptance in Starfield remains pending.
 
 The current source library contains 39 embedded games plus the optional OpenMW external card. Keyboard and controller support varies by game; Micropolis placement, Mah Jong tile selection, and Billiards shots require a mouse.
 

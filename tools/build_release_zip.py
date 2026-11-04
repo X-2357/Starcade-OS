@@ -13,13 +13,14 @@ Rules (each one cost real time when broken, see CLAUDE.md 2026-09-15):
   * nothing Starcade does not own (no AISS seed, no saved game state)
 
 Usage:
-  python tools/build_release_zip.py --install <MO2 mod folder> --out <zip path>
+  python tools/build_release_zip.py --install <MO2 mod folder> --prize-runtime <compiled runtime with receipt> --out <zip path>
 """
 import argparse
 import hashlib
 import os
 import sys
 import zipfile
+import json
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VIEW = 'SFSE/Plugins/OSFUI/views/starcade.arcade/'
@@ -84,7 +85,7 @@ def collect(install):
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
         entries[VIEW + 'launcher/games/constellation-cards/' + name] = os.path.join(card_root, name)
     derby_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby')
-    for name in ('index.html', 'style.css', 'engine.js', 'legacy-season.js', 'season.js', 'records.js', 'game.js'):
+    for name in ('index.html', 'style.css', 'engine.js', 'legacy-season.js', 'season.js', 'prizes.js', 'records.js', 'game.js'):
         entries[VIEW + 'launcher/games/razor-derby/' + name] = os.path.join(derby_root, name)
     convoy_root = os.path.join(REPO, 'Web-and-Papyrus/starcade.arcade/launcher/games/frontier-convoy')
     for name in ('index.html', 'style.css', 'rules.js', 'game.js'):
@@ -112,9 +113,29 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--install', required=True)
     ap.add_argument('--out', required=True)
+    ap.add_argument('--prize-runtime', required=True,
+                    help='Explicit compiled 1.7.4 Derby runtime with build-receipt.json')
     args = ap.parse_args()
 
     entries = collect(args.install)
+    # A new UI must never silently ship with the old DLL/PEX. Receipt binds the
+    # explicitly selected compiled runtime and its corresponding current source.
+    runtime = os.path.abspath(args.prize_runtime)
+    receipt = json.load(open(os.path.join(runtime, 'build-receipt.json'), encoding='utf-8'))
+    assert receipt['version'] == '1.7.4'
+    required = ['SFSE/Plugins/Starcade.dll'] + [
+        'Scripts/' + name + '.pex' for name in
+        ('x2357StarcadeNative', 'x2357StarcadePlayerAlias', 'x2357StarcadeDerbyPrizes')]
+    for rel in required:
+        src = os.path.join(runtime, rel)
+        assert sha(src) == receipt['runtime'][rel], 'Stale runtime: ' + rel
+        entries[rel] = src
+    for rel, expected in receipt['source'].items():
+        src = os.path.join(REPO, rel)
+        assert sha(src) == expected, 'Rebuild changed source: ' + rel
+        dest = ('Scripts/Source/' + os.path.basename(rel) if rel.endswith('.psc') else
+                'SFSE/Plugins/Starcade/Source/' + rel)
+        entries[dest] = src
     bad = [n for n in entries if os.path.basename(n).lower() in FORBIDDEN_NAMES
            or n.endswith('.tmp') or '\\' in n]
     if bad:

@@ -1,3 +1,9 @@
+## November 3 Razor career and world-prize development
+- Eight teams,64 named athletes,28 fixtures, roster selection, career/previous-season statistics and training progression.
+- Dedicated optional Starfield credit and Med Pack prize claims with save-owned duplicate ledger and explicit uncertainty handling.
+- Native1.7.4 and three changed PEX compiled; policy/browser/record regressions passed. Actual Starfield inventory acceptance pending.
+- No CK changes; casino transaction bodies unchanged. Package requires an explicit compiled-runtime receipt.
+
 ## November 3 Signal Casebook development
 - Add three original evidence puzzles, explanations, campaign saves and guarded conclusions.
 - Verify216 clue-order campaigns and full browser lifecycle.

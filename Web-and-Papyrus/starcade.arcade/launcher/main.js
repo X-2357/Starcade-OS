@@ -397,6 +397,10 @@
       const request = message.value || {};
       if (osfui.available()) osfui.send("starcade.arcade.credits.transaction", { game:current.id, ...request });
       else frame.contentWindow.postMessage({ channel:"starcade", type:"credits", value:{ requestId:request.requestId, success:false, error:"Starfield credit service unavailable" } }, "*");
+    } else if (message.type === "derbyPrize" && current?.id === "razor-derby") {
+      const request = message.value || {};
+      if (osfui.available()) osfui.send("starcade.arcade.derby.prize", { ...request, game:current.id });
+      else frame.contentWindow.postMessage({ channel:"starcade", type:"derbyPrize", session:launchSerial, value:{ requestId:request.requestId, status:0, message:"Starfield prize service unavailable" } }, "*");
     } else if (message.type === "exit") closeGame(true);
   });
 
@@ -440,6 +444,9 @@
       if (current) frame.contentWindow.postMessage({ channel:"starcade", type:"credits", value:result }, "*");
     });
     osfui.on("starcade.xp", showXP);
+    osfui.on("starcade.derbyPrize", (result) => {
+      if (current?.id === "razor-derby") frame.contentWindow.postMessage({ channel:"starcade", type:"derbyPrize", session:launchSerial, value:result }, "*");
+    });
     osfui.on("starcade.external", (result) => {
       if (!result?.id) return;
       externalState[result.id] = result;
