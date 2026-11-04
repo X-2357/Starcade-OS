@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {chromium} from 'playwright';
+const root=path.resolve(import.meta.dirname,'..'),folder=path.join(root,'Web-and-Papyrus/starcade.arcade/launcher/games/razor-derby');
+const c={window:{}};for(const f of ['engine.js','presentation.js'])vm.runInNewContext(fs.readFileSync(path.join(folder,f),'utf8'),c);
+const E=c.RazorDerby,F=c.window.RazorPresentation.courtFeedback,s=E.create(4);
+assert.equal(F(null),null);assert.equal(F({...s,phase:'result'}),null);
+s.players[5].cool=0;s.players[5].energy=40;
+assert.equal(F(s).energy,.4);assert.equal(F(s).recovery,0);assert.equal(F(s).tail,null);
+E.shoot(s,5);let before=JSON.stringify(s),v=F(s);assert.equal(v.recovery,30/45);assert.equal(v.tail.kind,'shot');assert.ok(v.tail.x<s.ball.x);assert.equal(JSON.stringify(s),before);
+s.ball.vx=-47;assert.ok(F(s).tail.x>s.ball.x);s.ball.kind='pass';assert.equal(F(s).tail.kind,'pass');s.ball.kind='future';assert.equal(F(s).tail,null);
+s.ball.kind='pass';s.ball.vx=s.ball.vy=0;assert.equal(F(s).tail,null);s.ball.vx=NaN;assert.equal(F(s).tail,null);
+s.players[5].energy=NaN;s.players[5].cool=46;assert.equal(F(s).energy,null);assert.equal(F(s).recovery,null);
+const defending=E.create(6);defending.ball.owner=6;defending.players[5].cool=0;defending.players[5].x=defending.players[6].x;defending.players[5].y=defending.players[6].y;E.challenge(defending,5);assert.equal(defending.players[5].cool,45);assert.equal(F(defending).recovery,1);
+console.log('Court feedback: actual release/challenge cooldown seams, energy, direction, pass/shot/carried/stationary/unknown/malformed/result and snapshot/RNG immutability passed.');
+const browser=await chromium.launch({headless:true,executablePath:process.env.STARCADE_BROWSER||undefined});
+try{
+ const page=await browser.newPage({viewport:{width:1600,height:1200}}),errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ const fixture=E.create(9);fixture.phase='paused';fixture.players[5].energy=40;fixture.players[5].cool=22;fixture.ball={x:70,y:30,vx:47,vy:4,owner:-1,ignore:5,flight:1,kind:'shot',from:5};
+ await page.addInitScript(s=>localStorage.setItem('starcade.razor-derby.match.v1',JSON.stringify(s)),fixture);
+ await page.goto(pathToFileURL(path.join(folder,'index.html')).href);await page.waitForFunction(()=>document.body.dataset.ready==='true');
+ assert.match(await page.locator('footer').textContent(),/cyan energy, amber recovery/);
+ const stored=await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.match.v1'));
+ await page.locator('#shotAim').click();await page.locator('#shotAim').click();
+ const after=JSON.parse(await page.evaluate(()=>localStorage.getItem('starcade.razor-derby.match.v1')));delete after.shotAim;assert.deepEqual(after,JSON.parse(stored));
+ await page.evaluate(()=>requestAnimationFrame=()=>0);await page.locator('#start').click();
+ await page.screenshot({path:path.resolve(root,'../Razor-Court-Feedback-2026-11-03.png')});assert.deepEqual(errors,[]);
+ console.log('Browser: restored paused fixture draws cues, existing aim redraw retains actual match/RNG/counters, legend present and no page errors. Starfield usefulness unverified.');
+}finally{await browser.close();}

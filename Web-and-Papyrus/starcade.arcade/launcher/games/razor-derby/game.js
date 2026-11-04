@@ -101,7 +101,7 @@
     const opponent=league?RazorSeason.teams[opponentId]:null;
     $("matchTeams").textContent=league?`Relay Runners / ${opponent}`:'Teal side / Rose side';
     if(!state){$("score").textContent="TEAL 0 : 0 ROSE";$("clock").textContent="02:00";$("clock").classList.remove("urgent");return;}
-    const target=receiver(),targetAthlete=namedAthlete(target);
+    const target=receiver(),targetAthlete=namedAthlete(target),feedback=RazorPresentation.courtFeedback(state);
     $("target").textContent=target>=0?`Pass target: ${targetAthlete?targetAthlete.name:`runner ${target%6+1}`}${selectedTarget<0?" (auto)":" (selected)"}`:"Pass target: gain possession";
     if(target>=0&&state.ball.owner===state.control){const p=state.players[state.control],t=state.players[target];ctx.save();ctx.setLineDash([5,7]);line(p.x,p.y,t.x,t.y,coaching?.covered?'#ff98a477':'#f1cd8355',2);ctx.restore();}
     if(placement){const runner=state.players[state.control],q=project(Math.max(0,Math.min(100,placement.x)),placement.y);ctx.save();ctx.setLineDash([2,9]);line(runner.x,runner.y,Math.max(0,Math.min(100,placement.x)),placement.y,'#f1cd8344',1);ctx.setLineDash([]);ctx.fillStyle='#09232c';ctx.strokeStyle='#f5cb85';ctx.lineWidth=2;ctx.beginPath();ctx.arc(q.x,q.y,8,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(q.x-4,q.y);ctx.lineTo(q.x+4,q.y);ctx.moveTo(q.x,q.y-4);ctx.lineTo(q.x,q.y+4);ctx.stroke();ctx.restore();}
@@ -112,10 +112,11 @@
       ctx.strokeStyle="#bddce5";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(q.x-6,q.y+10);ctx.lineTo(q.x-8,q.y+17);ctx.moveTo(q.x+6,q.y+10);ctx.lineTo(q.x+8,q.y+17);ctx.stroke();
       ctx.fillStyle=kit;ctx.beginPath();ctx.arc(q.x,q.y-8,12,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#d4ffff";ctx.lineWidth=1;ctx.stroke();
       ctx.fillStyle="#05151b";ctx.font="bold 12px Arial";ctx.fillText(p.id%6===0?"K":String(p.id%6+1),q.x,q.y-4);
-      const athlete=namedAthlete(p.id);if(athlete){ctx.fillStyle="#e8f4f2";ctx.font="10px Arial";ctx.fillText(athlete.name,q.x,q.y+(side?-26:29));}
+      if(p.id===state.control&&feedback){ctx.save();for(const [offset,fraction,color] of [[20,feedback.energy,'#6ee1c6'],[25,feedback.recovery,'#f5cb85']]){if(fraction===null)continue;ctx.fillStyle='#03151e';ctx.fillRect(q.x-15,q.y+offset,30,3);ctx.fillStyle=color;ctx.fillRect(q.x-15,q.y+offset,30*fraction,3);}ctx.restore();}
+      const athlete=namedAthlete(p.id);if(athlete){ctx.fillStyle="#e8f4f2";ctx.font="10px Arial";ctx.fillText(athlete.name,q.x,q.y+(side?-26:p.id===state.control?40:29));}
       if(p.id===target){ctx.fillStyle="#ffe59a";ctx.beginPath();ctx.moveTo(q.x,q.y-40);ctx.lineTo(q.x+7,q.y-32);ctx.lineTo(q.x,q.y-24);ctx.lineTo(q.x-7,q.y-32);ctx.closePath();ctx.fill();}
     }
-    const ball=project(state.ball.x,state.ball.y);ctx.fillStyle="#fff4bc";ctx.shadowColor="#ffd36e";ctx.shadowBlur=14;ctx.beginPath();ctx.arc(ball.x,ball.y-18,6,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    const ball=project(state.ball.x,state.ball.y);if(feedback?.tail){const t=project(feedback.tail.x,feedback.tail.y);ctx.save();ctx.strokeStyle=feedback.tail.kind==='shot'?'#f5cb85aa':'#6ee1c6aa';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(t.x,t.y-18);ctx.lineTo(ball.x,ball.y-18);ctx.stroke();ctx.restore();}ctx.fillStyle="#fff4bc";ctx.shadowColor="#ffd36e";ctx.shadowBlur=14;ctx.beginPath();ctx.arc(ball.x,ball.y-18,6,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
     $("score").textContent=`TEAL ${state.goals[0]} : ${state.goals[1]} ROSE`;
     const seconds=Math.ceil((E.LIMIT-state.tick)/60);$("clock").classList.toggle("urgent",seconds<=30);$("clock").textContent=`${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
     $("event").textContent=state.event;$("possession").textContent=`${state.possession?"Rose":"Teal"} possession ${Math.ceil(state.shotClock/60)}s`;

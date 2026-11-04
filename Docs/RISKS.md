@@ -1,3 +1,6 @@
+## November 3 court feedback
+Court meters need actual-game readability/enjoyment checks. Amber is remaining recovery, empty means ready; cyan is energy. Tail shows current velocity only, never a predicted trajectory or replay history. Engine/save/native/sibling behavior unchanged; browser fixtures are not Starfield performance proof.
+
 ## November 3 shooting/readiness limits
 - Upper/lower are planar court lanes, not true 3D height; ring is nominal placement, not a guaranteed goal or trajectory forecast. Manual-shot balance and hardware RS usability need gameplay.
 - Default Auto/AI behavior matches pre-change whole-match golden fixtures; real Starfield remains a separate gate.

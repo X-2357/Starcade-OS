@@ -39,5 +39,16 @@
     }
     ctx.drawImage(backdrop,0,0);
   }
-  window.RazorPresentation={metrics,colors,leaders,arena};
+  function courtFeedback(s){
+    if(!s||s.phase==='result')return null;
+    const p=s.players?.[s.control],b=s.ball,valid=(n,a,z)=>Number.isFinite(n)&&n>=a&&n<=z;
+    const energy=valid(p?.energy,0,100)?p.energy/100:null,recovery=valid(p?.cool,0,45)?p.cool/45:null;
+    let tail=null;
+    if(b?.owner===-1&&['pass','shot'].includes(b.kind)&&Number.isFinite(b.vx)&&Number.isFinite(b.vy)&&valid(b.x,-5,105)&&valid(b.y,-5,65)){
+      const speed=Math.hypot(b.vx,b.vy);
+      if(speed>0){const length=Math.min(5,speed*.1);tail={x:Math.max(0,Math.min(100,b.x-b.vx/speed*length)),y:Math.max(0,Math.min(60,b.y-b.vy/speed*length)),kind:b.kind};}
+    }
+    return {energy,recovery,tail};
+  }
+  window.RazorPresentation={metrics,colors,leaders,arena,courtFeedback};
 })();

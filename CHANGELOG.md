@@ -1,3 +1,8 @@
+## November 3 Razor court feedback development
+- Add controlled-runner energy/recovery meters and current-direction pass/shot tail.
+- Keep simulation, saves, native rewards and sibling contracts unchanged.
+- Model/browser regressions pass; actual Starfield acceptance pending.
+
 ## November 3 Razor shot placement development
 - Add optional Auto/Upper lane/Lower lane, V / RS selection and nominal goal guide.
 - Preserve default shooting and AI behavior against complete pre-change match snapshots.
