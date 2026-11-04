@@ -4,6 +4,8 @@ Description draft for the unreleased career development candidate; not a claim o
 
 **Created by X-2357**
 
+**Development direction:** the planned true3D Razor Derby rebuild will be a standalone mod with optional Starcade access. The current embedded development game remains available; standalone launch, save migration and the 3D rebuild are not implemented yet.
+
 Prepare for Razor league fixtures with **Scout next opponent**: compare both starting lineups, current-season player statistics and the opponent’s recent results, then open your roster to adjust your team. Available between matches in the eight-team career.
 
 Razor Derby now places small energy and recovery meters beneath your controlled runner, with short colored ball tails to help read passes and shots. Empty amber recovery means your next action is ready. The tail shows current direction rather than a promised flight path.

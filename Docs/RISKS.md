@@ -1,3 +1,6 @@
+## November 3 standalone split
+True3D/attack-stat rebuild is planned, not implemented. WebView origin changes do not share localStorage automatically. Save identity/import/rollback and duplicate prize claims must be tested before connecting standalone and Starcade. Current source/installed build preserved. New chat must measure actual WebView2 rendering/input/performance; browser screenshots alone cannot clear that gate.
+
 ## November 3 scouting limits
 Current ratings and prior recorded actions do not predict fixture outcomes. This is fictional league preparation, not real crew recruitment or market simulation. Actual Starfield/controller/readability/usefulness and combined performance remain unverified; no new save/native/sibling contract introduced.
 

@@ -1,3 +1,6 @@
+## November 3 standalone Razor ownership decision
+Owner confirmed Razor Derby standalone with optional Starcade access. Future adapter must open same game/save owner, validate capability/version/session and degrade when absent/older. No adapter implemented. One standalone fictional sports career/reward ledger; origin/import/save identity/frontier migration require full scope before writes. Installed embedded rules1 remains unchanged until tested replacement; no sibling state/schema/seed changes. See RAZOR_DERBY_STANDALONE_HANDOFF_2026-11-03.md.
+
 ## November 3 pre-match scouting
 On-request projection consumes Starcade season schedule/results/lineups/player statistics/ratings. No new schema, snapshot, publisher, sibling adapter, timer or persistent state. Fictional personnel remain separate from Crew Titles/world systems; native rewards and AISS score protocol unchanged. Validated eight-team career required; absent/legacy/active/completed cases return no preview. Current-season form only, no historical backfill or outcome prediction. Existing panel input and roster management guards reused; combined ecosystem performance unverified.
 

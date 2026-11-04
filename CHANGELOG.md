@@ -1,3 +1,7 @@
+## November 3 owner-approved Razor standalone direction
+- Record standalone Razor Derby with optional Starcade access and one save/reward owner.
+- Add new-dev-chat handoff and true3D/attack-stat rebuild scope. Documentation only; installed gameplay unchanged.
+
 ## November 3 Razor pre-match scouting
 - Add both starting lineups, current-season statistics and actual recent opponent results before fixtures.
 - Link existing roster management; guard active/unsettled/legacy/completed states.
