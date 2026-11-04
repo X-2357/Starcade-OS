@@ -1,3 +1,8 @@
+## November 3 Razor pre-match scouting
+- Add both starting lineups, current-season statistics and actual recent opponent results before fixtures.
+- Link existing roster management; guard active/unsettled/legacy/completed states.
+- Read-only presentation; actual Starfield acceptance pending.
+
 ## November 3 Razor court feedback development
 - Add controlled-runner energy/recovery meters and current-direction pass/shot tail.
 - Keep simulation, saves, native rewards and sibling contracts unchanged.

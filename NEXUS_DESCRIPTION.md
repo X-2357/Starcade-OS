@@ -4,6 +4,8 @@ Description draft for the unreleased career development candidate; not a claim o
 
 **Created by X-2357**
 
+Prepare for Razor league fixtures with **Scout next opponent**: compare both starting lineups, current-season player statistics and the opponent’s recent results, then open your roster to adjust your team. Available between matches in the eight-team career.
+
 Razor Derby now places small energy and recovery meters beneath your controlled runner, with short colored ball tails to help read passes and shots. Empty amber recovery means your next action is ready. The tail shows current direction rather than a promised flight path.
 
 Razor Derby development adds optional shot placement: keep Auto or choose the upper/lower court lane with V, the Aim button, or right-stick click. A goal ring shows nominal placement; shot spread and the moving keeper still matter. Your choice restores with the match. Controls show a loading status until saved-match initialization finishes. These changes are development-tested; Starfield and physical-controller acceptance are pending.

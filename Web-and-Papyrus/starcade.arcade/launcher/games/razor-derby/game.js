@@ -57,6 +57,7 @@
     $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
     $("practice").hidden=practice&&!practiceKind;
     $("season").hidden=league;$("fixtures").hidden=!league;for(const id of ["roster","career","history","leaders"])$(id).hidden=!league||seasonState.schema!==2;
+    $('scout').hidden=!league||seasonState.schema!==2||RazorSeason.round(seasonState)>=7||!!state&&(state.phase!=='result'||!seasonSettled);$('scout').disabled=settling;
     $("overlay").hidden=state?.phase==="live";
     renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();drillDisplay();aimDisplay();$("matchReport").hidden=!state&&!(league&&seasonState.results.some(m=>m.a===0||m.b===0));
     $("new").hidden=!state;
@@ -207,6 +208,17 @@
   function button(label,fn,disabled=false,container=$("recordActions")){const b=document.createElement("button");b.textContent=label;b.disabled=disabled;b.onclick=fn;container.append(b);return b;}
   function detail(text){const p=document.createElement("p");p.textContent=text;$("recordList").append(p);}
   function careerChange(fn,after){const top=$('recordPanel').scrollTop,label=document.activeElement?.textContent;try{const next=fn(seasonState);localStorage.setItem(careerKey,JSON.stringify(next));seasonState=next;after();const same=[...$('recordPanel').querySelectorAll('button:not(:disabled)')].find(b=>b.textContent===label);if(same)same.focus({preventScroll:true});$('recordPanel').scrollTop=top;}catch(_){detail("Change unavailable or storage write failed. Existing career retained.");}}
+  $('scout').onclick=()=>{
+    if(!league||settling||state&&(state.phase!=='result'||!seasonSettled))return;
+    const v=RazorPresentation.scouting(seasonState);if(!v)return;
+    panel(`Scout ${RazorSeason.teams[v.opponent]}`,`Round ${v.round} · current season records and starting lineups · no outcome prediction`);
+    button('Manage your lineup',()=>{rosterTeam=0;rosterPeriod='current';rosterView();});
+    for(const club of v.clubs){const h=document.createElement('h3');h.textContent=club.name;$('recordList').append(h);const t=club.record;detail(`${t.played} played · W/D/L ${t.wins}/${t.draws}/${t.losses} · goals ${t.for}:${t.against}`);
+      const grid=document.createElement('div');grid.className='roster-grid';$('recordList').append(grid);
+      for(const p of club.players){const card=document.createElement('article');card.className=`player-card club-${club.id}`;const title=document.createElement('h3');title.textContent=p.name;card.append(title);const role=document.createElement('p');role.textContent=`${p.slot===0?'Keeper':`Slot ${p.slot}`} · league rating ${p.rating}/10`;card.append(role);statCards([['Played',p.stats.appearances],['Goals',p.stats.goals],['Assists',p.stats.assists],['Saves',p.stats.saves]],card);grid.append(card);}}
+    detail('Opponent recent results · newest first');if(!v.recent.length)detail('No current-season results yet.');for(const m of v.recent)detail(`Round ${m.round}: ${m.result} · ${RazorSeason.teams[v.opponent]} ${m.own} : ${m.against} ${m.opponent}`);
+    detail('Ratings affect league speed and shot accuracy. Statistics describe recorded play; they do not predict this fixture.');focusPanel();
+  };
   let rosterTeam=0,rosterPeriod='current',rosterSlot=1,rosterArchiveIndex=0;
   function rosterView(){if(!league||seasonState.schema!==2)return;panel('Rosters & player statistics','Choose a club, inspect actual statistics, and develop your Relay Runners between matches.');
     const archives=seasonState.archives.filter(a=>a.schema===2),selected=rosterPeriod==='current'?seasonState:rosterPeriod==='career'?null:archives.find(a=>a.number===rosterPeriod);

@@ -50,5 +50,14 @@
     }
     return {energy,recovery,tail};
   }
-  window.RazorPresentation={metrics,colors,leaders,arena,courtFeedback};
+  function scouting(s){
+    if(s?.schema!==2||s.match)return null;
+    const S=window.RazorSeason,r=S.round(s),fixture=S.fixturesFor(s)[r]?.find(f=>f.includes(0));
+    if(!fixture)return null;
+    const opponent=fixture.find(id=>id!==0);
+    const clubs=[0,opponent].map(id=>({id,name:S.teams[id],record:S.table(s).find(t=>t.id===id),players:s.lineups[id].map((pid,slot)=>({...s.rosters[id].find(p=>p.id===pid),slot,rating:S.rating(s,pid),stats:S.playerStats(s,pid,s.number)}))}));
+    const recent=s.results.filter(m=>m.a===opponent||m.b===opponent).slice(-5).reverse().map(m=>{const home=m.a===opponent,own=m.goals[home?0:1],against=m.goals[home?1:0];return {round:m.round+1,opponent:S.teams[home?m.b:m.a],own,against,result:own>against?'W':own<against?'L':'D'};});
+    return {round:r+1,opponent,clubs,recent};
+  }
+  window.RazorPresentation={metrics,colors,leaders,arena,courtFeedback,scouting};
 })();

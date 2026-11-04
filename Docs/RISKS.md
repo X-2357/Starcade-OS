@@ -1,3 +1,6 @@
+## November 3 scouting limits
+Current ratings and prior recorded actions do not predict fixture outcomes. This is fictional league preparation, not real crew recruitment or market simulation. Actual Starfield/controller/readability/usefulness and combined performance remain unverified; no new save/native/sibling contract introduced.
+
 ## November 3 court feedback
 Court meters need actual-game readability/enjoyment checks. Amber is remaining recovery, empty means ready; cyan is energy. Tail shows current velocity only, never a predicted trajectory or replay history. Engine/save/native/sibling behavior unchanged; browser fixtures are not Starfield performance proof.
 

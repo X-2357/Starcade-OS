@@ -1,3 +1,6 @@
+## November 3 pre-match scouting
+On-request projection consumes Starcade season schedule/results/lineups/player statistics/ratings. No new schema, snapshot, publisher, sibling adapter, timer or persistent state. Fictional personnel remain separate from Crew Titles/world systems; native rewards and AISS score protocol unchanged. Validated eight-team career required; absent/legacy/active/completed cases return no preview. Current-season form only, no historical backfill or outcome prediction. Existing panel input and roster management guards reused; combined ecosystem performance unverified.
+
 ## November 3 court feedback
 Starcade presentation consumes existing controlled-player energy/cooldown and ball velocity/kind at existing draw cadence. No state publisher, adapter, snapshot field, persistence, timer or sibling dependency added. Native prize/AISS score contracts and all ecosystem owner boundaries remain unchanged. Absent/malformed cues suppressed, full-time hidden, reload derives current state. Fixed drawing cost only; combined host performance unverified.
 
