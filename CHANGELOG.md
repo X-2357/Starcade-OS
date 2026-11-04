@@ -1,3 +1,9 @@
+## November 3 Razor league presentation development
+- Add standings dashboard, club badges, player cards and actual-stat league leaders with period filters/pagination.
+- Improve arena/court/goals, runner silhouettes and named passing cues using cached procedural graphics.
+- Correct panel initial scroll/focus and retain roster action position; bound archive navigation.
+- Browser/data regressions pass; native/PEX/CK/prizes unchanged. Starfield visual/inventory acceptance pending.
+
 ## November 3 Razor career and world-prize development
 - Eight teams,64 named athletes,28 fixtures, roster selection, career/previous-season statistics and training progression.
 - Dedicated optional Starfield credit and Med Pack prize claims with save-owned duplicate ledger and explicit uncertainty handling.
