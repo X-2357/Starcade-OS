@@ -5,7 +5,7 @@
   const send=(type,value)=>parent.postMessage({channel:"starcade",game:"razor-derby",session,type,value},"*");
   const H={save:value=>send("save",value),score:value=>send("score",value),finish:value=>send("finish",value),exit:()=>send("exit")};
   const key="starcade.razor-derby.match.v1",held=new Set();
-  let selectedTactic="balanced";
+  let selectedTactic="balanced",selectedShotAim="auto";
   const tactics=["balanced","wide","press"],tacticNames={balanced:"Balanced",wide:"Wide outlets",press:"High press"},tacticHelp={balanced:"Two defenders press; support keeps balanced lanes.",wide:"Support runners offer wider passing outlets.",press:"Three defenders press; fewer hold their shape."};
   let league=false,seasonState=null,seasonSettled=false,settling=false;
   const careerKey="starcade.razor-derby.career.v2",legacySeasonKey="starcade.razor-derby.season.v1";
@@ -15,6 +15,9 @@
   const coachKey='starcade.razor-derby.coach.v1';let coachEnabled=true;
   try{coachEnabled=localStorage.getItem(coachKey)!=='off';}catch(_){}
   function coachDisplay(){const enabled=coachEnabled&&!!state;$('coachHud').hidden=!enabled;document.body.classList.toggle('coach-on',enabled&&state.phase==='live');$('coachToggle').textContent=`Live coach: ${coachEnabled?'on':'off'}`;$('coachToggle').setAttribute('aria-pressed',String(coachEnabled));if(!enabled)return null;const v=RazorCoach.model(state,receiver());$('coachAction').textContent=v.action;$('coachHint').textContent=v.hint;$('coachLane').textContent=v.lane+' · coverage can change as players move';$('coachLane').classList.toggle('covered',v.covered===true);$('coachRange').textContent=v.rangeLabel+' · '+v.pressure;$('coachPossessionLabel').textContent=v.possession;$('possessionMeter').value=v.seconds;$('sprintMeter').value=v.energy;return v;}
+  function applyShotAim(){if(!state||state.phase==='result')return;if(selectedShotAim==='auto')delete state.shotAim;else state.shotAim=selectedShotAim;}
+  function aimDisplay(){$('shotAim').textContent=`Aim: ${RazorAim.labels[selectedShotAim]} (V / RS)`;$('shotAim').disabled=!loaded||settling||state?.phase==='result';const p=state?.phase!=='result'?RazorAim.point(state,selectedShotAim):null;$('aimHint').textContent=state?.phase==='result'?'Shot placement locked at full time':`Shot: ${RazorAim.labels[selectedShotAim]} · ${p?'nominal guide; spread still applies':'gain possession to aim'}`;return p;}
+  function cycleShotAim(){if(!loaded||settling||state?.phase==='result'||!$('recordPanel').hidden)return;selectedShotAim=RazorAim.next(selectedShotAim);applyShotAim();if(state)persist(state.phase!=='live');aimDisplay();draw();}
   function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
   function recordResult(){if(practice||league||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,tactic:state.tactic||"balanced",ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
   const practiceKey="starcade.razor-derby.practice.v1";
@@ -55,7 +58,7 @@
     $("practice").hidden=practice&&!practiceKind;
     $("season").hidden=league;$("fixtures").hidden=!league;for(const id of ["roster","career","history","leaders"])$(id).hidden=!league||seasonState.schema!==2;
     $("overlay").hidden=state?.phase==="live";
-    renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();drillDisplay();$("matchReport").hidden=!state&&!(league&&seasonState.results.some(m=>m.a===0||m.b===0));
+    renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();drillDisplay();aimDisplay();$("matchReport").hidden=!state&&!(league&&seasonState.results.some(m=>m.a===0||m.b===0));
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
     $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState);
@@ -72,19 +75,19 @@
   }
   function pause(){if(!state||state.phase!=="live")return;state.phase="paused";stop();persist();show();draw();}
   function resume(){
-    if(document.hidden)return;
+    if(!loaded||document.hidden)return;
     if(league&&state?.phase==="result"&&!seasonSettled){finishSeasonRound();show();return;}
-    if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState))return;state=RazorSeason.start(seasonState);seasonSettled=false;localTick=hostTick=0;}
+    if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState))return;const nextFixture=state?.phase==='result';state=RazorSeason.start(seasonState);if(nextFixture)selectedShotAim='auto';seasonSettled=false;localTick=hostTick=0;}
     if(!state){const seed=crypto.getRandomValues(new Uint32Array(1))[0];state=practice&&practiceKind?RazorPractice.create(practiceKind,seed):E.create(seed);if(!practice&&!league)H.score(0);}
     if(state.phase==="result")return;
     if(!practice&&!league&&!state.matchId)state.matchId=identity();
-    state.tactic=selectedTactic;state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
+    state.tactic=selectedTactic;applyShotAim();state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
     if(!raf)raf=requestAnimationFrame(frame);
   }
   function newMatch(){
-    if(league){if(seasonState&&RazorSeason.round(seasonState)<RazorSeason.rounds(seasonState)&&!confirmNew){confirmNew=true;show();return;}stop();try{const next=RazorSeason.nextSeason(seasonState,crypto.getRandomValues(new Uint32Array(1))[0]);localStorage.setItem(careerKey,JSON.stringify(next));seasonKey=careerKey;seasonState=next;state=null;seasonSettled=false;confirmNew=false;show();draw();}catch(_){$("notice").textContent="Could not archive/start the next season. Existing career is preserved.";}return;}
+    if(league){if(seasonState&&RazorSeason.round(seasonState)<RazorSeason.rounds(seasonState)&&!confirmNew){confirmNew=true;show();return;}stop();try{const next=RazorSeason.nextSeason(seasonState,crypto.getRandomValues(new Uint32Array(1))[0]);localStorage.setItem(careerKey,JSON.stringify(next));seasonKey=careerKey;seasonState=next;state=null;selectedShotAim='auto';seasonSettled=false;confirmNew=false;show();draw();}catch(_){$("notice").textContent="Could not archive/start the next season. Existing career is preserved.";}return;}
     if(state&&state.phase!=="result"&&!confirmNew){confirmNew=true;$("new").textContent="Confirm abandon and start new";return;}
-    stop();state=null;confirmNew=false;localTick=0;hostTick=0;resume();persist();
+    stop();state=null;selectedShotAim='auto';confirmNew=false;localTick=0;hostTick=0;resume();persist();
   }
   function leave(){if(state?.phase==="live")state.phase="paused";stop();persist();H.exit();}
   const project=(x,y)=>({x:95+x*10.1+(y-30)*.6,y:90+y*8.4});
@@ -93,7 +96,7 @@
   function namedAthlete(id){if(!league||seasonState.schema!==2||!state?.leagueLineup)return null;if(rosterDisplayFor!==seasonState){rosterDisplayFor=seasonState;rosterDisplay=new Map(seasonState.rosters.flat().map(p=>[p.id,p]));}return rosterDisplay.get(state.leagueLineup[id]);}
   function draw(){
     RazorPresentation.arena(ctx,project);
-    ctx.textAlign='center';const coaching=coachDisplay();drillDisplay();
+    ctx.textAlign='center';const coaching=coachDisplay();drillDisplay();const placement=aimDisplay();
     const opponentId=league?(state?.leagueLineup?Number(/^t(\d+)p/.exec(state.leagueLineup[6])?.[1]):state?.phase==='result'&&seasonSettled?RazorSeason.round(seasonState):Math.min(RazorSeason.round(seasonState)+1,RazorSeason.rounds(seasonState))):null;
     const opponent=league?RazorSeason.teams[opponentId]:null;
     $("matchTeams").textContent=league?`Relay Runners / ${opponent}`:'Teal side / Rose side';
@@ -101,6 +104,7 @@
     const target=receiver(),targetAthlete=namedAthlete(target);
     $("target").textContent=target>=0?`Pass target: ${targetAthlete?targetAthlete.name:`runner ${target%6+1}`}${selectedTarget<0?" (auto)":" (selected)"}`:"Pass target: gain possession";
     if(target>=0&&state.ball.owner===state.control){const p=state.players[state.control],t=state.players[target];ctx.save();ctx.setLineDash([5,7]);line(p.x,p.y,t.x,t.y,coaching?.covered?'#ff98a477':'#f1cd8355',2);ctx.restore();}
+    if(placement){const runner=state.players[state.control],q=project(Math.max(0,Math.min(100,placement.x)),placement.y);ctx.save();ctx.setLineDash([2,9]);line(runner.x,runner.y,Math.max(0,Math.min(100,placement.x)),placement.y,'#f1cd8344',1);ctx.setLineDash([]);ctx.fillStyle='#09232c';ctx.strokeStyle='#f5cb85';ctx.lineWidth=2;ctx.beginPath();ctx.arc(q.x,q.y,8,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(q.x-4,q.y);ctx.lineTo(q.x+4,q.y);ctx.moveTo(q.x,q.y-4);ctx.lineTo(q.x,q.y+4);ctx.stroke();ctx.restore();}
     for(const p of state.players){const q=project(p.x,p.y),side=E.team(p.id);ctx.fillStyle="#0007";ctx.beginPath();ctx.ellipse(q.x,q.y+7,15,7,0,0,Math.PI*2);ctx.fill();
       if(p.id===state.control){ctx.strokeStyle="#ffe59a";ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(q.x,q.y+5,20,11,0,0,Math.PI*2);ctx.stroke();}
       const kit=side?"#e86b94":"#6ee1c6";
@@ -134,9 +138,9 @@
   function load(value){
     if(loaded)return;loaded=true;
     try{let saved=value;if(!saved){try{saved=JSON.parse(localStorage.getItem(key)||"null");}catch(_){throw Error("Unreadable save");}}
-      if(saved){state=E.restore(saved);selectedTactic=state.tactic||"balanced";if(state.phase==="live")state.phase="paused";localTick=hostTick=state.tick;}
+      if(saved){state=E.restore(saved);selectedTactic=state.tactic||"balanced";selectedShotAim=state.shotAim||"auto";if(state.phase==="live")state.phase="paused";localTick=hostTick=state.tick;}
     }catch(_){state=null;$("notice").textContent="The saved exhibition could not be restored. Start a fresh match.";}
-    show();draw();
+    show();draw();document.querySelector('main').inert=false;$('loading').hidden=true;document.body.dataset.ready='true';
   }
   $("resetSeason").onclick=()=>{if(!$("resetSeason").dataset.confirm){$("resetSeason").dataset.confirm="1";$("resetSeason").textContent="Confirm replace damaged season";return;}localStorage.setItem(careerKey,JSON.stringify(RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0])));seasonKey=careerKey;$("resetSeason").hidden=true;$("resetSeason").dataset.confirm="";$("season").click();};
   $("season").onclick=()=>{
@@ -144,14 +148,14 @@
     try{seasonKey=localStorage.getItem(careerKey)!==null?careerKey:legacySeasonKey;const text=localStorage.getItem(seasonKey);saved=text?RazorSeason.restore(JSON.parse(text)):RazorSeason.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(saved.schema===2)seasonKey=careerKey;}
     catch(_){$("notice").textContent="Stored season is unsupported or damaged; it has been preserved.";$("resetSeason").hidden=false;return;}
     pause();stop();league=true;practice=false;seasonState=saved;state=saved.match;seasonSettled=!state;confirmNew=false;
-    selectedTactic=state?.tactic||"balanced";if(state?.phase==="live")state.phase="paused";if(state)localTick=hostTick=state.tick;show();draw();
+    selectedTactic=state?.tactic||"balanced";selectedShotAim=state?.shotAim||"auto";if(state?.phase==="live")state.phase="paused";if(state)localTick=hostTick=state.tick;show();draw();
   };
   $("practice").onclick=()=>{
     if(!loaded)return;
     pause();stop();league=false;practice=true;practiceKind=null;practiceStorageKey=practiceKey;state=null;localTick=hostTick=0;
     try{const saved=JSON.parse(localStorage.getItem(practiceKey)||"null");if(saved){state=E.restore(saved);if(state.phase==="result")state=null;else state.phase="paused";}}catch(_){$("notice").textContent="Practice save unavailable; a fresh drill is ready.";}
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
-    selectedTactic=state.tactic||"balanced";state.phase="paused";show();draw();
+    selectedTactic=state.tactic||"balanced";selectedShotAim=state.shotAim||"auto";state.phase="paused";show();draw();
   };
   function focusPanel(){$('closeRecords').focus({preventScroll:true});$('recordPanel').scrollTop=0;}
   function panel(title,subtitle){pause();$("overlay").inert=true;document.querySelector("nav").inert=true;$("recordPanel").hidden=false;$("recordsTitle").textContent=title;$("recordsSubtitle").textContent=subtitle;$("recordActions").replaceChildren();$("recordList").replaceChildren();}
@@ -188,16 +192,16 @@
     else if(league){const m=seasonState.results.filter(m=>m.a===0||m.b===0).at(-1);if(m)reportView(m,{home:RazorSeason.teams[m.a],away:RazorSeason.teams[m.b],rosters:seasonState.rosters||[],complete:true,label:`Latest league fixture · round ${m.round+1}`});}};
 
   function drillDisplay(){const v=practice&&practiceKind&&state?RazorPractice.status(state):null;$('drillProgress').hidden=!v;if(!v)return;$('drillTitle').textContent=v.name;const count=`${v.value} / ${v.target} · ${v.done?(state.phase==='result'?'Target achieved — restart when ready':'Target achieved — continue or restart'):state.phase==='result'?'Time expired — target not met':'Target in progress'}`;if($('drillCount').textContent!==count)$('drillCount').textContent=count;$('drillMeter').max=v.target;$('drillMeter').value=Math.min(v.value,v.target);$('drillProgress').classList.toggle('achieved',v.done);if(practice)$('mode').textContent=`PRACTICE · ${v.name.toUpperCase()} · NO REWARDS`;}
-  function openDrill(kind,replace=false,expectedText=null){if(settling)return;pause();let savedText=null,valid=false;try{
+  function openDrill(kind,replace=false,expectedText=null){if(!loaded||settling)return;pause();let savedText=null,valid=false;try{
     if(state){if(league)localStorage.setItem(seasonKey,JSON.stringify({...seasonState,match:seasonSettled?null:state}));else localStorage.setItem(practice?practiceStorageKey:key,JSON.stringify(state));}
     const slot=RazorPractice.key(kind);savedText=localStorage.getItem(slot);if(replace&&savedText!==expectedText)throw Error("Checkpoint changed before replacement");const next=savedText!==null&&!replace?RazorPractice.restore(JSON.parse(savedText),kind):RazorPractice.create(kind,crypto.getRandomValues(new Uint32Array(1))[0]);valid=true;
-    localStorage.setItem(slot,JSON.stringify(next));stop();league=false;practice=true;practiceKind=kind;practiceStorageKey=slot;state=next;selectedTactic=state.tactic||'balanced';localTick=hostTick=state.tick;confirmNew=false;
+    localStorage.setItem(slot,JSON.stringify(next));stop();league=false;practice=true;practiceKind=kind;practiceStorageKey=slot;state=next;selectedTactic=state.tactic||'balanced';selectedShotAim=state.shotAim||'auto';localTick=hostTick=state.tick;confirmNew=false;
     $('recordPanel').hidden=true;$('overlay').inert=false;document.querySelector('nav').inert=false;show();draw();$(state.phase==='result'?'new':'start').focus();
   }catch(_){detail('Training checkpoint unavailable, unsupported or storage blocked. Existing checkpoints and current mode retained.');if(savedText!==null&&!valid&&!replace){let confirmed=false;const reset=button(`Replace saved ${RazorPractice.drills[kind].name}`,()=>{if(!confirmed){confirmed=true;reset.textContent='Confirm replace saved drill';return;}openDrill(kind,true,savedText);});}}}
-  $('drills').onclick=()=>{if(settling)return;panel('Training drills','Independent checkpoints · same match engine · two-minute team objectives · no arcade scores, XP or inventory prizes.');for(const [kind,d] of Object.entries(RazorPractice.drills)){const card=document.createElement('article');card.className='drill-card';const h=document.createElement('h3'),p=document.createElement('p');h.textContent=d.name;p.textContent=d.description;card.append(h,p);button(`Open ${d.name}`,()=>openDrill(kind),false,card);$('recordList').append(card);}detail('Goals restart with normal kickoff positions. Targets include your AI teammates. New practice restarts only the selected drill after confirmation; free practice is kept separately.');focusPanel();};
+  $('drills').onclick=()=>{if(!loaded||settling)return;panel('Training drills','Independent checkpoints · same match engine · two-minute team objectives · no arcade scores, XP or inventory prizes.');for(const [kind,d] of Object.entries(RazorPractice.drills)){const card=document.createElement('article');card.className='drill-card';const h=document.createElement('h3'),p=document.createElement('p');h.textContent=d.name;p.textContent=d.description;card.append(h,p);button(`Open ${d.name}`,()=>openDrill(kind),false,card);$('recordList').append(card);}detail('Goals restart with normal kickoff positions. Targets include your AI teammates. New practice restarts only the selected drill after confirmation; free practice is kept separately.');focusPanel();};
 
   $('coachToggle').onclick=()=>{coachEnabled=!coachEnabled;try{localStorage.setItem(coachKey,coachEnabled?'on':'off');}catch(_){$('notice').textContent='Coach setting applies this session; preference storage unavailable.';}coachDisplay();};
-  $('practiceReview').onclick=()=>{if(!practice)return;panel('Practice team review','Actual tracked actions by your teal side · no scores, XP or inventory prizes.');const v=RazorCoach.review(state);if(!v)detail('Player action coverage unavailable in this older checkpoint. Resume to begin actual tracking; old actions are not reconstructed.');else{statCards([['Pass attempts',v.passes],['Completed',v.completed],['Shots',v.shots],['Challenges',v.steals]],$('recordList'));detail(`Keeper saves ${v.saves}. Tracking begins ${(v.fromTick/60).toFixed(1)}s into the match; team actions include your AI teammates.`);detail(v.completed?'Passing drill: your side completed a pass. Try selecting a different receiver with C / RB.':'Passing drill: use C / RB to select an outlet, then X. Watch the coverage cue; a clear lane can close.');detail(v.shots?'Shooting drill: your side attempted a shot. Compare long shots with closer attempts.':'Shooting drill: carry closer, wait for recovery, then A / Enter. Shooting aims away from the keeper.');detail(v.steals?'Defending drill: your side won a challenge. Switch runners to protect the next attack.':'Defending drill: when Rose carries, A switches runner and X challenges at close range.');}focusPanel();};
+  $('practiceReview').onclick=()=>{if(!practice)return;panel('Practice team review','Actual tracked actions by your teal side · no scores, XP or inventory prizes.');const v=RazorCoach.review(state);if(!v)detail('Player action coverage unavailable in this older checkpoint. Resume to begin actual tracking; old actions are not reconstructed.');else{statCards([['Pass attempts',v.passes],['Completed',v.completed],['Shots',v.shots],['Challenges',v.steals]],$('recordList'));detail(`Keeper saves ${v.saves}. Tracking begins ${(v.fromTick/60).toFixed(1)}s into the match; team actions include your AI teammates.`);detail(v.completed?'Passing drill: your side completed a pass. Try selecting a different receiver with C / RB.':'Passing drill: use C / RB to select an outlet, then X. Watch the coverage cue; a clear lane can close.');detail(v.shots?'Shooting drill: your side attempted a shot. Compare long shots with closer attempts.':'Shooting drill: carry closer, wait for recovery, then A / Enter. Auto aims away from the keeper; V / RS selects a lane.');detail(v.steals?'Defending drill: your side won a challenge. Switch runners to protect the next attack.':'Defending drill: when Rose carries, A switches runner and X challenges at close range.');}focusPanel();};
 
   function button(label,fn,disabled=false,container=$("recordActions")){const b=document.createElement("button");b.textContent=label;b.disabled=disabled;b.onclick=fn;container.append(b);return b;}
   function detail(text){const p=document.createElement("p");p.textContent=text;$("recordList").append(p);}
@@ -276,14 +280,17 @@
   $("tactic").onclick=()=>{if(settling||state?.phase==="live")return;selectedTactic=tactics[(tactics.indexOf(selectedTactic)+1)%tactics.length];if(state&&state.phase!=="result"){state.tactic=selectedTactic;persist();}show();};
   $("start").onclick=resume;$("new").onclick=newMatch;$("exit").onclick=leave;$("return").onclick=leave;
   $("pause").onclick=()=>state?.phase==="live"?pause():resume();
+  $("shotAim").onclick=cycleShotAim;
   $("cycle").onclick=cycleTarget;
   $("pass").onclick=()=>{if(state?.phase==="live")action.pass=true;};$("shoot").onclick=()=>{if(state?.phase==="live")action.shoot=true;};
   addEventListener("keydown",e=>{
+    if(!loaded){e.preventDefault();e.stopImmediatePropagation();return;}
     const k=e.key.length===1?e.key.toLowerCase():e.key;
     if(!$("recordPanel").hidden){
       if(['c','Control','Shift','PageUp','PageDown'].includes(k)){e.preventDefault();e.stopImmediatePropagation();$('recordPanel').scrollBy({top:(k==='Shift'||k==='PageUp'?-1:1)*Math.max(120,Math.round($('recordPanel').clientHeight*.65)),behavior:'auto'});return;}
       if(["Escape","Enter"," ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(k)){e.preventDefault();e.stopImmediatePropagation();const buttons=[...$("recordPanel").querySelectorAll("button:not(:disabled)")];const i=buttons.indexOf(document.activeElement);if(k==="Escape")$("closeRecords").click();else if(k==="Enter"||k===" ")(buttons[i]||buttons[0]).click();else buttons[(i+(["ArrowUp","ArrowLeft"].includes(k)?-1:1)+buttons.length)%buttons.length].focus();}return;
     }
+    if(k==="v"){e.preventDefault();if(!e.repeat)cycleShotAim();return;}
     if(k==="c"||k==="Control"){e.preventDefault();if(!e.repeat)cycleTarget();return;}
     if(k==="Escape"){e.preventDefault();e.stopImmediatePropagation();leave();return;}
     if(["y","p"].includes(k)){e.preventDefault();if(!e.repeat)state?.phase==="live"?pause():resume();return;}

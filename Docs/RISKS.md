@@ -1,3 +1,9 @@
+## November 3 shooting/readiness limits
+- Upper/lower are planar court lanes, not true 3D height; ring is nominal placement, not a guaranteed goal or trajectory forecast. Manual-shot balance and hardware RS usability need gameplay.
+- Default Auto/AI behavior matches pre-change whole-match golden fixtures; real Starfield remains a separate gate.
+- Controlled delayed-script reproduction exposed an early-click readiness gap after a recurring drill timeout. Inert loading/forwarded-key guards tested; do not claim this explains every historical timeout. Missing parent load intentionally stays loading; Back remains available.
+- Native1.7.4 world inventory acceptance and combined ecosystem performance remain pending; no new reward or sibling writer introduced.
+
 # Open risks and measurements
 
 November 3 report risks: partial player coverage is not whole-match pass completion, and legacy score-only data cannot reconstruct players, counters or timelines. Suggestions are practice options grounded in recorded totals, not claims about why the player lost. Browser fixtures/screenshot reviews are not Starfield/controller/combined-performance or inventory proof. One intermittent test reopen timeout led to actual-blank-navigation waiting;3 repeated seam runs passed, not a claimed runtime navigation fix.

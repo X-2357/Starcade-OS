@@ -52,11 +52,17 @@
     const q=s.players[j];release(s,id,q.x,q.y,34);s.stats.passes[team(id)]++;telemetry(s)[id].passes++;s.ball.kind="pass";s.ball.from=id;
     announce(s,`${team(id)===0?"Teal":"Rose"} passes to runner ${j%6+1}`);return true;
   }
-  function shoot(s,id) {
+  function shotTarget(s,id,mode='auto') {
+    if(!s||!Number.isInteger(id)||id<0||id>=12||!['auto','upper','lower'].includes(mode))return null;
+    const side=team(id),keeper=s.players[(1-side)*6];
+    return {x:side===0?102:-2,y:mode==='upper'?24:mode==='lower'?36:keeper.y>=30?24:36};
+  }
+  function shoot(s,id,mode='auto') {
     if(s.ball.owner!==id || s.players[id].cool>0)return false;
-    const side=team(id), p=s.players[id], keeper=s.players[(1-side)*6];
-    const x=side===0?102:-2, range=Math.abs(x-p.x);
-    const aim=(keeper.y>=30?24:36)+(random(s)-.5)*(3+range*.13)/(1+(p.rating||0)*.08);
+    const placement=shotTarget(s,id,mode);if(!placement)return false;
+    const side=team(id), p=s.players[id];
+    const x=placement.x, range=Math.abs(x-p.x);
+    const aim=placement.y+(random(s)-.5)*(3+range*.13)/(1+(p.rating||0)*.08);
     release(s,id,x,aim,47);s.stats.shots[side]++;telemetry(s)[id].shots++;s.ball.kind="shot";s.ball.from=id;
     announce(s,`${side===0?"Teal":"Rose"} shoots`);return true;
   }
@@ -84,7 +90,7 @@
     telemetry(s).forEach(p=>p.ticks++);s.tick++;s.shotClock--;
     s.players.forEach(p=>{p.cool=Math.max(0,p.cool-1);});
     if(s.tick>=LIMIT){s.phase="result";announce(s,"Full time");return;}
-    if(input.shoot){if(s.ball.owner===s.control)shoot(s,s.control);else switchDefender(s);}
+    if(input.shoot){if(s.ball.owner===s.control)shoot(s,s.control,input.shotAim??s.shotAim??'auto');else switchDefender(s);}
     if(input.pass){if(s.ball.owner===s.control)pass(s,s.control,input.passTarget);else challenge(s,s.control);}
     const carrier=s.ball.owner>=0?s.players[s.ball.owner]:s.ball;
     for(const p of s.players){
@@ -133,6 +139,7 @@
     if(!data||data.schema!==1||data.rules!==1)throw Error("Unsupported match");
     const s=JSON.parse(JSON.stringify(data));
     if(s.tactic!==undefined&&!["balanced","wide","press"].includes(s.tactic))throw Error("Invalid tactic");
+    if(s.shotAim!==undefined&&!['auto','upper','lower'].includes(s.shotAim))throw Error('Invalid shot placement');
     const bounded=(n,a,b)=>typeof n==="number"&&Number.isFinite(n)&&n>=a&&n<=b;
     const integer=(n,a,b)=>Number.isInteger(n)&&bounded(n,a,b);
     if(!integer(s.rng,0,0xffffffff)||!integer(s.tick,0,LIMIT)||!["live","paused","result"].includes(s.phase)||!integer(s.control,0,5)||!integer(s.possession,0,1)||!integer(s.shotClock,0,1200))throw Error("Invalid match header");
@@ -151,5 +158,5 @@
     if(s.players.some(p=>p.rating!==undefined&&!integer(p.rating,0,10)))throw Error('Invalid rating');
     return s;
   }
-  root.RazorDerby={create,step,restore,target,pass,shoot,challenge,distance,team,LIMIT};
+  root.RazorDerby={create,step,restore,target,pass,shoot,shotTarget,challenge,distance,team,LIMIT};
 })(globalThis);

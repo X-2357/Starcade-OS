@@ -2,7 +2,7 @@
 (()=>{
   const drills={
     passing:{name:'Passing circuit',goal:3,metric:'completed',description:'Complete three teal passes. Start with space and several outlets; use C / RB to choose a receiver, then X.'},
-    finishing:{name:'Finishing chances',goal:2,metric:'goals',description:'Score two teal goals. Start near goal with the ball ready; A / Enter shoots away from the keeper.'},
+    finishing:{name:'Finishing chances',goal:2,metric:'goals',description:'Score two teal goals. Start near goal with the ball ready; A / Enter shoots; Auto aims away from the keeper, V / RS selects a lane.'},
     defending:{name:'Defending recovery',goal:2,metric:'steals',description:'Win two teal challenges. Start between the Rose carrier and your goal; close in, then X, or A to switch runner.'}
   };
   const known=kind=>Object.prototype.hasOwnProperty.call(drills,kind);

@@ -1,3 +1,9 @@
+## November 3 Razor shot placement development
+- Add optional Auto/Upper lane/Lower lane, V / RS selection and nominal goal guide.
+- Preserve default shooting and AI behavior against complete pre-change match snapshots.
+- Keep controls inert until actual checkpoint initialization completes; show loading status.
+- No native/PEX/CK or sibling contract change. Actual Starfield acceptance pending.
+
 ## November 3 Razor match report development
 - Add current/full-time/latest league and archived fixture reports with actual counters, athlete attribution and practice suggestions.
 - Preserve legacy/partial coverage without invented data or new reward events.

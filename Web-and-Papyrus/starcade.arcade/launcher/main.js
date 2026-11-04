@@ -332,6 +332,7 @@
     if (current && frame.contentWindow) frame.contentWindow.postMessage({ channel:"starcade", type:"input", value:{ key, down:Boolean(down) } }, "*");
   }
   function mappedButton(id) {
+    if (id === 0x0080 && current?.id === "razor-derby") return "v";
     if (id === 0x1000) return current?.id === "freedoom" ? " " : "Enter";
     if (id === 0x4000) return current?.id === "freedoom" ? "e" : current?.id === "starfall-blocks" ? "c" : current?.id === "hextris" ? "p" : "x";
     if (id === 0x8000) return current?.id === "starfall-blocks" ? "p" : current?.id === "minefield-protocol" ? "c" : "y";

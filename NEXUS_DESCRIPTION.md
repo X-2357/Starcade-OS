@@ -4,6 +4,8 @@ Description draft for the unreleased career development candidate; not a claim o
 
 **Created by X-2357**
 
+Razor Derby development adds optional shot placement: keep Auto or choose the upper/lower court lane with V, the Aim button, or right-stick click. A goal ring shows nominal placement; shot spread and the moving keeper still matter. Your choice restores with the match. Controls show a loading status until saved-match initialization finishes. These changes are development-tested; Starfield and physical-controller acceptance are pending.
+
 Starcade OS adds a portable arcade operating system to Starfield. It contains
 thirty-two original games plus seven clearly identified open-source
 adaptations (Freedoom: Phase 1, Micropolis, Hextris, Mah Jong, Quadrilactic, Clumsy Bird, and Billiards) inside a
