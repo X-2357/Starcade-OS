@@ -18,11 +18,12 @@
   function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
   function recordResult(){if(practice||league||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,tactic:state.tactic||"balanced",ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
   const practiceKey="starcade.razor-derby.practice.v1";
+  let practiceKind=null,practiceStorageKey=practiceKey;
   let state=null,loaded=false,raf=0,last=0,acc=0,action={},confirmNew=false,localTick=0,hostTick=0;
   function persist(native=true){
     if(league){if(!seasonState)return;seasonState.match=seasonSettled?null:state;try{localStorage.setItem(seasonKey,JSON.stringify(seasonState));}catch(_){$("notice").textContent="Season checkpoint unavailable. Keep this match open.";}return;}
     if(!state)return;
-    try{localStorage.setItem(practice?practiceKey:key,JSON.stringify(state));}catch(_){$("notice").textContent=practice?"Practice saving unavailable; keep this session open to finish it.":"Local saving unavailable. Use Return to checkpoint through the arcade.";}
+    try{localStorage.setItem(practice?practiceStorageKey:key,JSON.stringify(state));}catch(_){$("notice").textContent=practice?"Practice saving unavailable; keep this session open to finish it.":"Local saving unavailable. Use Return to checkpoint through the arcade.";}
     if(native&&!practice)H.save(state);
   }
   function clearInput(){held.clear();action={};selectedTarget=-1;targetCarrier=-1;}
@@ -49,12 +50,12 @@
   function show(){
     const done=state?.phase==="result";
     $("tactic").disabled=settling;$("tactic").textContent=`Tactic: ${tacticNames[selectedTactic]}`;$("tacticHelp").textContent=tacticHelp[selectedTactic];
-    $("start").disabled=settling;$("new").disabled=settling;$("practice").disabled=settling;
+    $("start").disabled=settling;$("new").disabled=settling;$("practice").disabled=settling;$("drills").disabled=settling;
     $("mode").textContent=practice?"PRACTICE — NO SCORES OR REWARDS":"STARCADE EXHIBITION RULES";
-    $("practice").hidden=practice;
+    $("practice").hidden=practice&&!practiceKind;
     $("season").hidden=league;$("fixtures").hidden=!league;for(const id of ["roster","career","history","leaders"])$(id).hidden=!league||seasonState.schema!==2;
     $("overlay").hidden=state?.phase==="live";
-    renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();
+    renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();drillDisplay();
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
     $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState);
@@ -74,7 +75,7 @@
     if(document.hidden)return;
     if(league&&state?.phase==="result"&&!seasonSettled){finishSeasonRound();show();return;}
     if(league&&(!state||state.phase==="result")){if(RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState))return;state=RazorSeason.start(seasonState);seasonSettled=false;localTick=hostTick=0;}
-    if(!state){state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);if(!practice&&!league)H.score(0);}
+    if(!state){const seed=crypto.getRandomValues(new Uint32Array(1))[0];state=practice&&practiceKind?RazorPractice.create(practiceKind,seed):E.create(seed);if(!practice&&!league)H.score(0);}
     if(state.phase==="result")return;
     if(!practice&&!league&&!state.matchId)state.matchId=identity();
     state.tactic=selectedTactic;state.phase="live";confirmNew=false;$("new").textContent="New exhibition";clearInput();show();last=0;acc=0;
@@ -92,7 +93,7 @@
   function namedAthlete(id){if(!league||seasonState.schema!==2||!state?.leagueLineup)return null;if(rosterDisplayFor!==seasonState){rosterDisplayFor=seasonState;rosterDisplay=new Map(seasonState.rosters.flat().map(p=>[p.id,p]));}return rosterDisplay.get(state.leagueLineup[id]);}
   function draw(){
     RazorPresentation.arena(ctx,project);
-    ctx.textAlign='center';const coaching=coachDisplay();
+    ctx.textAlign='center';const coaching=coachDisplay();drillDisplay();
     const opponentId=league?(state?.leagueLineup?Number(/^t(\d+)p/.exec(state.leagueLineup[6])?.[1]):state?.phase==='result'&&seasonSettled?RazorSeason.round(seasonState):Math.min(RazorSeason.round(seasonState)+1,RazorSeason.rounds(seasonState))):null;
     const opponent=league?RazorSeason.teams[opponentId]:null;
     $("matchTeams").textContent=league?`Relay Runners / ${opponent}`:'Teal side / Rose side';
@@ -147,7 +148,7 @@
   };
   $("practice").onclick=()=>{
     if(!loaded)return;
-    pause();stop();league=false;practice=true;state=null;localTick=hostTick=0;
+    pause();stop();league=false;practice=true;practiceKind=null;practiceStorageKey=practiceKey;state=null;localTick=hostTick=0;
     try{const saved=JSON.parse(localStorage.getItem(practiceKey)||"null");if(saved){state=E.restore(saved);if(state.phase==="result")state=null;else state.phase="paused";}}catch(_){$("notice").textContent="Practice save unavailable; a fresh drill is ready.";}
     if(!state)state=E.create(crypto.getRandomValues(new Uint32Array(1))[0]);
     selectedTactic=state.tactic||"balanced";state.phase="paused";show();draw();
@@ -172,6 +173,15 @@
     button('Previous players',()=>{leaderPage--;leadersView();},leaderPage===0);button('Next players',()=>{leaderPage++;leadersView();},(leaderPage+1)*12>=rows.length);focusPanel();
   }
   $('leaders').onclick=leadersView;
+  function drillDisplay(){const v=practice&&practiceKind&&state?RazorPractice.status(state):null;$('drillProgress').hidden=!v;if(!v)return;$('drillTitle').textContent=v.name;const count=`${v.value} / ${v.target} · ${v.done?(state.phase==='result'?'Target achieved — restart when ready':'Target achieved — continue or restart'):state.phase==='result'?'Time expired — target not met':'Target in progress'}`;if($('drillCount').textContent!==count)$('drillCount').textContent=count;$('drillMeter').max=v.target;$('drillMeter').value=Math.min(v.value,v.target);$('drillProgress').classList.toggle('achieved',v.done);if(practice)$('mode').textContent=`PRACTICE · ${v.name.toUpperCase()} · NO REWARDS`;}
+  function openDrill(kind,replace=false,expectedText=null){if(settling)return;pause();let savedText=null,valid=false;try{
+    if(state){if(league)localStorage.setItem(seasonKey,JSON.stringify({...seasonState,match:seasonSettled?null:state}));else localStorage.setItem(practice?practiceStorageKey:key,JSON.stringify(state));}
+    const slot=RazorPractice.key(kind);savedText=localStorage.getItem(slot);if(replace&&savedText!==expectedText)throw Error("Checkpoint changed before replacement");const next=savedText!==null&&!replace?RazorPractice.restore(JSON.parse(savedText),kind):RazorPractice.create(kind,crypto.getRandomValues(new Uint32Array(1))[0]);valid=true;
+    localStorage.setItem(slot,JSON.stringify(next));stop();league=false;practice=true;practiceKind=kind;practiceStorageKey=slot;state=next;selectedTactic=state.tactic||'balanced';localTick=hostTick=state.tick;confirmNew=false;
+    $('recordPanel').hidden=true;$('overlay').inert=false;document.querySelector('nav').inert=false;show();draw();$(state.phase==='result'?'new':'start').focus();
+  }catch(_){detail('Training checkpoint unavailable, unsupported or storage blocked. Existing checkpoints and current mode retained.');if(savedText!==null&&!valid&&!replace){let confirmed=false;const reset=button(`Replace saved ${RazorPractice.drills[kind].name}`,()=>{if(!confirmed){confirmed=true;reset.textContent='Confirm replace saved drill';return;}openDrill(kind,true,savedText);});}}}
+  $('drills').onclick=()=>{if(settling)return;panel('Training drills','Independent checkpoints · same match engine · two-minute team objectives · no arcade scores, XP or inventory prizes.');for(const [kind,d] of Object.entries(RazorPractice.drills)){const card=document.createElement('article');card.className='drill-card';const h=document.createElement('h3'),p=document.createElement('p');h.textContent=d.name;p.textContent=d.description;card.append(h,p);button(`Open ${d.name}`,()=>openDrill(kind),false,card);$('recordList').append(card);}detail('Goals restart with normal kickoff positions. Targets include your AI teammates. New practice restarts only the selected drill after confirmation; free practice is kept separately.');focusPanel();};
+
   $('coachToggle').onclick=()=>{coachEnabled=!coachEnabled;try{localStorage.setItem(coachKey,coachEnabled?'on':'off');}catch(_){$('notice').textContent='Coach setting applies this session; preference storage unavailable.';}coachDisplay();};
   $('practiceReview').onclick=()=>{if(!practice)return;panel('Practice team review','Actual tracked actions by your teal side · no scores, XP or inventory prizes.');const v=RazorCoach.review(state);if(!v)detail('Player action coverage unavailable in this older checkpoint. Resume to begin actual tracking; old actions are not reconstructed.');else{statCards([['Pass attempts',v.passes],['Completed',v.completed],['Shots',v.shots],['Challenges',v.steals]],$('recordList'));detail(`Keeper saves ${v.saves}. Tracking begins ${(v.fromTick/60).toFixed(1)}s into the match; team actions include your AI teammates.`);detail(v.completed?'Passing drill: your side completed a pass. Try selecting a different receiver with C / RB.':'Passing drill: use C / RB to select an outlet, then X. Watch the coverage cue; a clear lane can close.');detail(v.shots?'Shooting drill: your side attempted a shot. Compare long shots with closer attempts.':'Shooting drill: carry closer, wait for recovery, then A / Enter. Shooting aims away from the keeper.');detail(v.steals?'Defending drill: your side won a challenge. Switch runners to protect the next attack.':'Defending drill: when Rose carries, A switches runner and X challenges at close range.');}focusPanel();};
 

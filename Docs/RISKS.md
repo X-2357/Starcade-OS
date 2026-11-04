@@ -1,5 +1,7 @@
 # Open risks and measurements
 
+November 3 training risks: targets count actual home-team actions including AI, not certified manual achievements. Layout is initial only; goals use normal kickoff and target completion does not stop clock. Same underlying sport still needs human balance/helpfulness/controller/Starfield tests. Browser verifies checkpoints and no practice publications; actual inventory acceptance remains pending separately. New local drill metadata is not exported or read as real crew, fleet, history or economy state.
+
 November 3 coach risks: lane coverage is current static geometry, not a prediction/probability; moving defenders can close a clear lane. Review totals include home AI teammates, never claimed personal manual achievements. Actual Starfield/OSF sizing, hardware-controller input, usefulness and combined performance remain untested; inventory acceptance gate unchanged. No engine changes or new world mutation.
 
 November 3 visual candidate: source/browser screenshots at1600x1000 and900x650 reviewed; actual OSF/Starfield display scaling, gamepad hardware, enjoyment and combined performance remain unverified. Procedural Canvas is stylized planar sport; no true3D/physical ship-screen implementation. Existing world inventory test gate still pending. Read-only leaders derive from tracked appearances; legacy missing statistics never reconstructed.

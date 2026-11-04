@@ -27,6 +27,8 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ### Current development copy — November 3, 2026
 
+New training drills let you practise passing, finishing and defending from focused starting situations, with visible team objectives and a separate checkpoint for each drill. Free practice and career progress are kept separately. Team targets include AI teammates and grant no career or inventory rewards. Browser/engine checks passed; in-game training balance remains pending.
+
 Razor Derby also has an optional live coach showing recovery, pressure, current passing coverage and possession/energy bars. Practice team review explains recorded passing, shooting and defending actions. Coaching does not change match physics or aim for you; a currently clear lane can close as opponents move. Browser checks passed; in-game usefulness remains to be tested.
 
 The latest presentation candidate adds a club standings dashboard, athlete cards with nearby roster/training controls, and player leaderboards for the current season, career and latest archived season. A stylized arena, team colors, player silhouettes and named passing cues make matches easier to follow. These presentation changes have passed browser checks; in-game visual acceptance remains pending.

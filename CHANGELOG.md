@@ -1,3 +1,9 @@
+## November 3 Razor training drills development
+- Add passing, finishing and defending starting situations with visible team objectives and independent checkpoints.
+- Preserve free practice/career, confirm same-drill restarts, support result review and explicit damaged-checkpoint replacement.
+- Verify actual engine objective events and real launcher checkpoint/reopen; no practice reward/publication changes.
+- Existing engine/native/PEX/CK unchanged. Automated regressions pass; actual Starfield training balance pending.
+
 ## November 3 Razor live coach development
 - Add optional contextual attack/defense/recovery advice, current pass coverage and possession/energy meters.
 - Add pause-safe practice team review from tracked actions; preserve reward/publication isolation.

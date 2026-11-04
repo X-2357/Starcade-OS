@@ -1,5 +1,7 @@
 # Starcade ecosystem contract
 
+November 3 training drills: optional local engine1/rules1 snapshots with drill{rules:1,kind} in fixed passing/finishing/defending slots. Descriptor/matching key/telemetry validated; no native or sibling state, no AISS/catalog expansion. Existing practice-publication isolation applies. Selector saves current mode before switch; malformed/future data preserved until explicit replacement. No new timers, polling or world ownership. CT/SSSE/Legacy/AISS contracts unchanged.
+
 November 3 live coach: local read-only current-match projection, one bounded12-player scan on existing draw cadence; no new timer/native/PEX/schema/sibling adapter. Visibility preference local key starcade.razor-derby.coach.v1, missing/invalid defaults on, blocked write session-only. Practice review publishes no score/save/finish/XP/prize event. CT/SSSE/Legacy/AISS ownership and existing world-prize protocol unchanged.
 
 November 3 league presentation: derived local UI only, no new native/PEX/schema/CK/sibling contract. Stats reuse RazorSeason.playerStats, stable fictional athlete ids, no invented historical ratings. Static arena cached once/document; no extra animation loop or polling. Existing prize transport/guard and game-launch session rules unchanged; regression covered with mocked inventory.
