@@ -7,7 +7,7 @@
 | File | `outputs\Release-1.9.9\Starcade-OS-1.9.9-r2.zip` (kept outside the repo; 498,328,416 bytes) |
 | SHA-256 | `7CBA56F6FBB0791E81E80E85630DB21609D29DC639921EC41923A05A8C70CD18` |
 | What changed vs the original 1.9.9 zip | only `Data/SFSE/Plugins/Starcade.dll` (1.7.2 -> 1.7.3, sha 0389EDED65E57C8A...) and one added line in the bundled `Docs/CHANGELOG.md` |
-| Version to enter on Nexus | `1.9.9` if the original 1.9.9 zip was never uploaded; otherwise it needs a new version number (and the footer/changelog would change with it) |
+| Version to enter on Nexus | `1.9.9` (owner confirmed 2026-11-04 that the original 1.9.9 was never uploaded, so no renumbering) |
 
 Why: the 1.7.2 DLL could end the game with "Starcade.dll: Failed to open Address Library file" (see `Docs/ADDRESS_LIBRARY_ERROR_2026-10-27.md`). 1.7.3 was confirmed in game on 2026-11-02 (log: `Starcade v1.7.3.0`, Address Library readable on attempt 1, Papyrus callbacks bound).
 
