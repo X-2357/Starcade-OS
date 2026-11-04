@@ -12,6 +12,9 @@
   let seasonKey=careerKey;
   let practice=false,selectedTarget=-1,targetCarrier=-1;
   const recordsKey="starcade.razor-derby.records.v1";
+  const coachKey='starcade.razor-derby.coach.v1';let coachEnabled=true;
+  try{coachEnabled=localStorage.getItem(coachKey)!=='off';}catch(_){}
+  function coachDisplay(){const enabled=coachEnabled&&!!state;$('coachHud').hidden=!enabled;document.body.classList.toggle('coach-on',enabled&&state.phase==='live');$('coachToggle').textContent=`Live coach: ${coachEnabled?'on':'off'}`;$('coachToggle').setAttribute('aria-pressed',String(coachEnabled));if(!enabled)return null;const v=RazorCoach.model(state,receiver());$('coachAction').textContent=v.action;$('coachHint').textContent=v.hint;$('coachLane').textContent=v.lane+' · coverage can change as players move';$('coachLane').classList.toggle('covered',v.covered===true);$('coachRange').textContent=v.rangeLabel+' · '+v.pressure;$('coachPossessionLabel').textContent=v.possession;$('possessionMeter').value=v.seconds;$('sprintMeter').value=v.energy;return v;}
   function identity(){return [...crypto.getRandomValues(new Uint32Array(3))].map(n=>n.toString(16).padStart(8,"0")).join("");}
   function recordResult(){if(practice||league||!state.matchId)return;try{const entries=RazorRecords.read(localStorage.getItem(recordsKey));const entry={id:state.matchId,rules:1,tactic:state.tactic||"balanced",ended:Math.floor(Date.now()/1000),goals:state.goals,stats:state.stats};localStorage.setItem(recordsKey,JSON.stringify({schema:1,entries:RazorRecords.append(entries,entry)}));}catch(_){$("notice").textContent="Match records unavailable; this result is still shown here.";}}
   const practiceKey="starcade.razor-derby.practice.v1";
@@ -51,7 +54,7 @@
     $("practice").hidden=practice;
     $("season").hidden=league;$("fixtures").hidden=!league;for(const id of ["roster","career","history","leaders"])$(id).hidden=!league||seasonState.schema!==2;
     $("overlay").hidden=state?.phase==="live";
-    renderLeagueSummary();
+    renderLeagueSummary();$("practiceReview").hidden=!practice;coachDisplay();
     $("new").hidden=!state;
     $("new").textContent=confirmNew?"Confirm abandon and start new":practice?"New practice":"New exhibition";
     $("start").hidden=done&&!league||league&&RazorSeason.round(seasonState)>=RazorSeason.rounds(seasonState);
@@ -89,14 +92,14 @@
   function namedAthlete(id){if(!league||seasonState.schema!==2||!state?.leagueLineup)return null;if(rosterDisplayFor!==seasonState){rosterDisplayFor=seasonState;rosterDisplay=new Map(seasonState.rosters.flat().map(p=>[p.id,p]));}return rosterDisplay.get(state.leagueLineup[id]);}
   function draw(){
     RazorPresentation.arena(ctx,project);
-    ctx.textAlign='center';
+    ctx.textAlign='center';const coaching=coachDisplay();
     const opponentId=league?(state?.leagueLineup?Number(/^t(\d+)p/.exec(state.leagueLineup[6])?.[1]):state?.phase==='result'&&seasonSettled?RazorSeason.round(seasonState):Math.min(RazorSeason.round(seasonState)+1,RazorSeason.rounds(seasonState))):null;
     const opponent=league?RazorSeason.teams[opponentId]:null;
     $("matchTeams").textContent=league?`Relay Runners / ${opponent}`:'Teal side / Rose side';
     if(!state){$("score").textContent="TEAL 0 : 0 ROSE";$("clock").textContent="02:00";$("clock").classList.remove("urgent");return;}
     const target=receiver(),targetAthlete=namedAthlete(target);
     $("target").textContent=target>=0?`Pass target: ${targetAthlete?targetAthlete.name:`runner ${target%6+1}`}${selectedTarget<0?" (auto)":" (selected)"}`:"Pass target: gain possession";
-    if(target>=0&&state.ball.owner===state.control){const p=state.players[state.control],t=state.players[target];ctx.save();ctx.setLineDash([5,7]);line(p.x,p.y,t.x,t.y,'#f1cd8355',2);ctx.restore();}
+    if(target>=0&&state.ball.owner===state.control){const p=state.players[state.control],t=state.players[target];ctx.save();ctx.setLineDash([5,7]);line(p.x,p.y,t.x,t.y,coaching?.covered?'#ff98a477':'#f1cd8355',2);ctx.restore();}
     for(const p of state.players){const q=project(p.x,p.y),side=E.team(p.id);ctx.fillStyle="#0007";ctx.beginPath();ctx.ellipse(q.x,q.y+7,15,7,0,0,Math.PI*2);ctx.fill();
       if(p.id===state.control){ctx.strokeStyle="#ffe59a";ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(q.x,q.y+5,20,11,0,0,Math.PI*2);ctx.stroke();}
       const kit=side?"#e86b94":"#6ee1c6";
@@ -169,6 +172,9 @@
     button('Previous players',()=>{leaderPage--;leadersView();},leaderPage===0);button('Next players',()=>{leaderPage++;leadersView();},(leaderPage+1)*12>=rows.length);focusPanel();
   }
   $('leaders').onclick=leadersView;
+  $('coachToggle').onclick=()=>{coachEnabled=!coachEnabled;try{localStorage.setItem(coachKey,coachEnabled?'on':'off');}catch(_){$('notice').textContent='Coach setting applies this session; preference storage unavailable.';}coachDisplay();};
+  $('practiceReview').onclick=()=>{if(!practice)return;panel('Practice team review','Actual tracked actions by your teal side · no scores, XP or inventory prizes.');const v=RazorCoach.review(state);if(!v)detail('Player action coverage unavailable in this older checkpoint. Resume to begin actual tracking; old actions are not reconstructed.');else{statCards([['Pass attempts',v.passes],['Completed',v.completed],['Shots',v.shots],['Challenges',v.steals]],$('recordList'));detail(`Keeper saves ${v.saves}. Tracking begins ${(v.fromTick/60).toFixed(1)}s into the match; team actions include your AI teammates.`);detail(v.completed?'Passing drill: your side completed a pass. Try selecting a different receiver with C / RB.':'Passing drill: use C / RB to select an outlet, then X. Watch the coverage cue; a clear lane can close.');detail(v.shots?'Shooting drill: your side attempted a shot. Compare long shots with closer attempts.':'Shooting drill: carry closer, wait for recovery, then A / Enter. Shooting aims away from the keeper.');detail(v.steals?'Defending drill: your side won a challenge. Switch runners to protect the next attack.':'Defending drill: when Rose carries, A switches runner and X challenges at close range.');}focusPanel();};
+
   function button(label,fn,disabled=false,container=$("recordActions")){const b=document.createElement("button");b.textContent=label;b.disabled=disabled;b.onclick=fn;container.append(b);return b;}
   function detail(text){const p=document.createElement("p");p.textContent=text;$("recordList").append(p);}
   function careerChange(fn,after){const top=$('recordPanel').scrollTop,label=document.activeElement?.textContent;try{const next=fn(seasonState);localStorage.setItem(careerKey,JSON.stringify(next));seasonState=next;after();const same=[...$('recordPanel').querySelectorAll('button:not(:disabled)')].find(b=>b.textContent===label);if(same)same.focus({preventScroll:true});$('recordPanel').scrollTop=top;}catch(_){detail("Change unavailable or storage write failed. Existing career retained.");}}

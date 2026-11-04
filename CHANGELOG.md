@@ -1,3 +1,9 @@
+## November 3 Razor live coach development
+- Add optional contextual attack/defense/recovery advice, current pass coverage and possession/energy meters.
+- Add pause-safe practice team review from tracked actions; preserve reward/publication isolation.
+- Persist only separate visibility preference with session-only storage fallback.
+- Model/browser/career/prize regressions passed; engine/native/PEX/CK unchanged, Starfield acceptance pending.
+
 ## November 3 Razor league presentation development
 - Add standings dashboard, club badges, player cards and actual-stat league leaders with period filters/pagination.
 - Improve arena/court/goals, runner silhouettes and named passing cues using cached procedural graphics.

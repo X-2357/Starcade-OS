@@ -27,6 +27,8 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ### Current development copy — November 3, 2026
 
+Razor Derby also has an optional live coach showing recovery, pressure, current passing coverage and possession/energy bars. Practice team review explains recorded passing, shooting and defending actions. Coaching does not change match physics or aim for you; a currently clear lane can close as opponents move. Browser checks passed; in-game usefulness remains to be tested.
+
 The latest presentation candidate adds a club standings dashboard, athlete cards with nearby roster/training controls, and player leaderboards for the current season, career and latest archived season. A stylized arena, team colors, player silhouettes and named passing cues make matches easier to follow. These presentation changes have passed browser checks; in-game visual acceptance remains pending.
 
 Razor Derby now offers an eight-team career with 64 named athletes, reserve selection, seven-round seasons, player and team statistics, previous-season archives and career totals. Earn training points and athlete XP, develop your team and track season honours. The development candidate also adds optional Starfield credit prizes for league matches and credits plus Med Packs for completed seasons. Claim through Career & rewards → Starfield inventory prizes. Claims are recorded in your current Starfield save; real inventory acceptance testing remains pending. Existing four-team seasons remain playable until you choose to roll into the new career. Development acceptance in Starfield remains pending.
