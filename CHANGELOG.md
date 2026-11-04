@@ -1,3 +1,9 @@
+## November 3 Razor match report development
+- Add current/full-time/latest league and archived fixture reports with actual counters, athlete attribution and practice suggestions.
+- Preserve legacy/partial coverage without invented data or new reward events.
+- Add modal LB/RB and Page Up/Down paging; reuse training selector from reports.
+- Verify read-only data, repeated-result isolation and report/controller regressions. Native/engine/PEX/CK unchanged; actual Starfield acceptance pending.
+
 ## November 3 Razor training drills development
 - Add passing, finishing and defending starting situations with visible team objectives and independent checkpoints.
 - Preserve free practice/career, confirm same-drill restarts, support result review and explicit damaged-checkpoint replacement.

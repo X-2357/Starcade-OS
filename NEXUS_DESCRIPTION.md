@@ -27,6 +27,8 @@ For access to dev builds and direct feature requests and mod suggestions, please
 
 ### Current development copy — November 3, 2026
 
+Match reports compare recorded team counters, show athlete contributions and suggest practice options. Review the current match, the latest saved league fixture or a previous-season fixture. Older results show only what was recorded; partial player tracking is labelled. LB/RB or Page Up/Down scroll long panels. Browser checks passed; Starfield acceptance remains pending.
+
 New training drills let you practise passing, finishing and defending from focused starting situations, with visible team objectives and a separate checkpoint for each drill. Free practice and career progress are kept separately. Team targets include AI teammates and grant no career or inventory rewards. Browser/engine checks passed; in-game training balance remains pending.
 
 Razor Derby also has an optional live coach showing recovery, pressure, current passing coverage and possession/energy bars. Practice team review explains recorded passing, shooting and defending actions. Coaching does not change match physics or aim for you; a currently clear lane can close as opponents move. Browser checks passed; in-game usefulness remains to be tested.

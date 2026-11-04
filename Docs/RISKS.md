@@ -1,5 +1,7 @@
 # Open risks and measurements
 
+November 3 report risks: partial player coverage is not whole-match pass completion, and legacy score-only data cannot reconstruct players, counters or timelines. Suggestions are practice options grounded in recorded totals, not claims about why the player lost. Browser fixtures/screenshot reviews are not Starfield/controller/combined-performance or inventory proof. One intermittent test reopen timeout led to actual-blank-navigation waiting;3 repeated seam runs passed, not a claimed runtime navigation fix.
+
 November 3 training risks: targets count actual home-team actions including AI, not certified manual achievements. Layout is initial only; goals use normal kickoff and target completion does not stop clock. Same underlying sport still needs human balance/helpfulness/controller/Starfield tests. Browser verifies checkpoints and no practice publications; actual inventory acceptance remains pending separately. New local drill metadata is not exported or read as real crew, fleet, history or economy state.
 
 November 3 coach risks: lane coverage is current static geometry, not a prediction/probability; moving defenders can close a clear lane. Review totals include home AI teammates, never claimed personal manual achievements. Actual Starfield/OSF sizing, hardware-controller input, usefulness and combined performance remain untested; inventory acceptance gate unchanged. No engine changes or new world mutation.
