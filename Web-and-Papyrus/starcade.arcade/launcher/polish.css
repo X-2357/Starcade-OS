@@ -1,61 +1,11 @@
-/* Starcade launcher polish (stage 1) - an additive layer.
+/* Starcade launcher polish (stage 1, "safe" variant) - an additive layer.
    Remove the polish.css and polish.js tags from index.html and the launcher looks exactly as before.
-   Animates only transform / opacity / background-size / one box-shadow at a time: no blur, no backdrop-filter,
-   no canvas, no script-driven frames. Continuous effects stop while a game runs (data-view="player"). */
+   SAFE VARIANT (2026-11-04): after the owner's PC froze while an earlier version of this page ran in a browser pane,
+   everything continuous and large was removed: no star layers, no will-change, no header scan/shooting star, no glowing or
+   pulsing loops. What remains is one-shot (entrance, hover, panel open) plus a 14x11px equaliser that moves only while audio plays.
+   Animates only transform / opacity / background-size on small elements. No filter, no backdrop-filter, no canvas. */
 
 :root { --ease-out: cubic-bezier(.2,.8,.2,1); }
-
-/* ---------- living background: two transform-only star layers ---------- */
-/* overflow:clip, not hidden: the star layers slide past the bottom edge, and a hidden-overflow box can still be scrolled by focus/scrollIntoView */
-.shell { position:relative; overflow:hidden; overflow:clip; }
-.shell::before, .shell::after { content:""; position:absolute; left:0; right:0; bottom:0; pointer-events:none; z-index:0; will-change:transform; }
-.shell::before {
-  top:-600px;
-  background:
-    radial-gradient(circle at 40px 90px,   rgba(190,255,235,.9) 0, rgba(190,255,235,.9) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 150px 330px, rgba(190,255,235,.7) 0, rgba(190,255,235,.7) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 260px 40px,  rgba(190,255,235,.85) 0, rgba(190,255,235,.85) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 330px 470px, rgba(190,255,235,.65) 0, rgba(190,255,235,.65) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 410px 210px, rgba(190,255,235,.9) 0, rgba(190,255,235,.9) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 470px 560px, rgba(190,255,235,.7) 0, rgba(190,255,235,.7) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 540px 130px, rgba(190,255,235,.8) 0, rgba(190,255,235,.8) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 90px 520px,  rgba(190,255,235,.65) 0, rgba(190,255,235,.65) 1.4px, transparent 2.2px);
-  background-size:600px 600px; animation:starsA 110s linear infinite;
-}
-.shell::after {
-  top:-900px;
-  background:
-    radial-gradient(circle at 120px 160px, rgba(141,247,199,.95) 0, rgba(141,247,199,.95) 2px, transparent 3.2px),
-    radial-gradient(circle at 520px 60px,  rgba(160,210,255,.9) 0, rgba(160,210,255,.9) 2px, transparent 3.2px),
-    radial-gradient(circle at 700px 420px, rgba(141,247,199,.85) 0, rgba(141,247,199,.85) 2px, transparent 3.2px),
-    radial-gradient(circle at 300px 640px, rgba(160,210,255,.85) 0, rgba(160,210,255,.85) 2px, transparent 3.2px),
-    radial-gradient(circle at 810px 780px, rgba(141,247,199,.8) 0, rgba(141,247,199,.8) 2px, transparent 3.2px);
-  background-size:900px 900px; animation:starsB 190s linear infinite;
-}
-@keyframes starsA { to { transform:translate3d(0,600px,0); } }
-@keyframes starsB { to { transform:translate3d(0,900px,0); } }
-.topbar, .world-live, .library, .player, footer { position:relative; z-index:1; }
-
-/* ---------- header: sweeping scan light, glowing title, breathing status light ---------- */
-.topbar { overflow:hidden; overflow:clip; }
-.topbar::after { content:""; position:absolute; left:0; top:0; bottom:0; width:30%; pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(141,247,199,.09),transparent);
-  transform:translateX(-120%); animation:scan 9s linear infinite; }
-@keyframes scan { to { transform:translateX(420%); } }
-/* an occasional shooting star across the header */
-.topbar::before { content:""; position:absolute; left:0; top:16%; width:110px; height:1px; pointer-events:none; opacity:0;
-  background:linear-gradient(90deg,transparent,rgba(230,255,246,.95));
-  transform:translate3d(-150px,0,0) rotate(5deg); animation:shoot 16s linear 6s infinite; }
-@keyframes shoot {
-  0%   { opacity:0; transform:translate3d(-150px,0,0) rotate(5deg); }
-  1.5% { opacity:1; }
-  5%   { opacity:0; transform:translate3d(1000px,90px,0) rotate(5deg); }
-  100% { opacity:0; transform:translate3d(1000px,90px,0) rotate(5deg); }
-}
-h1 span { animation:titleGlow 4.5s ease-in-out infinite alternate; }
-@keyframes titleGlow { from { text-shadow:0 0 0 rgba(141,247,199,0); } to { text-shadow:0 0 16px rgba(141,247,199,.55); } }
-.pulse { animation:pulseLight 2.4s ease-in-out infinite; }
-@keyframes pulseLight { 0%,100% { box-shadow:0 0 6px var(--accent); opacity:.75; } 50% { box-shadow:0 0 18px var(--accent); opacity:1; } }
 
 /* ---------- filter rail ---------- */
 .filter { transition:background .18s, border-color .18s, color .18s, transform .18s var(--ease-out), box-shadow .18s; }
@@ -71,15 +21,10 @@ h1 span { animation:titleGlow 4.5s ease-in-out infinite alternate; }
   box-shadow:inset 0 0 0 1px var(--card), 0 10px 28px rgba(0,0,0,.45);
   box-shadow:inset 0 0 0 1px var(--card), 0 10px 28px rgba(0,0,0,.45), 0 0 26px color-mix(in srgb, var(--card) 35%, transparent);
 }
-.game-card.selected { animation:selectedPulse 2.6s ease-in-out infinite; }
-@keyframes selectedPulse {
-  0%,100% { box-shadow:inset 0 0 0 1px var(--card), 0 10px 28px rgba(0,0,0,.45), 0 0 14px color-mix(in srgb, var(--card) 22%, transparent); }
-  50%     { box-shadow:inset 0 0 0 1px var(--card), 0 10px 28px rgba(0,0,0,.45), 0 0 30px color-mix(in srgb, var(--card) 48%, transparent); }
-}
 /* entrance: only while polish.js marks the grid as .enter (new filter / back from a game), never on a plain state refresh */
 .game-grid.enter .game-card { animation:cardIn .45s var(--ease-out) backwards; animation-delay:calc(min(var(--i, 0), 12) * 38ms); }
 @keyframes cardIn { from { opacity:0; transform:translateY(16px) scale(.97); } }
-/* a light sweep on hover / keyboard focus */
+/* a one-shot light sweep on hover / keyboard focus */
 .game-card::after { content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%; pointer-events:none; opacity:0;
   background:linear-gradient(105deg,transparent,rgba(255,255,255,.11),transparent); transform:skewX(-12deg); }
 .game-card:hover::after, .game-card:focus-visible::after { animation:sheen .9s ease-out 1; }
@@ -92,7 +37,7 @@ h1 span { animation:titleGlow 4.5s ease-in-out infinite alternate; }
 .details.flash, #categoryTitle.flash { animation:textIn .3s var(--ease-out); }
 @keyframes textIn { from { opacity:.3; transform:translateX(-10px); } }
 
-/* ---------- screens and panels opening ---------- */
+/* ---------- screens and panels opening (all one-shot) ---------- */
 .library:not(.hidden) { animation:fadeIn .35s ease-out; }
 .player:not(.hidden) { animation:fadeIn .25s ease-out; }   /* opacity only: never transform a frame that hosts a game */
 .modal:not(.hidden) { animation:fadeIn .2s ease-out; }
@@ -116,14 +61,8 @@ h1 span { animation:titleGlow 4.5s ease-in-out infinite alternate; }
   50%     { background-size:3px 55%, 3px 100%, 3px 35%; }
   75%     { background-size:3px 100%, 3px 60%, 3px 90%; }
 }
-.track-row.playing .track-mark { animation:markPulse 1.2s ease-in-out infinite; }
-@keyframes markPulse { 0%,100% { opacity:.55; } 50% { opacity:1; } }
 
-/* ---------- a game is running: stop every continuous launcher effect ---------- */
-.shell[data-view="player"]::before, .shell[data-view="player"]::after { display:none; }
-.shell[data-view="player"] .topbar::before, .shell[data-view="player"] .topbar::after, .shell[data-view="player"] .pulse, .shell[data-view="player"] h1 span { animation:none; }
-
+/* a game is running: nothing continuous is left to stop except the equaliser, which pauses with the music */
 @media (prefers-reduced-motion: reduce) {
-  .shell::before, .shell::after, .topbar::before, .topbar::after, .pulse, h1 span, .game-card, .game-card::after, .game-grid.enter .game-card,
-  .details, #categoryTitle, .library, .player, .modal, .modal-card, .xp-toast, #musicToggle::after, .track-row .track-mark { animation:none !important; }
+  .game-card::after, .game-grid.enter .game-card, .details, #categoryTitle, .library, .player, .modal, .modal-card, .xp-toast, #musicToggle::after { animation:none !important; }
 }

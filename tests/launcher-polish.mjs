@@ -61,6 +61,11 @@ assert.ok(usesTimers('setTimeout(f,1)') && !usesTimers('// no setTimeout\nlet a=
 assert.ok(!usesBlur(css), 'polish.css must not use filter or backdrop-filter');
 assert.ok(!usesTimers(js), 'polish.js must be event-driven: no timers or frame loops');
 assert.ok(/prefers-reduced-motion/.test(css), 'reduced-motion handling missing');
+// SAFE VARIANT rules (2026-11-04, after the owner's PC froze on an earlier animated version): nothing continuous but the equaliser
+assert.ok(!/will-change/.test(uncomment(css)), 'will-change must not be used');
+assert.equal((uncomment(css).match(/infinite/g) || []).length, 1, 'only the equaliser may loop forever');
+assert.ok(/#musicToggle\.is-playing::after\s*\{[^}]*infinite/.test(uncomment(css)), 'the one infinite animation must be the equaliser');
+assert.ok(!/position\s*:\s*(fixed|sticky)/.test(uncomment(css)), 'polish must not add positioned overlay layers');
 // the launcher's own files must be untouched by this layer
 for (const file of ['style.css', 'main.js']) assert.ok(fs.statSync(path.join(launcherDir, file)).size > 0);
 
@@ -77,14 +82,21 @@ errors.length = 0;
 await page.waitForTimeout(250);
 await shot(page, '01-intro');
 let running = await names(page);
-for (const n of ['cardIn', 'starsA', 'starsB', 'scan', 'shoot', 'titleGlow', 'pulseLight']) assert.ok(running.includes(n), `${n} should be running at load`);
+assert.ok(running.includes('cardIn'), 'cardIn should be running at load');
 assert.match(await gridClass(page), /\benter\b/);
+// the infinite-animation probe: anything that never ends, read from the live page
+const infinite = () => page.evaluate(() => document.getAnimations().filter((a) => a.effect.getComputedTiming().iterations === Infinity).map((a) => a.animationName));
+// calibrate it: a deliberately infinite animation must be seen, then removed
+await page.evaluate(() => { const d = document.createElement('div'); d.id = 'calib'; document.body.appendChild(d); d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, iterations: Infinity }).id = 'calib'; });
+assert.equal((await infinite()).length, 1, 'infinite-animation probe did not see a deliberate infinite animation');
+await page.evaluate(() => { document.getAnimations().filter((a) => a.id === 'calib').forEach((a) => a.cancel()); document.getElementById('calib').remove(); });
+assert.deepEqual(await infinite(), [], 'nothing may loop forever at load');
 await page.waitForFunction(() => !document.getElementById('gameGrid').classList.contains('enter'), null, { timeout: 5000 });
 await page.waitForTimeout(300);
 await shot(page, '02-settled');
 running = await names(page);
 assert.ok(!running.includes('cardIn'), 'entrance must have finished');
-assert.ok(running.includes('selectedPulse'), 'selected card should pulse once the entrance is over');
+assert.deepEqual(await infinite(), [], 'once settled, nothing may loop forever');
 assert.equal(await page.evaluate(() => document.getElementById('shell').dataset.view), 'library');
 // the sliding star layers must never make the shell scrollable (this broke focus/hover scrolling once: the page jumped up)
 const scrollable = () => page.evaluate(() => { const s = document.getElementById('shell'), t = document.querySelector('.topbar'); s.scrollTop = 80; t.scrollTop = 80; const r = { shell: s.scrollTop, topbar: t.scrollTop }; s.scrollTop = 0; t.scrollTop = 0; return r; });
@@ -101,7 +113,7 @@ const keyframeProps = await page.evaluate(() => {
   }
   return out;
 });
-assert.ok(Object.keys(keyframeProps).length >= 12, 'expected the polish keyframes to be present');
+assert.ok(Object.keys(keyframeProps).length >= 7, 'expected the polish keyframes to be present');
 const allowed = new Set(['transform', 'opacity', 'background-size', 'box-shadow', 'text-shadow']);
 for (const [name, props] of Object.entries(keyframeProps)) for (const p of props) assert.ok(allowed.has(p), `${name} animates disallowed property ${p}`);
 
@@ -174,17 +186,13 @@ await page.locator('.game-card').first().click();
 await page.waitForSelector('#player:not(.hidden)');
 await page.waitForTimeout(300);
 assert.equal(await page.evaluate(() => document.getElementById('shell').dataset.view), 'player');
-running = await names(page);
-for (const n of ['starsA', 'starsB', 'scan', 'shoot', 'titleGlow', 'pulseLight']) assert.ok(!running.includes(n), `${n} must stop during a game`);
-assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('shell'), '::before').display), 'none');
+assert.deepEqual(await infinite(), [], 'nothing may loop forever while a game runs');
 await shot(page, '08-in-game');
 await page.keyboard.press('Escape');
 await page.waitForSelector('#library:not(.hidden)');
 await page.waitForTimeout(150);
 assert.equal(await page.evaluate(() => document.getElementById('shell').dataset.view), 'library');
 assert.match(await gridClass(page), /\benter\b/, 'returning from a game should replay the intro');
-running = await names(page);
-assert.ok(running.includes('starsA') && running.includes('scan'), 'effects should resume in the library');
 await page.waitForTimeout(500);
 await shot(page, '09-back-in-library');
 
@@ -194,7 +202,7 @@ await context.close();
 // ---- reduced motion: nothing from the polish layer may animate ----
 const reduced = await open({ reducedMotion: true });
 await reduced.page.waitForTimeout(400);
-const polishNames = ['cardIn', 'starsA', 'starsB', 'scan', 'shoot', 'titleGlow', 'pulseLight', 'selectedPulse', 'fadeIn', 'sheen', 'popIn', 'equaliser', 'textIn'];
+const polishNames = ['cardIn', 'fadeIn', 'sheen', 'popIn', 'equaliser', 'textIn', 'toastPop'];
 const stillRunning = (await names(reduced.page)).filter((n) => polishNames.includes(n));
 assert.deepEqual(stillRunning, [], 'reduced motion must stop the polish animations');
 assert.deepEqual(reduced.errors, []);
